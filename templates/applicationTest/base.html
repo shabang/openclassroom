@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+</head>
+<body>
+
+<div class="sidebar-container">
+  <div class="sidebar-logo">
+    Les grandes oreilles
+  </div>
+  <ul class="sidebar-navigation">
+    <li class="header">Animaux</li>
+    <li>
+      <a href="{% url 'animals' %}">
+        <i class="fa fa-home" aria-hidden="true"></i> Liste des animaux
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'creer_animal'%}">
+        <i class="fa fa-tachometer" aria-hidden="true"></i> Créer un animal
+      </a>
+    </li>
+    <li class="header">Propriétaires</li>
+    <li>
+      <a href="{% url 'proprietaires' %}">
+        <i class="fa fa-users" aria-hidden="true"></i> Liste des propriétaires
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'creer_proprietaire' %}">
+        <i class="fa fa-cog" aria-hidden="true"></i> Ajouter un propriétaire
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="content-container">
+
+  <div class="container-fluid">
+  
+     {% block content %}
+	 
+	 
+	 {% endblock %}
+  </div>
+</div>
+
+</body>

@@ -1,0 +1,33 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1> Informations </h1>
+<p>
+    <strong> Nom </strong> : {{proprietaire.nom}} <br>
+	<strong> Prénom </strong> : {{proprietaire.prenom}} <br>
+	<strong> Adresse mail </strong> : {{proprietaire.mail}} <br>
+	<strong> Adresse </strong> : {{proprietaire.adresse}} <br>
+	<strong> Téléphone </strong> : {{proprietaire.telephone}} <br>
+</p>
+<h1> Liste des animaux </h1>
+<table id="myTable">
+  <tr class="header">
+    <th style="width:20%;">Nom</th>
+    <th style="width:20%;">Type</th>
+	<th style="width:20%;">Adopté au refuge</th>
+  </tr>
+  {% for animal in proprietaire.animal_set.all %}
+  <tr>
+    <td><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></td>
+	<td>{{animal.get_type_animal_display}}</td>
+	{% if animal.adoption %}
+	    <td>Oui</td>
+	{% else %}
+	    <td>Non</td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

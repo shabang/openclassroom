@@ -1,0 +1,58 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1>{{animal.get_type_animal_display}} {{animal.nom}} </h1>
+<p>
+    <strong> Nom </strong> : {{animal.nom}} <br>
+	<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
+	<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
+	<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
+	<strong> Date de naissance </strong> : {{animal.date_naissance}} <br>
+	<strong> Date de première arrivée </strong> : {{animal.date_arrivee}} <br>
+	<strong> Vacciné </strong> : {{animal.get_vaccine_display}} <br>
+	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
+	<strong> Propriétaire </strong> : {{animal.proprietaire}} <br>
+	{{animal.isFromPension}}
+</p>
+
+{% if animal.isFromPension %}
+    <h1> Liste des séjours à la pension</h1>
+	<table id="myTable">
+        <tr class="header">
+            <th style="width:20%;">Date d'arrivée</th>
+            <th style="width:20%;">Date de départ</th>
+	        <th style="width:20%;">Jours de présence</th>
+	        <th style="width:20%;">Cage</th>
+	        <th style="width:20%;">Payé</th>
+       </tr>
+       {% for sejour in animal.sejour_set.all %}
+       <tr>
+            <td>{{sejour.date_arrivee}}</td>
+            <td>{{sejour.date_depart}}</td>
+	        <td>A calculer</td>
+	        <td>{{sejour.get_cage_display}}</td>
+	        <td>A calculer</td>
+       </tr>
+       {% endfor %}
+    </table>
+{% else %}
+    <h1> Liste des visites vétérinaire</h1>
+	<table id="myTable">
+        <tr class="header">
+            <th style="width:30%;">Date</th>
+            <th style="width:30%;">Raison de la visite</th>
+	        <th style="width:40%;">Commentaire</th>
+       </tr>
+       {% for visite in animal.visite_medicale_set.all %}
+       <tr>
+            <td>{{visite.date}}</td>
+	        <td>{{visite.get_type_visite_display}}</td>
+	        <td>{{visite.commentaire}}</td>
+       </tr>
+       {% endfor %}
+    </table>
+{% endif %}
+
+
+{% endblock %}
