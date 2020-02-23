@@ -4,7 +4,9 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>
 </head>
 <body>
 
@@ -13,6 +15,13 @@
     Les grandes oreilles
   </div>
   <ul class="sidebar-navigation">
+  	<li class="header">Accueil</li>
+    <li>
+      <a href="{% url 'accueil' %}">
+        <i class="fa fa-home" aria-hidden="true"></i> Tableau de bord
+      </a>
+    </li>
+    </li>
     <li class="header">Animaux</li>
     <li>
       <a href="{% url 'animals' %}">

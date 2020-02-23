@@ -12,8 +12,10 @@
 	<strong> Date de première arrivée </strong> : {{animal.date_arrivee}} <br>
 	<strong> Vacciné </strong> : {{animal.get_vaccine_display}} <br>
 	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
+	{% if animal.isFromPension %}
 	<strong> Propriétaire </strong> : {{animal.proprietaire}} <br>
-	{{animal.isFromPension}}
+	{% endif %}
+	<strong> Description </strong> : {{animal.description}} <br>
 </p>
 
 {% if animal.isFromPension %}

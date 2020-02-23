@@ -6,7 +6,14 @@
 <form method="post" action="">
    {% csrf_token %}
    {{ form.as_p }}
-   <input type="submit" />
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'proprietaires' %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
 </form>
 
 

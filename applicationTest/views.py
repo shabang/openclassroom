@@ -3,18 +3,17 @@ from django.shortcuts import render
 from django.views.generic import CreateView
 from django.http import HttpResponse
 from datetime import datetime
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour
 from django.urls import reverse_lazy
 
 def home(request):
-    text = """<h1> Bienvenue sur mon blog !</h1>"""
-    return HttpResponse(text)
+    return render(request, 'applicationTest/tableau_bord.html', locals())
 
 class create_animal(CreateView):
     model = Animal
+    form_class = AnimalForm
     template_name = 'applicationTest/animal_form.html'
-    fields = ('nom','date_naissance','type_animal','sexe', 'description', 'date_naissance', 'date_arrivee', 'sterilise', 'origine', 'vaccine', 'proprietaire')
     success_url = reverse_lazy('animals')  
     
 class create_proprietaire(CreateView):
@@ -45,6 +44,12 @@ def search_animal(request):
             proprietaire_form = form.cleaned_data['proprietaire']
             type_animal_form = form.cleaned_data['type_animal']
             nom_form = form.cleaned_data['nom']
+            date_naissance_min = form.cleaned_data['date_naissance_min']
+            date_naissance_max = form.cleaned_data['date_naissance_max']
+            date_arrivee_min = form.cleaned_data['date_arrivee_min']
+            date_arrivee_max = form.cleaned_data['date_arrivee_max']
+            date_prochaine_visite_min = form.cleaned_data['date_prochaine_visite_min']
+            date_prochaine_visite_max =form.cleaned_data['date_prochaine_visite_max']
             
             if (proprietaire_form != None):
                 animals = animals.filter(proprietaire=proprietaire_form)
@@ -52,6 +57,18 @@ def search_animal(request):
                 animals = animals.filter(type_animal = type_animal_form)
             if(nom_form != None):
                 animals = animals.filter(nom__icontains = nom_form)
+            if (date_naissance_min):
+                animals = animals.filter(date_naissance__gte = date_naissance_min)
+            if (date_naissance_max):
+                animals = animals.filter(date_naissance__lte = date_naissance_max)
+            if (date_arrivee_min):
+                animals = animals.filter(date_arrivee__gte = date_arrivee_min)
+            if (date_arrivee_max):
+                animals = animals.filter(date_arrivee__lte = date_arrivee_max)
+            if (date_prochaine_visite_min):
+                animals = animals.filter(date_prochaine_visite__gte = date_prochaine_visite_min)
+            if (date_prochaine_visite_max):
+                animals = animals.filter(date_prochaine_visite__lte = date_prochaine_visite_max)
     else:
         form = AnimalSearchForm()
     return render(request, 'applicationTest/animal_list.html', locals())

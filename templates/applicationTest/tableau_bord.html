@@ -1,0 +1,42 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<div class="text-center">
+    <h2>Bienvenue ! </h2>
+    <br/>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h5>Pension - Semaine glissante</h6>
+        </div>
+        <div class="panel-body">
+          <p><a href= "{% url 'animals' %}"><strong>4</strong> arrivées prévues</a></p>
+          <p><a href= "{% url 'animals' %}"><strong>3</strong> départs prévues</a></p>
+          <p><a href= "{% url 'animals' %}"><strong>13</strong> animaux accueillis en pension aujourd'hui</a></p>
+        </div>
+        <div class="panel-footer">
+          <a href= "{% url 'animals' %}" class="btn-search cyan rounded">Liste des animaux de la pension</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h5>Refuge - Semaine glissante</h6>
+        </div>
+        <div class="panel-body">
+          <p><a href= "{% url 'animals' %}"><strong>2</strong> rendez-vous vétérinaires prévus</a></p>
+          <p><a href= "{% url 'animals' %}"><strong>2</strong> animaux à récupérer</a></p>
+          <p><a href= "{% url 'animals' %}"><strong>4</strong> adoptions en cours</a></p>
+        </div>
+        <div class="panel-footer">
+          <a href= "{% url 'animals' %}" class="btn-search cyan rounded">Liste des animaux du refuge</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

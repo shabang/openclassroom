@@ -6,7 +6,7 @@ from applicationTest.models import Animal, Proprietaire
 from . import views
 
 urlpatterns = [
-    url(r'^accueil/', views.home),
+    url(r'^accueil/', views.home, name="accueil"),
     url(r'^animals/$', views.search_animal, name="animals"),
     url(r'^creer_animals/$', views.create_animal.as_view(), name="creer_animal"),
     url(r'^animals/(?P<pk>\d+)$', DetailView.as_view(model=Animal,), name="detail_animal"),

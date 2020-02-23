@@ -54,14 +54,14 @@ class Animal(models.Model):
     date_arrivee = models.DateTimeField(verbose_name = "Date de première arrivée", null=True)
     date_visite = models.DateTimeField(verbose_name = "Date de prochaine visite vétérinaire", null=True)
     date_adoption = models.DateTimeField(verbose_name = "Date d'adoption", null=True)
-    description = models.CharField(max_length=2000, null=True)
+    description = models.CharField(max_length=2000, null=True, blank=True)
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_DEMANDE)
     sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=SEXE)
     origine = models.CharField(max_length=30, verbose_name="Origine",choices=ORIGINE, null=True)
     sterilise = models.CharField(max_length=30, verbose_name="Stérilisé",choices=OUI_NON, null=True)
     vaccine = models.CharField(max_length=30, verbose_name="Vacciné",choices=OUI_NON, null=True)
-    proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True)
-    adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True)
+    proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True, blank=True)
+    adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True, blank=True)
     
     def __str__(self):
         return self.nom

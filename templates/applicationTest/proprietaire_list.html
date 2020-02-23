@@ -6,7 +6,7 @@
 
 <form action = "{% url "proprietaires" %}" method="post">{%csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Rechercher" />
+    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
 </form>
 
 <h2>Liste des proprietaires</h2>
@@ -30,7 +30,7 @@
   {% endfor %}
 </table>
 
-<a href= "{% url 'creer_proprietaire' %}">Ajouter un propriétaire</a>
+<a class="btn-search cyan rounded" href= "{% url 'creer_proprietaire' %}">Ajouter un propriétaire</a>
 
 
 {% endblock %}
