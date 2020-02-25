@@ -72,6 +72,11 @@
   margin-right: 10px;
 }
 
+.selected {
+  font-weight : bold;
+  color : #3392FF
+}
+
 .sidebar-navigation li a:active,
 .sidebar-navigation li a:hover,
 .sidebar-navigation li a:focus {

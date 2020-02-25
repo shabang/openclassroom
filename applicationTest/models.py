@@ -4,7 +4,6 @@ TYPE_DEMANDE = (
     ('LAPIN',"Lapin"),
     ('HAMSTER',"Hamster"),
     ('COCHON_DINDE',"Cochon d'inde"),
-    ('',"")
 )
 
 SEXE = (
@@ -15,7 +14,6 @@ SEXE = (
 ORIGINE = (
     ('PENSION', "Pension"),
     ('REFUGE', "Refuge"),
-    ('',"")
 )
 
 OUI_NON = (
@@ -76,7 +74,7 @@ class VisiteMedicale(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT, null=True)
     
     def __str__(self):
-        return "visite " + self.type_visite + " le " + self.date
+        return "visite " + str(self.type_visite) + " le " + str(self.date)
         
         
 class Sejour(models.Model):
@@ -88,4 +86,4 @@ class Sejour(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT, null=True)
     
     def __str__(self):
-        return "Séjour du " + self.date_arrivee + " au " + self.date_depart
+        return "Séjour du " + str(self.date_arrivee) + " au " + str(self.date_depart)

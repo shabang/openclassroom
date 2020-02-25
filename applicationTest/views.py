@@ -4,23 +4,51 @@ from django.views.generic import CreateView
 from django.http import HttpResponse
 from datetime import datetime
 from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm
-from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour
+from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
+    Adoption
 from django.urls import reverse_lazy
+from _datetime import timedelta
 
 def home(request):
+    
+    # Pour la sidebar
+    selected = "tableau_bord"
+    
+    # Dates
+    today = datetime.now()
+    interval = datetime.now() + timedelta(days = 7)
+    # Partie pension
+    arrivees_pension = Sejour.objects.filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
+    departs_pension = Sejour.objects.filter(date_depart__gt = today).filter(date_depart__lt = interval).count()
+    presences = Sejour.objects.filter(date_arrivee__lt = today).filter(date_depart__gt = today).count()
+    # Partie refuge
+    rdv_veterinaire = VisiteMedicale.objects.filter(date__gt=today).filter(date__lt= interval).count()
+    recuperations = Animal.objects.filter(origine = "REFUGE").filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
+    adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt= interval).count()
+    
     return render(request, 'applicationTest/tableau_bord.html', locals())
 
 class create_animal(CreateView):
     model = Animal
     form_class = AnimalForm
     template_name = 'applicationTest/animal_form.html'
-    success_url = reverse_lazy('animals')  
+    success_url = reverse_lazy('animals')
+    
+    def get_context_data(self, **kwargs):
+        context = CreateView.get_context_data(self, **kwargs)
+        context['selected'] = "create_animal" 
+        return context
     
 class create_proprietaire(CreateView):
     model = Proprietaire
     template_name = 'applicationTest/proprietaire_form.html'
     fields = ('nom','prenom','mail','adresse', 'telephone')
-    success_url = reverse_lazy('proprietaires') 
+    success_url = reverse_lazy('proprietaires')
+    
+    def get_context_data(self, **kwargs):  
+        context = CreateView.get_context_data(self, **kwargs)
+        context['selected'] = "create_proprietaire" 
+        return context 
     
 class create_visite(CreateView):
     model = VisiteMedicale
@@ -36,7 +64,10 @@ class create_sejour(CreateView):
   
     
 def search_animal(request):
+    
     animals = Animal.objects.all()
+    selected = "animals"
+    
     if request.method == 'POST':
         form = AnimalSearchForm(request.POST)
         if form.is_valid():
@@ -74,7 +105,10 @@ def search_animal(request):
     return render(request, 'applicationTest/animal_list.html', locals())
     
 def search_proprietaire(request):
+    
+    selected = "proprietaires"
     proprietaires = Proprietaire.objects.all()
+    
     if request.method == 'POST':
         form = ProprietaireSearchForm(request.POST)
         if form.is_valid():
