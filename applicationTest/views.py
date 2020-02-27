@@ -1,22 +1,42 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView
-from django.http import HttpResponse
-from datetime import datetime
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
 from _datetime import timedelta
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.contrib.auth import authenticate, login
 
+def connexion(request):
+    error = False
+    if request.method == 'POST':
+        form = ConnexionForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(username = username, password = password)
+            if user :
+                login(request, user)
+            else:
+                error = True
+    else:
+        form = ConnexionForm()
+    return render(request, 'applicationTest/login.html', locals())
+    
+    
+    
+@login_required
 def home(request):
     
     # Pour la sidebar
     selected = "tableau_bord"
     
     # Dates
-    today = datetime.now()
-    interval = datetime.now() + timedelta(days = 7)
+    today = timezone.now()
+    interval = timezone.now() + timedelta(days = 7)
     # Partie pension
     arrivees_pension = Sejour.objects.filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
     departs_pension = Sejour.objects.filter(date_depart__gt = today).filter(date_depart__lt = interval).count()
@@ -62,7 +82,7 @@ class create_sejour(CreateView):
     fields = ('date_arrivee','date_depart','cage','montant')
     success_url = reverse_lazy('animals')      
   
-    
+@login_required    
 def search_animal(request):
     
     animals = Animal.objects.all()
@@ -103,7 +123,8 @@ def search_animal(request):
     else:
         form = AnimalSearchForm()
     return render(request, 'applicationTest/animal_list.html', locals())
-    
+
+@login_required    
 def search_proprietaire(request):
     
     selected = "proprietaires"
