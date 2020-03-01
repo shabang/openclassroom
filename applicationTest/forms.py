@@ -23,10 +23,13 @@ class ProprietaireSearchForm(forms.Form):
 class AnimalForm(forms.ModelForm):
     class Meta:
         model = models.Animal
-        fields = ('nom','type_animal','sexe', 'description', 'date_naissance', 'date_arrivee', 'sterilise', 'origine', 'vaccine', 'proprietaire')
+        fields = ('nom','type_animal', 'origine','sexe', 
+                  'description', 'date_naissance', 'date_arrivee', 'sterilise', 
+                   'vaccine', 'date_dernier_vaccin', 'proprietaire')
         widgets = {
             'date_naissance': DateInput(),
-            'date_arrivee': DateInput()
+            'date_arrivee': DateInput(),
+            'date_dernier_vaccin' : DateInput()
         }
 
 class ConnexionForm(forms.Form):

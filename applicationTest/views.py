@@ -44,7 +44,7 @@ def home(request):
     departs_pension = Sejour.objects.filter(date_depart__gt = today).filter(date_depart__lt = interval).count()
     presences = Sejour.objects.filter(date_arrivee__lt = today).filter(date_depart__gt = today).count()
     # Partie refuge
-    rdv_veterinaire = VisiteMedicale.objects.filter(date__gt=today).filter(date__lt= interval).count()
+    rdv_veterinaire = Animal.objects.filter(origine = "REFUGE").filter(date_visite__gt=today).filter(date_visite__lt= interval).count()
     recuperations = Animal.objects.filter(origine = "REFUGE").filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
     adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt= interval).count()
     
