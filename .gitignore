@@ -1,2 +1,4 @@
 applicationTest/migrations/
 *.sqlite3
+/*.sqlite3
+/applicationTest/migrations
