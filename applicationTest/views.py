@@ -9,6 +9,7 @@ from _datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
 
 def connexion(request):
     error = False
@@ -20,6 +21,7 @@ def connexion(request):
             user = authenticate(username = username, password = password)
             if user :
                 login(request, user)
+                return redirect("accueil")
             else:
                 error = True
     else:
