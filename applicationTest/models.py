@@ -57,7 +57,7 @@ class Animal(models.Model):
     sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=SEXE)
     sterilise = models.CharField(max_length=30, verbose_name="Stérilisé",choices=OUI_NON, null=True)
     vaccine = models.CharField(max_length=30, verbose_name="Vacciné",choices=OUI_NON, null=True)
-    date_dernier_vaccin = models.DateTimeField(verbose_name = "Date du dernier rappel de vaccin", null=True, blank = True)
+    date_dernier_vaccin = models.DateField(verbose_name = "Date du dernier rappel de vaccin", null=True, blank = True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True, blank=True)
     adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True, blank=True)
     description = models.CharField(max_length=2000, null=True, blank=True)
@@ -83,7 +83,7 @@ class VisiteMedicale(models.Model):
         
         
 class Sejour(models.Model):
-    date_arrivee = models.DateField(auto_now_add = True, verbose_name = "Date d'arrivée", null=True)
+    date_arrivee = models.DateField(verbose_name = "Date d'arrivée", null=True)
     date_depart = models.DateField(verbose_name = "Date de départ", null=True)
     cage = models.CharField(max_length=30, verbose_name="Cage fournie",choices=OUI_NON, null=True)
     montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True)

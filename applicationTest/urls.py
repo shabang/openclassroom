@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^creer_proprietaires/$', login_required(views.create_proprietaire.as_view()), name="creer_proprietaire"),
     url(r'^proprietaires/(?P<pk>\d+)$', login_required(DetailView.as_view(model=Proprietaire,)), name="detail_proprietaire"),
     url(r'^login/$', views.connexion, name="login"),
+    url(r'^sejours/', views.search_sejour, name="sejours"),
+    url(r'^visites/', views.search_visite, name="visites"),
 ]

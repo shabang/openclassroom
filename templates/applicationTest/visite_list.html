@@ -1,0 +1,43 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h2>Recherche</h2>
+
+<form action = "{% url "visites" %}" method="post">{%csrf_token %}
+	<div class="row">
+    	<div class="col-md-6">
+    		{{ form.date_min.label_tag }} {{ form.date_min }}
+    	</div>
+    	<div class="col-md-6">
+    		{{ form.date_max.label_tag }} {{ form.date_max }}
+    	</div>
+    </div>
+    
+    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+</form>
+
+<div class="col-sm-12">
+<h2>Liste des visites vétérinaires</h2>
+
+<table id="myTable">
+  <tr class="header">
+    <th style="width:25%;">Date de la visite vétérinaire</th>
+    <th style="width:25%;">Raison de la visite</th>
+	<th style="width:25%;">Montant de la visite</th>
+	<th style="width:25%;">Animal(aux) concerné(s)</th>
+  </tr>
+  {% for visite in visites %}
+  <tr>
+    <td>{{visite.date}}</td>
+    <td>{{visite.get_type_visite_display}}</td>
+	<td>{{visite.montant}}</td>
+	<td>{% for animal in visite.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+  
+</div>
+
+
+{% endblock %}

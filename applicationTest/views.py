@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
@@ -185,3 +185,53 @@ def search_proprietaire(request):
     else:
         form = ProprietaireSearchForm()
     return render(request, 'applicationTest/proprietaire_list.html', locals())
+
+@login_required    
+def search_visite(request):
+    selected = "visites"
+    visites = VisiteMedicale.objects.all()
+    
+    if request.method == 'POST':
+        form = VisiteSearchForm(request.POST)
+        if form.is_valid():
+        
+            date_min_form = form.cleaned_data['date_min']
+            date_max_form = form.cleaned_data['date_max']
+
+            if(date_min_form):
+                visites = visites.filter(date__gte = date_min_form)
+            if(date_max_form):
+                visites = visites.filter(date__lte = date_max_form)
+                
+    else:
+        form = VisiteSearchForm()
+    return render(request, 'applicationTest/visite_list.html', locals())
+
+@login_required    
+def search_sejour(request):
+    selected = "sejours"
+    sejours = Sejour.objects.all()
+    
+    if request.method == 'POST':
+        form = SejourSearchForm(request.POST)
+        if form.is_valid():
+        
+            date_debut_min_form = form.cleaned_data['date_debut_min']
+            date_debut_max_form = form.cleaned_data['date_debut_max']
+            date_fin_min_form = form.cleaned_data['date_fin_min']
+            date_fin_max_form = form.cleaned_data['date_fin_max']
+            proprietaire_form = form.cleaned_data['proprietaire']
+
+            if(date_debut_min_form):
+                sejours = sejours.filter(date_arrivee__gte = date_debut_min_form)
+            if(date_debut_max_form):
+                sejours = sejours.filter(date_arrivee__lte = date_debut_max_form)
+            if(date_fin_min_form):
+                sejours = sejours.filter(date_depart__gte = date_fin_min_form)
+            if(date_fin_max_form):
+                sejours = sejours.filter(date_depart__lte = date_fin_max_form)
+            if (proprietaire_form != None):
+                sejours = sejours.filter(proprietaire=proprietaire_form)
+    else:
+        form = SejourSearchForm()
+    return render(request, 'applicationTest/sejour_list.html', locals())

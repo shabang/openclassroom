@@ -22,6 +22,17 @@ class AnimalSearchForm(forms.Form):
 class ProprietaireSearchForm(forms.Form):
     nom = forms.CharField(max_length=100, required=False)
     
+class SejourSearchForm(forms.Form):
+    date_debut_min = forms.DateField(label = "Date de début du séjour entre le", required=False, widget=DateInput())
+    date_debut_max = forms.DateField(label = " et le ",required=False, widget=DateInput())
+    date_fin_min = forms.DateField(label = "Date de fin du séjour entre le", required=False, widget=DateInput())
+    date_fin_max = forms.DateField(label = " et le ",required=False, widget=DateInput())
+    proprietaire = forms.ModelChoiceField(queryset = models.Proprietaire.objects.all(), required=False)
+    
+class VisiteSearchForm(forms.Form):
+    date_min = forms.DateField(label = "Date de la visite médicale entre le", required=False, widget=DateInput())
+    date_max = forms.DateField(label = " et le ",required=False, widget=DateInput())
+    
 class AnimalForm(forms.ModelForm):
     class Meta:
         model = models.Animal

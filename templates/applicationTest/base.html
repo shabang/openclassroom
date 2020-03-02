@@ -49,6 +49,19 @@
         <span {% if selected == "create_proprietaire" %} class = "selected" {% endif %}>Ajouter un propriétaire</span>
       </a>
     </li>
+    <li class="header">Gestion</li>
+    <li>
+      <a href="{% url 'visites' %}">
+        <i class="fa fa-users" aria-hidden="true"></i> 
+         <span {% if selected == "visites" %} class = "selected" {% endif %}> Liste des visites vétérinaire </span>
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'sejours' %}">
+        <i class="fa fa-cog selected" aria-hidden="true"></i> 
+        <span {% if selected == "sejours" %} class = "selected" {% endif %}>Liste des séjours</span>
+      </a>
+    </li>
   </ul>
 </div>
 
