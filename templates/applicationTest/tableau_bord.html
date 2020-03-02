@@ -13,12 +13,12 @@
           <h5>Pension - Semaine glissante</h6>
         </div>
         <div class="panel-body">
-          <p><a href= "{% url 'animals' %}"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s)</a></p>
-          <p><a href= "{% url 'animals' %}"><strong>{{departs_pension}}</strong> départ(s) prévu(s)</a></p>
-          <p><a href= "{% url 'animals' %}"><strong>{{presences}}</strong> animal accueilli en pension aujourd'hui</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_debut_sejour"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s)</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_fin_sejour"><strong>{{departs_pension}}</strong> départ(s) prévu(s)</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{today_str}}&filter=date_sejour"><strong>{{presences}}</strong> animal accueilli en pension aujourd'hui</a></p>
         </div>
         <div class="panel-footer">
-          <a href= "{% url 'animals' %}" class="btn-search cyan rounded">Liste des animaux de la pension</a>
+          <a href= "{% url 'animals' %}?filter=pension" class="btn-search cyan rounded">Liste des animaux de la pension</a>
         </div>
       </div>
     </div>
@@ -28,12 +28,12 @@
           <h5>Refuge - Semaine glissante</h6>
         </div>
         <div class="panel-body">
-          <p><a href= "{% url 'animals' %}"><strong>{{rdv_veterinaire}}</strong> rendez-vous vétérinaire prévu(s)</a></p>
-          <p><a href= "{% url 'animals' %}"><strong>{{recuperations}}</strong> animaux à récupérer</a></p>
-          <p><a href= "{% url 'animals' %}"><strong>{{adoptions}}</strong> adoption(s) en cours</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_visite"><strong>{{rdv_veterinaire}}</strong> rendez-vous vétérinaire prévu(s)</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_arrivee"><strong>{{recuperations}}</strong> animaux à récupérer</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_adoption"><strong>{{adoptions}}</strong> adoption(s) en cours</a></p>
         </div>
         <div class="panel-footer">
-          <a href= "{% url 'animals' %}" class="btn-search cyan rounded">Liste des animaux du refuge</a>
+          <a href= "{% url 'animals' %}?filter=refuge" class="btn-search cyan rounded">Liste des animaux du refuge</a>
         </div>
       </div>
     </div>
