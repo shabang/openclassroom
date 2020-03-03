@@ -205,6 +205,8 @@ def search_visite(request):
                 
     else:
         form = VisiteSearchForm()
+            
+            
     return render(request, 'applicationTest/visite_list.html', locals())
 
 @login_required    
@@ -234,4 +236,30 @@ def search_sejour(request):
                 sejours = sejours.filter(proprietaire=proprietaire_form)
     else:
         form = SejourSearchForm()
+        
+        #Paramètres de l'url pour filtres par défaut
+        interval_str = request.GET.get('interval','')
+        filter = request.GET.get('filter','')
+        if (filter):
+            
+            interval = parse_date(interval_str)
+            today = timezone.now()
+            today_str = today.strftime('%Y-%m-%d')
+            
+            if (filter == "date_debut_sejour"):
+                form.fields['date_debut_max'].initial = interval_str
+                form.fields['date_debut_min'].initial = today_str
+                sejours = sejours.filter(date_arrivee__gte = today)
+                sejours = sejours.filter(date_arrivee__lte = interval)
+            if (filter == "date_fin_sejour"):
+                form.fields['date_fin_max'].initial = interval_str
+                form.fields['date_fin_min'].initial = today_str
+                sejours = sejours.filter(date_depart__gte = today)
+                sejours = sejours.filter(date_depart__lte = interval)
+            if (filter == "date_sejour"):
+                form.fields['date_fin_min'].initial = interval_str
+                form.fields['date_debut_max'].initial = today_str
+                sejours = sejours.filter(date_depart__gte = interval)
+                sejours = sejours.filter(date_arrivee__lte = today)
+                
     return render(request, 'applicationTest/sejour_list.html', locals())

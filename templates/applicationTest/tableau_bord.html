@@ -13,9 +13,9 @@
           <h5>Pension - Semaine glissante</h6>
         </div>
         <div class="panel-body">
-          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_debut_sejour"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s)</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_fin_sejour"><strong>{{departs_pension}}</strong> départ(s) prévu(s)</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{today_str}}&filter=date_sejour"><strong>{{presences}}</strong> animal accueilli en pension aujourd'hui</a></p>
+          <p><a href= "{% url 'sejours' %}?interval={{interval_str}}&filter=date_debut_sejour"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s)</a></p>
+          <p><a href= "{% url 'sejours' %}?interval={{interval_str}}&filter=date_fin_sejour"><strong>{{departs_pension}}</strong> départ(s) prévu(s)</a></p>
+          <p><a href= "{% url 'sejours' %}?interval={{today_str}}&filter=date_sejour"><strong>{{presences}}</strong> animal accueilli en pension aujourd'hui</a></p>
         </div>
         <div class="panel-footer">
           <a href= "{% url 'animals' %}?filter=pension" class="btn-search cyan rounded">Liste des animaux de la pension</a>
@@ -38,5 +38,25 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+          <h5>Indicateurs de suivi</h6>
+        </div>
+        <div class="panel-body">
+          <p class="paiements">2 adoptions en attente de paiement complet pour un montant de 150 €</p>
+          <p class="paiements">4 séjours en attente de paiement complet pour un montant de 220 €</p>
+          <p class="vaccins">13 animaux de la pension à metre à jour car la date limite de rappel de vaccin est dépassée</p>
+          <p class="visites">5 animaux du refuge à castrer/stériliser ou vacciner</p>
+        </div>
+        <div class="panel-footer">
+          <a href= "{% url 'animals' %}?filter=pension" class="btn-search violet rounded">Gérer les paiements</a>
+          <a href= "{% url 'animals' %}?filter=pension" class="btn-search orange rounded">Mettre à jour les vaccins</a>
+          <a href= "{% url 'animals' %}?filter=pension" class="btn-search vert rounded">Déclarer une visite médicale</a>
+        </div>
+      </div>
+    </div>
+    </div>
 
 {% endblock %}

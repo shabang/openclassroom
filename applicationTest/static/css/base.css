@@ -142,7 +142,21 @@
 }
 
 .btn-search.cyan     {background-color: #7fccde;}
+.btn-search.violet     {background-color: RGB(112,48,160);}
+.btn-search.vert     {background-color: RGB(84,130,53);}
+.btn-search.orange     {background-color: RGB(197,90,17);}
 
 .rounded {
   border-radius: 10px;
+}
+
+/* Couleurs pour tableau de bord */
+.paiements {
+	color : RGB(112,48,160);
+}
+.visites {
+	color : RGB(84,130,53);
+}
+.vaccins {
+	color : RGB(197,90,17);
 }
