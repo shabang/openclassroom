@@ -44,6 +44,32 @@ class AnimalForm(forms.ModelForm):
             'date_arrivee': DateInput(),
             'date_dernier_vaccin' : DateInput()
         }
+    
+    #Appelé à la validation du formulaire
+    def clean(self):
+        cleaned_data = forms.ModelForm.clean(self)
+        origine = cleaned_data.get('origine')
+        #Si l'animal est inscrit en pension, il doit avoir un proprietaire
+        if (origine == "PENSION"):
+            if (not cleaned_data.get('proprietaire')):
+                msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
+                self._errors["proprietaire"] = self.error_class([msg])
+                del cleaned_data["proprietaire"]
+        #Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
+        elif (origine == "REFUGE"):
+            if (not cleaned_data.get('date_arrivee')):
+                msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
+                self._errors["date_arrivee"] = self.error_class([msg])
+                del cleaned_data["date_arrivee"]
+        #Si l'animal est vaccine, la date de dernier vaccin est obligatoire
+        vaccine = cleaned_data.get('vaccine')
+        if (vaccine == "OUI"):
+            if (not cleaned_data.get('date_dernier_vaccin')):
+                msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
+                self._errors["date_dernier_vaccin"] = self.error_class([msg])
+                del cleaned_data["date_dernier_vaccin"]
+                
+        return cleaned_data
 
 class ConnexionForm(forms.Form):
     username = forms.CharField(label="Nom d'utilisateur", max_length=30)

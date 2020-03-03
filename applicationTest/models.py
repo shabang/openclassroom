@@ -70,9 +70,24 @@ class Animal(models.Model):
      
     def getVaccinStr(self):
         return self.get_vaccine_display + " (dernier rappel le " + str(self.date_dernier_vaccin) + " )" 
+    
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        #A l'enregistrement de l'animal on met à jour sa date de prochaine visite vétérinaire et ses informations de vaccination
+        date_rappel_vaccin = self.date_dernier_vaccin
+        date_visites = VisiteMedicale.objects.filter(animaux=self).aggregate(models.Min('date')).get('date__min')
+        if (date_rappel_vaccin!=None):
+            self.vaccine = "OUI"
+            if (date_visites!=None):
+                self.date_visite = date_visites if date_visites.date() < date_rappel_vaccin else date_rappel_vaccin
+            else :
+                self.date_visite =  date_rappel_vaccin
+        else:
+            self.date_visite =   date_visites
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
 class VisiteMedicale(models.Model):
-    date = models.DateTimeField(auto_now_add = True, verbose_name = "Date de la visite")
+    date = models.DateTimeField(verbose_name = "Date de la visite")
     type_visite = models.CharField(max_length=30, verbose_name="Objet de la visite",choices=TYPE_VETO, null=True)
     commentaire = models.CharField(max_length=2000, null=True, blank = True)
     montant = models.DecimalField(verbose_name="Montant" , max_digits=7, decimal_places=2, null=True)

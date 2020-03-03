@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^accueil/', views.home, name="accueil"),
     url(r'^animals/', views.search_animal, name="animals"),
     url(r'^creer_animals/$', login_required(views.create_animal.as_view()), name="creer_animal"),
-    url(r'^animals/(?P<pk>\d+)$', login_required(DetailView.as_view(model=Animal,)), name="detail_animal"),
+    url(r'^animal_detail/(?P<pk>\d+)$', login_required(DetailView.as_view(model=Animal,)), name="detail_animal"),
     url(r'^proprietaires/$', views.search_proprietaire, name="proprietaires"),
     url(r'^creer_proprietaires/$', login_required(views.create_proprietaire.as_view()), name="creer_proprietaire"),
     url(r'^proprietaires/(?P<pk>\d+)$', login_required(DetailView.as_view(model=Proprietaire,)), name="detail_proprietaire"),
