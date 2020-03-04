@@ -21,9 +21,9 @@
   </tr>
   {% for proprietaire in proprietaires %}
   <tr>
-    <td><a href = "{% url 'detail_proprietaire' proprietaire.id %}">{{proprietaire.nom}}</a></td>
-	<td>{{proprietaire.prenom}}</td>
-	<td>{{proprietaire.mail}}</td>
+    <td><a href = "{% url 'detail_proprietaire' proprietaire.id %}">{{proprietaire.user.last_name}}</a></td>
+	<td>{{proprietaire.user.first_name}}</td>
+	<td>{{proprietaire.user.email}}</td>
 	<td>{{proprietaire.adresse}}</td>
     <td>{{proprietaire.telephone}}</td>
   </tr>

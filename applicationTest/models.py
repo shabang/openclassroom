@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.text import slugify
+from django.contrib.auth.hashers import make_password
 
 TYPE_ANIMAL = (
     ('LAPIN',"Lapin"),
@@ -29,15 +32,19 @@ TYPE_VETO = (
 )
 
 class Proprietaire(models.Model):
-    nom = models.CharField(max_length=100, null=True)
-    prenom = models.CharField(max_length=100, null=True)
-    mail = models.EmailField(max_length=200, verbose_name = "Adresse mail", null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     adresse = models.CharField(max_length=500, null=True)
     telephone = models.CharField(max_length=15, verbose_name = "Numéro de téléphone", null=True)
     date_inscription = models.DateField(auto_now_add=True)
     
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        self.user.username = str(self.user.last_name)+"."+str(self.user.first_name)
+        self.user.password = make_password(slugify(self.user.last_name)+".password")
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+    
     def __str__(self):
-        return self.prenom + " " + self.nom
+        return self.user.first_name + " " + self.user.last_name
         
 class Adoption(models.Model):
     date = models.DateTimeField(verbose_name = "Date de l'adoption", null = True)

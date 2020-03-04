@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
@@ -68,13 +68,25 @@ class create_animal(CreateView):
 class create_proprietaire(CreateView):
     model = Proprietaire
     template_name = 'applicationTest/proprietaire_form.html'
-    fields = ('nom','prenom','mail','adresse', 'telephone')
+    form_class = UserForm
     success_url = reverse_lazy('proprietaires')
     
     def get_context_data(self, **kwargs):  
         context = CreateView.get_context_data(self, **kwargs)
         context['selected'] = "create_proprietaire" 
         return context 
+    
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.save()
+        # Cleaned(normalized) data
+        adresse = form.cleaned_data['adresse']
+        telephone = form.cleaned_data['telephone']
+ 
+        # Create UserProfile model
+        Proprietaire.objects.create(user=user, adresse=adresse, telephone=telephone)
+ 
+        return CreateView.form_valid(self, form)
     
 class create_visite(CreateView):
     model = VisiteMedicale

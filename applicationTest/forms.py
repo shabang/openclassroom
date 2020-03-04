@@ -1,6 +1,7 @@
 from django import forms
 from django.db.models.fields import BLANK_CHOICE_DASH
 from . import models
+from django.contrib.auth.models import User
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -74,3 +75,15 @@ class AnimalForm(forms.ModelForm):
 class ConnexionForm(forms.Form):
     username = forms.CharField(label="Nom d'utilisateur", max_length=30)
     password = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    
+class UserForm(forms.ModelForm):
+    first_name = forms.CharField(required=True, label="Prénom")
+    last_name = forms.CharField(required=True, label = "Nom")
+    #Champs de l'objet Proprietaire
+    adresse = forms.CharField()
+    telephone = forms.CharField()
+
+    class Meta:
+        model = User
+        fields = ('first_name','last_name', 'email')
+        
