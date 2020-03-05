@@ -1,13 +1,12 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
-import datetime
 from _datetime import timedelta
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,permission_required
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
@@ -32,7 +31,8 @@ def connexion(request):
     
     
     
-@login_required
+
+@permission_required('applicationTest.view_animal')
 def home(request):
     
     # Pour la sidebar
@@ -64,6 +64,15 @@ class create_animal(CreateView):
         context = CreateView.get_context_data(self, **kwargs)
         context['selected'] = "create_animal" 
         return context
+    
+class update_animal(UpdateView):
+    model = Animal
+    form_class = AnimalForm
+    template_name = 'applicationTest/animal_form.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('detail_animal', kwargs={'pk' : self.object.id})
+    
     
 class create_proprietaire(CreateView):
     model = Proprietaire

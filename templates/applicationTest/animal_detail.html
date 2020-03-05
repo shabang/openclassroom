@@ -18,6 +18,8 @@
 	<strong> Description </strong> : {{animal.description}} <br>
 </p>
 
+<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+
 {% if animal.isFromPension %}
     <h1> Liste des séjours à la pension</h1>
 	<table id="myTable">
