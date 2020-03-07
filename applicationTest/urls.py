@@ -16,6 +16,7 @@ urlpatterns = [
     path('proprietaires/<int:pk>/', login_required(DetailView.as_view(model=Proprietaire,)), name="detail_proprietaire"),
     path('login/', views.connexion, name="login"),
     path('sejours/', views.search_sejour, name="sejours"),
+    path('creer_sejour/', login_required(views.create_sejour.as_view()), name="creer_sejour"),
     path('visites/', views.search_visite, name="visites"),
     path('creer_visite/', login_required(views.create_visite.as_view()), name="creer_visite"),
 ]

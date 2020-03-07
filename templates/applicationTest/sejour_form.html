@@ -1,0 +1,20 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1> Nouveau séjour en pension </h1>
+<form method="post" action="">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'sejours' %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+
+
+{% endblock %}

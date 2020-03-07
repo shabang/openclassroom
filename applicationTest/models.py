@@ -121,3 +121,8 @@ class Sejour(models.Model):
     
     def __str__(self):
         return "Séjour du " + str(self.date_arrivee) + " au " + str(self.date_depart)
+    
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)

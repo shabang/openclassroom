@@ -128,8 +128,8 @@ class create_visite(CreateView):
 class create_sejour(CreateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
-    fields = ('date_arrivee','date_depart','cage','montant')
-    success_url = reverse_lazy('animals')      
+    fields = ('date_arrivee','date_depart','cage','montant', 'proprietaire' , 'animaux')
+    success_url = reverse_lazy('sejours')      
   
 @login_required    
 def search_animal(request):
