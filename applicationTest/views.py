@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
@@ -72,30 +72,52 @@ class update_animal(UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk' : self.object.id})
+
+@login_required        
+def create_proprietaire(request):
     
+    formulaire_valide = False
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        proprietaire_form = ProprietaireForm(data=request.POST)
+        if user_form.is_valid() and proprietaire_form.is_valid():
+            # A l'enregistreent de l'utilisateur, identifiant et mot de passe sont autaumatiquement calculés
+            user = user_form.save()
+
+            proprietaire = proprietaire_form.save(commit=False)
+            proprietaire.user = user
+            proprietaire.save()
+
+            formulaire_valide = True
+            return redirect('detail_proprietaire', pk=proprietaire.id)
+
+        else:
+            print (user_form.errors + proprietaire_form.errors)
     
-class create_proprietaire(CreateView):
-    model = Proprietaire
-    template_name = 'applicationTest/proprietaire_form.html'
-    form_class = UserForm
-    success_url = reverse_lazy('proprietaires')
+    else:
+        user_form = UserForm()
+        proprietaire_form = ProprietaireForm()
+    # Render the template depending on the context.
+    return render(request, 'applicationTest/proprietaire_form.html', locals())
+
+@login_required        
+def update_proprietaire(request, pk):
+    proprietaire_to_update = Proprietaire.objects.get(id = pk)
     
-    def get_context_data(self, **kwargs):  
-        context = CreateView.get_context_data(self, **kwargs)
-        context['selected'] = "create_proprietaire" 
-        return context 
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST, instance = proprietaire_to_update.user)
+        proprietaire_form = ProprietaireForm(data=request.POST, instance = proprietaire_to_update)
+        if user_form.is_valid() and proprietaire_form.is_valid():
+            user = user_form.save()
+            proprietaire = proprietaire_form.save()
+            return redirect('detail_proprietaire', pk=pk)
     
-    def form_valid(self, form):
-        user = form.save(commit=False)
-        user.save()
-        # Cleaned(normalized) data
-        adresse = form.cleaned_data['adresse']
-        telephone = form.cleaned_data['telephone']
- 
-        # Create UserProfile model
-        Proprietaire.objects.create(user=user, adresse=adresse, telephone=telephone)
- 
-        return CreateView.form_valid(self, form)
+    else:
+        user_form = UserForm(instance = proprietaire_to_update.user)
+        proprietaire_form = ProprietaireForm(instance = proprietaire_to_update)
+    # Render the template depending on the context.
+    return render(request, 'applicationTest/proprietaire_form.html', locals())
+    
     
 class create_visite(CreateView):
     model = VisiteMedicale
@@ -111,7 +133,7 @@ class create_sejour(CreateView):
   
 @login_required    
 def search_animal(request):
-    
+
     animals = Animal.objects.all()
     selected = "animals"
     
@@ -157,32 +179,32 @@ def search_animal(request):
         form = AnimalSearchForm() 
         #Paramètres de l'url pour filtres par défaut
         interval_str = request.GET.get('interval','')
-        filter = request.GET.get('filter','')
-        if (filter):
+        filter_data = request.GET.get('filter','')
+        if (filter_data):
             
             interval = parse_date(interval_str)
             today = timezone.now()
             today_str = today.strftime('%Y-%m-%d')
         
-            if (filter == "date_visite"):
+            if (filter_data == "date_visite"):
                 form.fields['date_prochaine_visite_max'].initial = interval_str
                 form.fields['date_prochaine_visite_min'].initial = today_str
                 animals = animals.filter(date_visite__gte = today)
                 animals = animals.filter(date_visite__lte = interval)
-            if (filter == "date_arrivee"):
+            if (filter_data == "date_arrivee"):
                 form.fields['date_arrivee_max'].initial = interval_str
                 form.fields['date_arrivee_min'].initial = today_str
                 animals = animals.filter(date_arrivee__gte = today)
                 animals = animals.filter(date_arrivee__lte = interval)
-            if (filter == "date_adoption"):
+            if (filter_data == "date_adoption"):
                 form.fields['date_adoption_max'].initial = interval_str
                 form.fields['date_adoption_min'].initial = today_str
                 animals = animals.filter(adoption__date__gte = today)
                 animals = animals.filter(adoption__date__lte = interval)
-            if (filter == "pension"):
+            if (filter_data == "pension"):
                 form.fields['provenance'].initial = "PENSION"
                 animals = animals.filter(origine = "PENSION")
-            if (filter == "refuge"):
+            if (filter_data == "refuge"):
                 form.fields['provenance'].initial = "REFUGE"
                 animals = animals.filter(origine = "REFUGE")
                 
@@ -260,24 +282,24 @@ def search_sejour(request):
         
         #Paramètres de l'url pour filtres par défaut
         interval_str = request.GET.get('interval','')
-        filter = request.GET.get('filter','')
+        filter_data = request.GET.get('filter','')
         if (filter):
             
             interval = parse_date(interval_str)
             today = timezone.now()
             today_str = today.strftime('%Y-%m-%d')
             
-            if (filter == "date_debut_sejour"):
+            if (filter_data == "date_debut_sejour"):
                 form.fields['date_debut_max'].initial = interval_str
                 form.fields['date_debut_min'].initial = today_str
                 sejours = sejours.filter(date_arrivee__gte = today)
                 sejours = sejours.filter(date_arrivee__lte = interval)
-            if (filter == "date_fin_sejour"):
+            if (filter_data == "date_fin_sejour"):
                 form.fields['date_fin_max'].initial = interval_str
                 form.fields['date_fin_min'].initial = today_str
                 sejours = sejours.filter(date_depart__gte = today)
                 sejours = sejours.filter(date_depart__lte = interval)
-            if (filter == "date_sejour"):
+            if (filter_data == "date_sejour"):
                 form.fields['date_fin_min'].initial = interval_str
                 form.fields['date_debut_max'].initial = today_str
                 sejours = sejours.filter(date_depart__gte = interval)

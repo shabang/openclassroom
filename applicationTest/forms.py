@@ -79,11 +79,12 @@ class ConnexionForm(forms.Form):
 class UserForm(forms.ModelForm):
     first_name = forms.CharField(required=True, label="Prénom")
     last_name = forms.CharField(required=True, label = "Nom")
-    #Champs de l'objet Proprietaire
-    adresse = forms.CharField()
-    telephone = forms.CharField()
-
     class Meta:
         model = User
         fields = ('first_name','last_name', 'email')
         
+        
+class ProprietaireForm(forms.ModelForm):
+    class Meta:
+        model = models.Proprietaire
+        fields = ('adresse','telephone')

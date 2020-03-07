@@ -5,7 +5,7 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-Vous êtes connecté, {{user.username}} !
+Vous n'avez pas accès à la page que vous essayez d'atteindre.
 {% else %}
 <form method="post" action=".">
 	{% csrf_token %}

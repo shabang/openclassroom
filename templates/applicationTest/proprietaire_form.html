@@ -2,13 +2,22 @@
 
 {% block content %}
 
-<h1> Créer un propriétaire </h1>
+{% if proprietaire_to_update %}
+<h1>Modification de {{proprietaire_to_update}}</h1>
+{% else %}
+<h1> Créer un proprietaire </h1>
+{% endif %}
 <form method="post" action="">
    {% csrf_token %}
-   {{ form.as_p }}
+   {{ user_form.as_p }}
+   {{ proprietaire_form.as_p }}
    <div class="row">
    	<div class="col-md-6">
-   		<a href = "{% url 'proprietaires' %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% if proprietaire_to_update %}
+   			<a href = "{% url 'detail_proprietaire' proprietaire_to_update.id %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% else %}
+   			<a href = "{% url 'proprietaires' %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% endif %}
    	</div>
    	<div class="col-md-6">
    		<input class="btn-search cyan rounded" type="submit" />

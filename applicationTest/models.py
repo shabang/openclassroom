@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 
+
 TYPE_ANIMAL = (
     ('LAPIN',"Lapin"),
     ('HAMSTER',"Hamster"),
@@ -40,8 +41,11 @@ class Proprietaire(models.Model):
     
     def save(self, force_insert=False, force_update=False, using=None, 
         update_fields=None):
-        self.user.username = str(self.user.last_name)+"."+str(self.user.first_name)
-        self.user.password = make_password(slugify(self.user.last_name)+".password")
+        #Au premier enregistrement en base, on définit un login et un mot de passe par défaut
+        if (self._state.adding):
+            self.user.username = slugify(self.user.last_name)+"."+slugify(self.user.first_name)
+            self.user.password = make_password(slugify(self.user.last_name)+".password")
+            self.user.save()
         return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
     
     def __str__(self):

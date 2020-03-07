@@ -10,6 +10,8 @@
 	<strong> Adresse </strong> : {{proprietaire.adresse}} <br>
 	<strong> Téléphone </strong> : {{proprietaire.telephone}} <br>
 </p>
+<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>
+
 <h1> Liste des animaux </h1>
 <table id="myTable">
   <tr class="header">
