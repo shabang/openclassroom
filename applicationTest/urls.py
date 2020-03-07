@@ -17,4 +17,5 @@ urlpatterns = [
     path('login/', views.connexion, name="login"),
     path('sejours/', views.search_sejour, name="sejours"),
     path('visites/', views.search_visite, name="visites"),
+    path('creer_visite/', login_required(views.create_visite.as_view()), name="creer_visite"),
 ]

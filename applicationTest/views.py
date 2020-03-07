@@ -122,8 +122,8 @@ def update_proprietaire(request, pk):
 class create_visite(CreateView):
     model = VisiteMedicale
     template_name = 'applicationTest/visite_form.html'
-    fields = ('date','type_visite','commentaire')
-    success_url = reverse_lazy('animals')
+    fields = ('date','type_visite','montant','animaux','commentaire')
+    success_url = reverse_lazy('visites')
 
 class create_sejour(CreateView):
     model = Sejour
