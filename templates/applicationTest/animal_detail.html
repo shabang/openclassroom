@@ -13,7 +13,7 @@
 	<strong> Vacciné </strong> : {{animal.get_vaccine_display}} <br>
 	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
 	{% if animal.isFromPension %}
-	<strong> Propriétaire </strong> : {{animal.proprietaire}} <br>
+	<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
 	{% endif %}
 	<strong> Description </strong> : {{animal.description}} <br>
 </p>
