@@ -61,9 +61,9 @@ class Adoption(models.Model):
 
 class Animal(models.Model):
     nom = models.CharField(max_length=100)
-    date_naissance = models.DateField(verbose_name = "Date de naissance", blank = True)
-    date_arrivee = models.DateField(verbose_name = "Date de première arrivée", blank = True)
-    date_visite = models.DateField(verbose_name = "Date de prochaine visite vétérinaire", blank = True)
+    date_naissance = models.DateField(verbose_name = "Date de naissance", blank = True, null=True)
+    date_arrivee = models.DateField(verbose_name = "Date de première arrivée", blank = True, null=True)
+    date_visite = models.DateField(verbose_name = "Date de prochaine visite vétérinaire", blank = True, null=True)
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_ANIMAL)
     origine = models.CharField(max_length=30, verbose_name="Origine",choices=ORIGINE)
     sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=SEXE)
@@ -72,7 +72,7 @@ class Animal(models.Model):
     date_dernier_vaccin = models.DateField(verbose_name = "Date du dernier rappel de vaccin", null=True, blank = True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True, blank=True)
     adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True, blank=True)
-    description = models.CharField(max_length=2000, blank=True)
+    description = models.CharField(max_length=2000, blank=True, null=True)
 
     def __str__(self):
         return self.nom
@@ -110,14 +110,20 @@ class VisiteMedicale(models.Model):
         
         
 class Sejour(models.Model):
-    date_arrivee = models.DateField(verbose_name = "Date d'arrivée", null=True)
-    date_depart = models.DateField(verbose_name = "Date de départ", null=True)
-    cage = models.CharField(max_length=30, verbose_name="Cage fournie",choices=OUI_NON, null=True)
-    montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True)
-    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True)
+    date_arrivee = models.DateTimeField(verbose_name = "Date d'arrivée", null=True, blank = True)
+    date_depart = models.DateTimeField(verbose_name = "Date de départ", null=True)
+    nb_cages_fournies = models.IntegerField(verbose_name="Nombre de cages fournies par le propriétaire ",default=1)
+    nb_cages_a_fournir =  models.IntegerField(verbose_name="Nombre de cages à fournir par la pension (supplément de 1€/cage/jour) ",default=0)
+    montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True, blank=True)
+    montant_paye = models.DecimalField(verbose_name="Montant payé" , max_digits=7, decimal_places=2, null=True, blank=True)
+    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True, blank = True)
     nb_jours = models.IntegerField()
     animaux = models.ManyToManyField(Animal)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True) 
+    vaccination = models.CharField(max_length=3, verbose_name="Votre animal est correctement vacciné pour toute la duréée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",choices=OUI_NON, default="OUI")
+    soin = models.CharField(max_length=3, verbose_name="Votre animal nécessite un soin quotidien (a préciser ci-dessous) ",choices=OUI_NON, default="NON")
+    injection = models.CharField(max_length=3, verbose_name="Le soin quotidien de votre animal se fait par injection ",choices=OUI_NON, default="NON")
+    commentaire = models.CharField(max_length=1000, verbose_name = "Indications sur le séjour (soins divers, points d'attention...)", blank = True, null=True)
     
     def __str__(self):
         return "Séjour du " + str(self.date_arrivee) + " au " + str(self.date_depart)

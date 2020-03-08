@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
     Adoption
 from django.urls import reverse_lazy
@@ -128,7 +128,7 @@ class create_visite(CreateView):
 class create_sejour(CreateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
-    fields = ('date_arrivee','date_depart','cage','montant', 'proprietaire' , 'animaux')
+    form_class = SejourForm
     success_url = reverse_lazy('sejours')      
   
 @login_required    
