@@ -120,8 +120,8 @@ class Sejour(models.Model):
     nb_jours = models.IntegerField()
     animaux = models.ManyToManyField(Animal)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True) 
-    vaccination = models.CharField(max_length=3, verbose_name="Votre animal est correctement vacciné pour toute la duréée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",choices=OUI_NON, default="OUI")
-    soin = models.CharField(max_length=3, verbose_name="Votre animal nécessite un soin quotidien (a préciser ci-dessous) ",choices=OUI_NON, default="NON")
+    vaccination = models.CharField(max_length=3, verbose_name="Tous les animaux du séjour sont correctement vaccinés pour toute la durée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",choices=OUI_NON, default="OUI")
+    soin = models.CharField(max_length=3, verbose_name="Un de vos animaux nécessite un soin quotidien (a préciser ci-dessous) ",choices=OUI_NON, default="NON")
     injection = models.CharField(max_length=3, verbose_name="Le soin quotidien de votre animal se fait par injection ",choices=OUI_NON, default="NON")
     commentaire = models.CharField(max_length=1000, verbose_name = "Indications sur le séjour (soins divers, points d'attention...)", blank = True, null=True)
     
@@ -132,3 +132,5 @@ class Sejour(models.Model):
         update_fields=None):
         self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
         return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    
