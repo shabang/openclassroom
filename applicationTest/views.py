@@ -124,6 +124,11 @@ class create_visite(CreateView):
     template_name = 'applicationTest/visite_form.html'
     fields = ('date','type_visite','montant','animaux','commentaire')
     success_url = reverse_lazy('visites')
+    
+    def get_form(self, form_class=None):
+        form = CreateView.get_form(self, form_class=form_class)
+        form.fields['animaux'].queryset = Animal.objects.filter(origine = "REFUGE")
+        return form
 
 class create_sejour(CreateView):
     model = Sejour
@@ -306,3 +311,9 @@ def search_sejour(request):
                 sejours = sejours.filter(date_arrivee__lte = today)
                 
     return render(request, 'applicationTest/sejour_list.html', locals())
+
+@login_required
+def load_animals(request):
+    proprietaire_id = request.GET.get('proprietaire')
+    animaux = Animal.objects.filter(proprietaire_id=proprietaire_id)
+    return render(request,'applicationTest/sejour_form_select_animals.html', {'animaux':animaux})

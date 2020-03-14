@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1> Nouveau séjour en pension </h1>
-<form method="post" action="">
+<form method="post" id="sejourForm" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
    {% csrf_token %}
    {{ form.as_p }}
    <div class="row">
@@ -15,6 +15,25 @@
    	</div>
    </div>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_proprietaire").change(function () {
+      var url = $("#sejourForm").attr("data-animals-url");  // get the url of the `load_animals` view
+      var proprietaireId = $(this).val();  // get the selected proprietaire ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-animals/)
+        data: {
+          'proprietaire': proprietaireId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_animals` view function
+          $("#id_animaux").html(data);  // replace the contents of the proprietaire input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
 
 
 {% endblock %}

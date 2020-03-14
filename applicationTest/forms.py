@@ -98,7 +98,20 @@ class SejourForm(forms.ModelForm):
     class Meta:
         model = models.Sejour
         fields = ('date_arrivee','date_depart','proprietaire', 'animaux','nb_cages_fournies','nb_cages_a_fournir','vaccination', 'soin', 'injection', 'commentaire')
-        
+    
+    #Pour gérer le lien entre le champ "propriétaire et le champ "Animaux"  
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['animaux'].queryset = models.Animal.objects.none()
+
+        if 'proprietaire' in self.data:
+            try:
+                proprietaire_id = int(self.data.get('proprietaire'))
+                self.fields['animaux'].queryset = models.Animal.objects.filter(proprietaire_id=proprietaire_id).order_by('nom')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty animaux queryset
+
+     
     #Appelé à la validation du formulaire
     def clean(self):
         cleaned_data = forms.ModelForm.clean(self)
