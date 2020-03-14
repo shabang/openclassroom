@@ -126,7 +126,7 @@ class Sejour(models.Model):
     commentaire = models.CharField(max_length=1000, verbose_name = "Indications sur le séjour (soins divers, points d'attention...)", blank = True, null=True)
     
     def __str__(self):
-        return "Séjour du " + str(self.date_arrivee) + " au " + str(self.date_depart)
+        return "Séjour du " + self.date_arrivee.strftime('%d/%m/%Y %H:%M') + " au " + self.date_depart.strftime('%Y-%m-%d %H:%M')
     
     def save(self, force_insert=False, force_update=False, using=None, 
         update_fields=None):

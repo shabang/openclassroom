@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.utils.dateparse import parse_date
+from django.views.generic.detail import DetailView
 
 def connexion(request):
     error = False
@@ -60,10 +61,6 @@ class create_animal(CreateView):
     template_name = 'applicationTest/animal_form.html'
     success_url = reverse_lazy('animals')
     
-    def get_context_data(self, **kwargs):
-        context = CreateView.get_context_data(self, **kwargs)
-        context['selected'] = "create_animal" 
-        return context
     
 class update_animal(UpdateView):
     model = Animal

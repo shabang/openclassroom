@@ -32,4 +32,18 @@
   {% endfor %}
 </table>
 
+<h1> Liste des séjours </h1>
+<table id="myTable">
+  <tr class="header">
+    <th style="width:50%;">Séjour</th>
+    <th style="width:50%;">Animaux concernés</th>
+  </tr>
+  {% for sejour in proprietaire.sejour_set.all %}
+  <tr>
+	<td>{{sejour}}</td>
+	<td>{% for animal in sejour.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
+  </tr>
+  {% endfor %}
+</table>
+
 {% endblock %}
