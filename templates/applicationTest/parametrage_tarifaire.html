@@ -1,0 +1,67 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<div class="col-sm-12">
+<h3>Paramétrage des tarifs journaliers de la pension</h3>
+<br>
+<table id="myTable">
+  <tr class="header">
+    <th style="width:25%;">Type d'animal</th>
+    <th style="width:25%;">Animal adopté au refuge</th>
+	<th style="width:25%;">Animal supplémentaire dans la même cage</th>
+	<th style="width:25%;">Tarif journalier</th>
+  </tr>
+  {% for tarif in tarifsJournaliersPension %}
+  <tr>
+    <td>{{tarif.get_type_animal_display}}</td>
+    <td>{{tarif.get_adopte_refuge_display}}</td>
+	<td>{{tarif.get_supplementaire_display}}</td>
+	<td>{{tarif.montant_jour}}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<br>
+
+<h3>Suppléments des séjours en pension</h3>
+<br>
+<table id="myTable">
+  <tr class="header">
+    <th style="width:40%;">Description du supplément</th>
+    <th style="width:30%;">Supplément journalier?</th>
+	<th style="width:30%;">Montant du supplément</th>
+  </tr>
+  {% for tarif in tarifsSupplements %}
+  <tr>
+    <td>{{tarif.get_type_supplement_display}}</td>
+    <td>{{tarif.get_supplement_journalier_display}}</td>
+	<td>{{tarif.montant}}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<br>
+
+<h3>Tarifs des adoptions</h3>
+<br>
+<table id="myTable">
+  <tr class="header">
+    <th style="width:25%;">Type d'animal</th>
+    <th style="width:25%;">Sexe de l'animal</th>
+	<th style="width:30%;">Stérilisé?</th>
+	<th style="width:30%;">Montant</th>
+  </tr>
+  {% for tarif in tarifsAdoption %}
+  <tr>
+    <td>{{tarif.get_type_animal_display}}</td>
+    <td>{{tarif.get_sexe_display}}</td>
+    <td>{{tarif.get_sterilise_display}}</td>
+	<td>{{tarif.montant}}</td>
+  </tr>
+  {% endfor %}
+</table>
+  
+</div>
+
+{% endblock %}

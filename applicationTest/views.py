@@ -2,8 +2,8 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
 from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm
-from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, ORIGINE,\
-    Adoption
+from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour,\
+    Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
 from django.urls import reverse_lazy
 from _datetime import timedelta
 from django.contrib.auth.decorators import login_required,permission_required
@@ -314,3 +314,12 @@ def load_animals(request):
     proprietaire_id = request.GET.get('proprietaire')
     animaux = Animal.objects.filter(proprietaire_id=proprietaire_id)
     return render(request,'applicationTest/sejour_form_select_animals.html', {'animaux':animaux})
+
+@login_required    
+def parametrage_tarifaire(request):
+    selected = "parametrage_tarifaire"
+    tarifsJournaliersPension = TarifJournalier.objects.all()
+    tarifsSupplements = ParametreTarifairePension.objects.all()
+    tarifsAdoption = TarifAdoption.objects.all()
+    return render(request,'applicationTest/parametrage_tarifaire.html', locals())
+    

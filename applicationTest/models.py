@@ -11,6 +11,15 @@ TYPE_ANIMAL = (
     ('COCHON_DINDE',"Cochon d'inde"),
 )
 
+TYPE_SUPPLEMENT = (
+    ('MEDICAMENT',"Médicament par voie orale/inhalation"),
+    ('INJECTION',"Médicament par injection"),
+    ('VACCINATION',"Mise à jour d'une vaccination"),
+    ('HORAIRE',"Majoration horaire"),
+    ('SAMEDI',"Majoration récupération le samedi"),
+    ('CAGE',"Supplément cage non fournie"),
+)
+
 SEXE = (
     ('F', "Féminin"),
     ('M', "Masculin")
@@ -133,4 +142,21 @@ class Sejour(models.Model):
         self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
         return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
+class TarifJournalier(models.Model):
+    type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_ANIMAL)
+    adopte_refuge = models.CharField(max_length=3, verbose_name="Adopté au refuge",choices=OUI_NON)
+    supplementaire = models.CharField(max_length=3, verbose_name="Animal supplémentaire dans la même cage",choices=OUI_NON)
+    montant_jour = models.DecimalField(verbose_name="Prix par jour",  max_digits=7, decimal_places=2)
+    
+class TarifAdoption(models.Model):
+    type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_ANIMAL)
+    sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=SEXE)
+    sterilise = models.CharField(max_length=3, verbose_name="Stérilisé",choices=OUI_NON)
+    montant_adoption = models.DecimalField(verbose_name="Prix par jour",  max_digits=7, decimal_places=2)
+    
+class ParametreTarifairePension(models.Model):
+    type_supplement = models.CharField(max_length=50, verbose_name="Libellé du supplément",choices=TYPE_SUPPLEMENT)
+    supplement_journalier = models.CharField(max_length=3, verbose_name="Supplément journalier?",choices=OUI_NON)
+    montant = models.DecimalField(max_digits=7, decimal_places=2)
+    
     
