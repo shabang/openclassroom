@@ -69,6 +69,9 @@ class create_animal(CreateView):
             form.fields['proprietaire'].initial = proprietaire
         return form
     
+    def get_success_url(self):
+        return reverse_lazy('detail_animal', kwargs={'pk' : self.object.id})
+    
     
 class update_animal(UpdateView):
     model = Animal
