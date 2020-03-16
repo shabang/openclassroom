@@ -61,6 +61,14 @@ class create_animal(CreateView):
     template_name = 'applicationTest/animal_form.html'
     success_url = reverse_lazy('animals')
     
+    def get_form(self, form_class=None):
+        form = CreateView.get_form(self, form_class=form_class)
+        idProprietaire = self.request.GET.get('proprietaire','')
+        if (idProprietaire):
+            proprietaire = Proprietaire.objects.get(id=idProprietaire)
+            form.fields['proprietaire'].initial = proprietaire
+        return form
+    
     
 class update_animal(UpdateView):
     model = Animal
@@ -131,7 +139,15 @@ class create_sejour(CreateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
     form_class = SejourForm
-    success_url = reverse_lazy('sejours')      
+    success_url = reverse_lazy('sejours')     
+    def get_form(self, form_class=None):
+        form = CreateView.get_form(self, form_class=form_class)
+        idProprietaire = self.request.GET.get('proprietaire','')
+        if (idProprietaire):
+            proprietaire = Proprietaire.objects.get(id=idProprietaire)
+            form.fields['proprietaire'].initial = proprietaire
+            form.fields['animaux'].queryset = Animal.objects.filter(proprietaire_id=idProprietaire).order_by('nom')
+        return form 
   
 @login_required    
 def search_animal(request):
