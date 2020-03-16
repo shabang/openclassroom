@@ -32,6 +32,8 @@
   {% endfor %}
 </table>
 
+<a href= "{% url 'creer_animal' %}?proprietaire={{proprietaire.id}}" class="btn-search cyan rounded">Ajouter animal</a>
+
 <h1> Liste des séjours </h1>
 <table id="myTable">
   <tr class="header">

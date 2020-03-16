@@ -42,11 +42,18 @@ class AnimalForm(forms.ModelForm):
         fields = ('nom','type_animal', 'origine','sexe', 
                   'description', 'date_naissance', 'date_arrivee', 'sterilise', 
                    'vaccine', 'date_dernier_vaccin', 'proprietaire')
-        widgets = {
-            'date_naissance': DateInput(),
-            'date_arrivee': DateInput(),
-            'date_dernier_vaccin' : DateInput()
-        }
+        date_naissance = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_arrivee = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_dernier_vaccin = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
     
     #Appelé à la validation du formulaire
     def clean(self):
