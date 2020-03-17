@@ -1,13 +1,24 @@
 {% extends "applicationTest/base.html" %}
 
 {% block content %}
-
-<h2>Recherche</h2>
-
-<form action = "{% url "proprietaires" %}" method="post">{%csrf_token %}
-    {{ form.as_p }}
-    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
-</form>
+<div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">
+		<h4>Recherche</h4>
+		</div>
+		<form action = "{% url "proprietaires" %}" method="post">
+		<div class="panel-body">
+		{%csrf_token %}
+		    {{ form.as_p }}
+		    </div>
+        	<div class="panel-footer text-center">
+		    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+		</div>
+		</form>
+      </div>
+    </div>
+    </div>
 
 <h2>Liste des proprietaires</h2>
 

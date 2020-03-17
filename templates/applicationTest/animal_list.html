@@ -2,65 +2,76 @@
 
 {% block content %}
 
-<h2>Recherche</h2>
-
-<form action = "{% url "animals" %}" method="post">{%csrf_token %}
-    <div class="row">
-    	<div class="col-md-12">
-    		{{ form.nom.label_tag }} {{ form.nom }}
-    	</div>
+<div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">
+			<h4>Recherche</h4>
+		</div>
+		<form action = "{% url "animals" %}" method="post">
+        <div class="panel-body">
+			{%csrf_token %}
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.nom.label_tag }} {{ form.nom }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.provenance.label_tag }} {{ form.provenance }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.type_animal.label_tag }} {{ form.type_animal }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_naissance_min.label_tag }} {{ form.date_naissance_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_naissance_max.label_tag }} {{ form.date_naissance_max }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_arrivee_min.label_tag }} {{ form.date_arrivee_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_arrivee_max.label_tag }} {{ form.date_arrivee_max }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_prochaine_visite_min.label_tag }} {{ form.date_prochaine_visite_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_prochaine_visite_max.label_tag }} {{ form.date_prochaine_visite_max }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_adoption_min.label_tag }} {{ form.date_adoption_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_adoption_max.label_tag }} {{ form.date_adoption_max }}
+		    	</div>
+		    </div>
+		    
+		    </div>
+        <div class="panel-footer text-center">
+		<input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+		</div>
+		</form>
+      </div>
     </div>
-    <div class="row">
-    	<div class="col-md-12">
-    		{{ form.provenance.label_tag }} {{ form.provenance }}
-    	</div>
     </div>
-    <div class="row">
-    	<div class="col-md-12">
-    		{{ form.type_animal.label_tag }} {{ form.type_animal }}
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col-md-12">
-    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_naissance_min.label_tag }} {{ form.date_naissance_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_naissance_max.label_tag }} {{ form.date_naissance_max }}
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_arrivee_min.label_tag }} {{ form.date_arrivee_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_arrivee_max.label_tag }} {{ form.date_arrivee_max }}
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_prochaine_visite_min.label_tag }} {{ form.date_prochaine_visite_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_prochaine_visite_max.label_tag }} {{ form.date_prochaine_visite_max }}
-    	</div>
-    </div>
-    <div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_adoption_min.label_tag }} {{ form.date_adoption_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_adoption_max.label_tag }} {{ form.date_adoption_max }}
-    	</div>
-    </div>
-
-    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
-
-</form>
 
 <div class="col-sm-12">
 <h2>Liste des animaux</h2>

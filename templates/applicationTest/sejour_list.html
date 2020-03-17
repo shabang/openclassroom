@@ -1,34 +1,44 @@
 {% extends "applicationTest/base.html" %}
 
 {% block content %}
-
-<h2>Recherche</h2>
-
-<form action = "{% url "sejours" %}" method="post">{%csrf_token %}
-	<div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_debut_min.label_tag }} {{ form.date_debut_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_debut_max.label_tag }} {{ form.date_debut_max }}
-    	</div>
+<div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">
+		<h4>Recherche</h4>
+		</div>
+		<form action = "{% url "sejours" %}" method="post">
+		<div class="panel-body">
+		{%csrf_token %}
+			<div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_debut_min.label_tag }} {{ form.date_debut_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_debut_max.label_tag }} {{ form.date_debut_max }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-6">
+		    		{{ form.date_fin_min.label_tag }} {{ form.date_fin_min }}
+		    	</div>
+		    	<div class="col-md-6">
+		    		{{ form.date_fin_max.label_tag }} {{ form.date_fin_max }}
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
+		    	</div>
+		    </div>
+		    </div>
+        	<div class="panel-footer text-center">
+		    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+		</div>
+		</form>
+      </div>
     </div>
-    <div class="row">
-    	<div class="col-md-6">
-    		{{ form.date_fin_min.label_tag }} {{ form.date_fin_min }}
-    	</div>
-    	<div class="col-md-6">
-    		{{ form.date_fin_max.label_tag }} {{ form.date_fin_max }}
-    	</div>
     </div>
-    <div class="row">
-    	<div class="col-md-12">
-    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
-    	</div>
-    </div>
-    
-    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
-</form>
 
 <div class="col-sm-12">
 <h2>Liste des séjours</h2>
