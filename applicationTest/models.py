@@ -6,7 +6,6 @@ from django.contrib.auth.hashers import make_password
 
 TYPE_ANIMAL = (
     ('LAPIN',"Lapin"),
-    ('HAMSTER',"Hamster"),
     ('CHINCHILLA','Chinchilla'),
     ('COCHON_DINDE',"Cochon d'inde"),
 )
