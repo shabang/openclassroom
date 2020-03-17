@@ -18,7 +18,16 @@
 	<strong> Description </strong> : {{animal.description}} <br>
 </p>
 
-<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+<div class="row">
+   	<div class="col-md-6">
+		<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+	</div>
+	{% if animal.isFromRefuge %}
+	<div class="col-md-6">
+		<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
+	</div>
+	{% endif %}
+</div>
 
 {% if animal.isFromPension %}
     <h1> Liste des séjours à la pension</h1>

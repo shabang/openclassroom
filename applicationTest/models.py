@@ -63,7 +63,7 @@ class Adoption(models.Model):
     date = models.DateTimeField(verbose_name = "Date de l'adoption", null = True)
     montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True)
     montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True, blank=True)
-    
+    proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT)
     def __str__(self):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)
 
@@ -80,13 +80,16 @@ class Animal(models.Model):
     date_dernier_vaccin = models.DateField(verbose_name = "Date du dernier rappel de vaccin", null=True, blank = True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True, blank=True)
     adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True, blank=True)
-    description = models.CharField(max_length=2000, blank=True, null=True)
+    description = models.CharField(max_length=2000, blank=True)
 
     def __str__(self):
         return self.nom
         
     def isFromPension(self):
          return self.origine == 'PENSION'
+     
+    def isFromRefuge(self):
+        return self.origine == 'REFUGE'
      
     def getVaccinStr(self):
         return self.get_vaccine_display + " (dernier rappel le " + str(self.date_dernier_vaccin) + " )" 

@@ -1,0 +1,27 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1> Adoption de {{animal.nom}} </h1>
+<br>
+<h3> Informations du nouveau propriétaire </h3>
+
+<form method="post" action="">
+   {% csrf_token %}
+   {{ user_form.as_p }}
+   {{ proprietaire_form.as_p }}
+   <br>
+	<h3> Informations sur l'adoption </h3>
+	{{ adoption_form.as_p }}
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'detail_animal' animal.id %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1>Adoption du {{animal.get_type_animal_display}}  {{animal.nom}}</h1>
+<br>
+<p> La personne adoptant {{animal.nom}} est-elle déjà renseignée dans la liste des propriétaires? </p>
+<br>
+<br>
+<div class="row">
+   	<div class="col-md-4">
+		<a href = "{% url 'detail_animal' animal.id %}"  class="btn-search cyan rounded">Annuler</a>
+	</div>
+	<div class="col-md-4">
+		<a href = "{% url 'adoption_complete' animal.id %}"  class="btn-search cyan rounded">Non</a>
+	</div>
+	<div class="col-md-4">
+		<a href = "{% url 'adoption_allegee' animal.id %}"  class="btn-search cyan rounded">Oui</a>
+	</div>
+</div>
+	
+
+{% endblock %}

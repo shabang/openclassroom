@@ -21,4 +21,7 @@ urlpatterns = [
     path('creer_visite/', login_required(views.create_visite.as_view()), name="creer_visite"),
     path('ajax/load-animals/', views.load_animals, name='ajax_load_animals'),
     path('parametrage_tarifaire/', views.parametrage_tarifaire, name="parametrage_tarifaire"),
+    path('animals/adoption/<int:pk>/',  views.adoption, name="adoption"),
+    path('animals/adoption_complete/<int:pk>/',  views.adoption_complete, name="adoption_complete"),
+    path('animals/adoption_allegee/<int:pk>/',  views.adoption_allegee, name="adoption_allegee"),
 ]

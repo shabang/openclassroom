@@ -1,0 +1,22 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<h1> Adoption de {{animal.nom}} </h1>
+<br>
+
+<form method="post" action="">
+   {% csrf_token %}
+   {{ adoption_form.as_p }}
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'detail_animal' animal.id %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+
+
+{% endblock %}

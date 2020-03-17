@@ -99,6 +99,20 @@ class ProprietaireForm(forms.ModelForm):
         model = models.Proprietaire
         fields = ('adresse','telephone')
         
+class AdoptionForm(forms.ModelForm):
+    class Meta:
+        model = models.Adoption
+        fields = ('date','proprietaire','montant','montant_restant')
+        date = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        
+class AdoptionFormNoProprietaire(forms.ModelForm):
+    class Meta:
+        model = models.Adoption
+        fields = ('date','montant','montant_restant')
+        
 class SejourForm(forms.ModelForm):
     date_arrivee = forms.SplitDateTimeField(required = True, widget = AdminSplitDateTime())
     date_depart = forms.SplitDateTimeField(required = True, widget = AdminSplitDateTime())

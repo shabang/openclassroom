@@ -1,7 +1,9 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, \
+ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm,\
+AdoptionFormNoProprietaire, AdoptionForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour,\
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
 from django.urls import reverse_lazy
@@ -67,11 +69,11 @@ class create_animal(CreateView):
         if (idProprietaire):
             proprietaire = Proprietaire.objects.get(id=idProprietaire)
             form.fields['proprietaire'].initial = proprietaire
+            form.fields['origine'].initial = "PENSION"
         return form
     
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk' : self.object.id})
-    
     
 class update_animal(UpdateView):
     model = Animal
@@ -341,4 +343,68 @@ def parametrage_tarifaire(request):
     tarifsSupplements = ParametreTarifairePension.objects.all()
     tarifsAdoption = TarifAdoption.objects.all()
     return render(request,'applicationTest/parametrage_tarifaire.html', locals())
+
+@login_required        
+def adoption(request, pk):
+    animal = Animal.objects.get(id = pk)
+    return render(request, 'applicationTest/adoption.html', locals())  
+
+@login_required    
+def adoption_complete(request, pk):
+    animal = Animal.objects.get(id = pk)
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        proprietaire_form = ProprietaireForm(data=request.POST)
+        adoption_form = AdoptionFormNoProprietaire(data=request.POST)
+        if user_form.is_valid() and proprietaire_form.is_valid() and adoption_form.is_valid():
+            # A l'enregistreent de l'utilisateur, identifiant et mot de passe sont autaumatiquement calculés
+            user = user_form.save()
+
+            proprietaire = proprietaire_form.save(commit=False)
+            proprietaire.user = user
+            proprietaire.save()
+            
+            #On rattache le nouveau proprietaire à l'adoption
+            adoption = adoption_form.save(commit=False)
+            adoption.proprietaire = proprietaire
+            adoption.save()
+            
+            #l'animal ne fait plus partie du refuge
+            animal.adoption = adoption
+            animal.origine = "PENSION"
+            animal.proprietaire = proprietaire
+            animal.save()
+
+            return redirect('detail_animal', pk=animal.id)
+
+    
+    else:
+        user_form = UserForm()
+        proprietaire_form = ProprietaireForm()
+        adoption_form = AdoptionFormNoProprietaire()
+        
+    return render(request,'applicationTest/adoption_complete.html', locals())
+
+@login_required    
+def adoption_allegee(request, pk):
+    animal = Animal.objects.get(id = pk)
+    if request.method == 'POST':
+        adoption_form = AdoptionForm(data=request.POST)
+        if adoption_form.is_valid():
+            
+            #On rattache le nouveau proprietaire à l'adoption
+            adoption = adoption_form.save()
+            
+            #l'animal ne fait plus partie du refuge
+            animal.adoption = adoption
+            animal.origine = "PENSION"
+            animal.proprietaire = adoption.proprietaire
+            animal.save()
+
+            return redirect('detail_animal', pk=animal.id)
+
+    
+    else:
+        adoption_form = AdoptionForm()
+    return render(request,'applicationTest/adoption_allegee.html', locals())
     
