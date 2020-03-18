@@ -149,7 +149,7 @@ class Sejour(models.Model):
     nb_cages_fournies = models.IntegerField(verbose_name="Nombre de cages fournies par le propriétaire ",default=1)
     nb_cages_a_fournir =  models.IntegerField(verbose_name="Nombre de cages à fournir par la pension (supplément de 1€/cage/jour) ",default=0)
     montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, blank=True)
-    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True, blank = True)
+    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, blank = True)
     nb_jours = models.IntegerField()
     animaux = models.ManyToManyField(Animal)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True) 

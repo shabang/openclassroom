@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import DetailView
-from applicationTest.models import Animal, Proprietaire
+from applicationTest.models import Animal, Proprietaire, Sejour
 from . import views
 from django.contrib.auth.decorators import login_required
 
@@ -17,6 +17,7 @@ urlpatterns = [
     path('login/', views.connexion, name="login"),
     path('sejours/', views.search_sejour, name="sejours"),
     path('creer_sejour/', login_required(views.create_sejour.as_view()), name="creer_sejour"),
+    path('detail_sejour/<int:pk>/', login_required(DetailView.as_view(model=Sejour,)), name="detail_sejour"),
     path('visites/', views.search_visite, name="visites"),
     path('creer_visite/', login_required(views.create_visite.as_view()), name="creer_visite"),
     path('ajax/load-animals/', views.load_animals, name='ajax_load_animals'),

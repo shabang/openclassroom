@@ -1,0 +1,34 @@
+{% extends "applicationTest/base.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-12">
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+			<h4> Informations du séjour </h4>
+		</div>
+		<div class="panel-body">
+			<p>
+				<strong> Propriétaire </strong> : <a href= "{% url 'detail_proprietaire' sejour.proprietaire.id %}">{{sejour.proprietaire}}</a> <br>
+			    <strong> Animaux concernés </strong> : {% for animal in sejour.animaux.all %} <a href= "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a>, {% endfor %} <br>
+				<strong> Dates </strong> : {{sejour}} <br>
+				<strong> Nombre de jours de présence </strong> : {{sejour.nb_jours}} <br>
+				<strong> Montant total </strong> : {{sejour.montant}} € <br>
+				<strong> Montant restant à payer </strong> : {{sejour.montant}} €<br>
+				<strong> Nombre de cages fournies par le proriétaire </strong> : {{sejour.nb_cages_fournies}}<br>
+				<strong> Nombre de cage à fournir par le refuge </strong> : {{sejour.nb_cages_a_fournir}}<br>
+				<strong> Tous les animaux du séjour sont correctement vaccinés pour toute la durée du séjour </strong> : {{sejour.get_vaccination_display}}<br>
+				<strong> Soins quotidiens nécessaires </strong> : {{sejour.get_soin_display}}<br>
+				<strong> Soins par injection </strong> : {{sejour.get_injection_display}}<br>
+				<strong> Indications sur le séjour (soins divers, points d'attention...) </strong> : {{sejour.commentaire}}<br>
+			</p>
+			<div class="text-right">
+			<a href= "#" class="btn-search cyan rounded">Modifier</a>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+
+{% endblock %}

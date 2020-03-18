@@ -58,7 +58,7 @@
   </tr>
   {% for sejour in proprietaire.sejour_set.all %}
   <tr>
-	<td>{{sejour}}</td>
+	<td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
 	<td>{% for animal in sejour.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
 	<td>{{sejour.montant}}</td>
 	<td>{{sejour.montant_restant}}</td>

@@ -51,7 +51,7 @@
   </tr>
   {% for sejour in sejours %}
   <tr>
-    <td>{{sejour}}</td>
+    <td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
 	<td>{{sejour.nb_jours}}</td>
 	<td>
 	{% if sejour.proprietaire %}
