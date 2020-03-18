@@ -61,7 +61,6 @@ class create_animal(CreateView):
     model = Animal
     form_class = AnimalForm
     template_name = 'applicationTest/animal_form.html'
-    success_url = reverse_lazy('animals')
     
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
@@ -139,6 +138,14 @@ class create_visite(CreateView):
         form = CreateView.get_form(self, form_class=form_class)
         form.fields['animaux'].queryset = Animal.objects.filter(origine = "REFUGE")
         return form
+    
+class update_adoption(UpdateView):
+    model = Adoption
+    template_name = 'applicationTest/update_adoption.html'
+    fields = ('montant','montant_restant')
+    
+    def get_success_url(self):
+        return reverse_lazy('detail_animal', kwargs={'pk' : self.object.animal.id})
 
 class create_sejour(CreateView):
     model = Sejour

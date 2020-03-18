@@ -60,9 +60,9 @@ class Proprietaire(models.Model):
         return self.user.first_name + " " + self.user.last_name
         
 class Adoption(models.Model):
-    date = models.DateTimeField(verbose_name = "Date de l'adoption", null = True)
+    date = models.DateField(verbose_name = "Date de l'adoption", null = True)
     montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True)
-    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True, blank=True)
+    montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, blank=True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT)
     def __str__(self):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)

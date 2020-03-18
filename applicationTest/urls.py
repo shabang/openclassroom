@@ -24,4 +24,5 @@ urlpatterns = [
     path('animals/adoption/<int:pk>/',  views.adoption, name="adoption"),
     path('animals/adoption_complete/<int:pk>/',  views.adoption_complete, name="adoption_complete"),
     path('animals/adoption_allegee/<int:pk>/',  views.adoption_allegee, name="adoption_allegee"),
+    path('animals/update_adoption/<int:pk>/',  login_required(views.update_adoption.as_view()), name="update_adoption"),
 ]
