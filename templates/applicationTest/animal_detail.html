@@ -1,30 +1,63 @@
 {% extends "applicationTest/base.html" %}
 
 {% block content %}
-
-<h1>{{animal.get_type_animal_display}} {{animal.nom}} </h1>
-<p>
-    <strong> Nom </strong> : {{animal.nom}} <br>
-	<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
-	<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
-	<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
-	<strong> Date de naissance </strong> : {{animal.date_naissance}} <br>
-	<strong> Date de première arrivée </strong> : {{animal.date_arrivee}} <br>
-	<strong> Vacciné </strong> : {{animal.get_vaccine_display}} <br>
-	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
-	{% if animal.isFromPension %}
-	<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
-	{% endif %}
-	<strong> Description </strong> : {{animal.description}} <br>
-</p>
-
 <div class="row">
-   	<div class="col-md-6">
-		<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+	{% if animal.adoption %}
+    <div class="col-sm-6">
+    {% else %}
+    <div class="col-sm-12">
+    {% endif %}
+      <div class="panel panel-default">
+        <div class="panel-heading text-center">
+		<h4>{{animal.get_type_animal_display}} {{animal.nom}} </h4>
+		</div>
+		<div class="panel-body">
+		<p>
+		    <strong> Nom </strong> : {{animal.nom}} <br>
+			<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
+			<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
+			<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
+			<strong> Date de naissance </strong> : {{animal.date_naissance}} <br>
+			<strong> Date de première arrivée </strong> : {{animal.date_arrivee}} <br>
+			<strong> Vacciné </strong> : {{animal.get_vaccine_display}} <br>
+			<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
+			{% if animal.isFromPension %}
+			<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
+			{% endif %}
+			<strong> Description </strong> : {{animal.description}} <br>
+		</p>
+		
+		<div class="text-right">
+			<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+		</div>
+		{% if animal.isFromRefuge %}
+		<div class="text-left">
+			<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
+		</div>
+		{% endif %}
+		</div>
+		
+		</div>
 	</div>
-	{% if animal.isFromRefuge %}
-	<div class="col-md-6">
-		<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
+
+	{% if animal.adoption %}
+	<div class="col-sm-6">
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+		<h4>Informations de l'adoption </h4>
+		</div>
+		<div class="panel-body">
+		<p>
+		    <strong> Date </strong> : {{animal.adoption.date}} <br>
+			<strong> Montant total </strong> : {{animal.adoption.montant}} €<br>
+			<strong> Montant restant à payer </strong> : {{animal.adoption.montant_restant}} €<br>
+		</p>
+		
+		<div class="text-right">
+			<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
+		</div>
+		</div>
+	</div>
 	</div>
 	{% endif %}
 </div>

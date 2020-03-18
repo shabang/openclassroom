@@ -31,9 +31,9 @@
 		    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
 		    	</div>
 		    </div>
-		    </div>
-        	<div class="panel-footer text-center">
+        	<div class="text-right">
 		    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+		</div>
 		</div>
 		</form>
       </div>
@@ -41,7 +41,6 @@
     </div>
 
 <div class="col-sm-12">
-<h2>Liste des séjours</h2>
 
 <table id="myTable">
   <tr class="header">
@@ -66,7 +65,9 @@
   {% endfor %}
 </table>
 
+<div class="text-right">
 <a href= "{% url 'creer_sejour' %}" class="btn-search cyan rounded">Programmer un nouveau séjour</a>
+</div>
   
 </div>
 

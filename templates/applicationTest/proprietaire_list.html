@@ -11,16 +11,15 @@
 		<div class="panel-body">
 		{%csrf_token %}
 		    {{ form.as_p }}
-		    </div>
-        	<div class="panel-footer text-center">
+		 
+        	<div class="text-right">
 		    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
+		</div>
 		</div>
 		</form>
       </div>
     </div>
     </div>
-
-<h2>Liste des proprietaires</h2>
 
 <table id="myTable">
   <tr class="header">
@@ -41,7 +40,9 @@
   {% endfor %}
 </table>
 
+<div class="text-right">
 <a class="btn-search cyan rounded" href= "{% url 'creer_proprietaire' %}">Ajouter un propriétaire</a>
+</div>
 
 
 {% endblock %}

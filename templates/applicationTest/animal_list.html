@@ -63,18 +63,16 @@
 		    		{{ form.date_adoption_max.label_tag }} {{ form.date_adoption_max }}
 		    	</div>
 		    </div>
-		    
+		    <div class="text-right">
+		    <input class="btn-search cyan rounded" type="submit" value="Rechercher" />
 		    </div>
-        <div class="panel-footer text-center">
-		<input class="btn-search cyan rounded" type="submit" value="Rechercher" />
-		</div>
+		    </div>
 		</form>
       </div>
     </div>
     </div>
 
 <div class="col-sm-12">
-<h2>Liste des animaux</h2>
 
 <table id="myTable">
   <tr class="header">
@@ -99,7 +97,10 @@
   {% endfor %}
 </table>
 
+<div class="text-right">
 <a href= "{% url 'creer_animal' %}" class="btn-search cyan rounded">Ajouter animal</a>
+</div>
+
   
 </div>
 
