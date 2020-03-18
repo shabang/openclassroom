@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
+from django.core.validators import RegexValidator
 
 
 TYPE_ANIMAL = (
@@ -51,7 +52,8 @@ TYPE_VETO = (
 class Proprietaire(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     adresse = models.CharField(max_length=500, null=True)
-    telephone = models.CharField(max_length=15, verbose_name = "Numéro de téléphone", null=True)
+    telephone_regex = RegexValidator(regex="[0-9]{10}", message="Veuillez entrer un numéro de téléphone valide.")
+    telephone = models.CharField(validators=[telephone_regex], max_length=10) 
     date_inscription = models.DateField(auto_now_add=True)
     
     def save(self, force_insert=False, force_update=False, using=None, 
@@ -65,6 +67,7 @@ class Proprietaire(models.Model):
     
     def __str__(self):
         return self.user.first_name + " " + self.user.last_name
+    
         
 class Adoption(models.Model):
     date = models.DateField(verbose_name = "Date de l'adoption", null = True)
@@ -85,9 +88,9 @@ class Adoption(models.Model):
 
 class Animal(models.Model):
     nom = models.CharField(max_length=100)
-    date_naissance = models.DateField(verbose_name = "Date de naissance", blank = True, null=True)
-    date_arrivee = models.DateField(verbose_name = "Date de première arrivée", blank = True, null=True)
-    date_visite = models.DateField(verbose_name = "Date de prochaine visite vétérinaire", blank = True, null=True)
+    date_naissance = models.DateField(verbose_name = "Date de naissance", blank = True)
+    date_arrivee = models.DateField(verbose_name = "Date de première arrivée", blank = True)
+    date_visite = models.DateField(verbose_name = "Date de prochaine visite vétérinaire", blank = True)
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_ANIMAL)
     emplacement = models.CharField(max_length=30, verbose_name="Emplacement",choices=EMPLACEMENT)
     origine = models.CharField(max_length=30, verbose_name="Origine (à remplir uniquement si animal du refuge)",choices=ORIGINE, blank = True)
@@ -103,13 +106,16 @@ class Animal(models.Model):
         return self.nom
         
     def isFromPension(self):
-         return self.origine == 'PENSION'
+        return self.emplacement == 'PENSION'
      
     def isFromRefuge(self):
-        return self.origine == 'REFUGE'
+        return self.emplacement == 'REFUGE'
      
     def getVaccinStr(self):
-        return self.get_vaccine_display + " (dernier rappel le " + str(self.date_dernier_vaccin) + " )" 
+        if (self.date_dernier_vaccin):
+            return str(self.get_vaccine_display()) + " (dernier rappel le " + self.date_dernier_vaccin.strftime('%d/%m/%Y') + " )" 
+        else:
+            return self.get_vaccine_display()
     
     def save(self, force_insert=False, force_update=False, using=None, 
         update_fields=None):
