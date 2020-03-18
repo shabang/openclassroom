@@ -44,16 +44,14 @@
 
 <table id="myTable">
   <tr class="header">
-    <th style="width:20%;">Date de début du séjour</th>
-    <th style="width:20%;">Date de fin du séjour</th>
+    <th style="width:30%;">Dates</th>
 	<th style="width:20%;">Jours de présence</th>
-	<th style="width:20%;">Propriétaire</th>
-	<th style="width:20%;">Animaux concernés</th>
+	<th style="width:25%;">Propriétaire</th>
+	<th style="width:25%;">Animaux concernés</th>
   </tr>
   {% for sejour in sejours %}
   <tr>
-    <td>{{sejour.date_arrivee}}</td>
-    <td>{{sejour.date_depart}}</td>
+    <td>{{sejour}}</td>
 	<td>{{sejour.nb_jours}}</td>
 	<td>
 	{% if sejour.proprietaire %}

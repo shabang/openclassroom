@@ -69,19 +69,17 @@
     <h1> Liste des séjours à la pension</h1>
 	<table id="myTable">
         <tr class="header">
-            <th style="width:20%;">Date d'arrivée</th>
-            <th style="width:20%;">Date de départ</th>
+            <th style="width:40%;">Dates</th>
 	        <th style="width:20%;">Jours de présence</th>
-	        <th style="width:20%;">Cage</th>
-	        <th style="width:20%;">Payé</th>
+	        <th style="width:20%;">Montant total</th>
+    		<th style="width:20%;">Montant restant à payer</th>
        </tr>
        {% for sejour in animal.sejour_set.all %}
        <tr>
-            <td>{{sejour.date_arrivee}}</td>
-            <td>{{sejour.date_depart}}</td>
-	        <td>A calculer</td>
-	        <td>{{sejour.get_cage_display}}</td>
-	        <td>A calculer</td>
+            <td>{{sejour}}</td>
+	        <td>{{sejour.nb_jours}}</td>
+	        <td>{{sejour.montant}}</td>
+	        <td>{{sejour.montant_restant}}</td>
        </tr>
        {% endfor %}
     </table>

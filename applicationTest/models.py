@@ -148,8 +148,7 @@ class Sejour(models.Model):
     date_depart = models.DateTimeField(verbose_name = "Date de départ", null=True)
     nb_cages_fournies = models.IntegerField(verbose_name="Nombre de cages fournies par le propriétaire ",default=1)
     nb_cages_a_fournir =  models.IntegerField(verbose_name="Nombre de cages à fournir par la pension (supplément de 1€/cage/jour) ",default=0)
-    montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True, blank=True)
-    montant_paye = models.DecimalField(verbose_name="Montant payé" , max_digits=7, decimal_places=2, null=True, blank=True)
+    montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, blank=True)
     montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, null=True, blank = True)
     nb_jours = models.IntegerField()
     animaux = models.ManyToManyField(Animal)
@@ -160,7 +159,7 @@ class Sejour(models.Model):
     commentaire = models.CharField(max_length=1000, verbose_name = "Indications sur le séjour (soins divers, points d'attention...)", blank = True, null=True)
     
     def __str__(self):
-        return "Séjour du " + self.date_arrivee.strftime('%d/%m/%Y %H:%M') + " au " + self.date_depart.strftime('%Y-%m-%d %H:%M')
+        return "Séjour du " + self.date_arrivee.strftime('%d/%m/%Y %H:%M') + " au " + self.date_depart.strftime('%d/%m/%Y %H:%M')
     
     def save(self, force_insert=False, force_update=False, using=None, 
         update_fields=None):
