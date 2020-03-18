@@ -1,14 +1,19 @@
 {% extends "applicationTest/base.html" %}
 
 {% block content %}
-
+{{object}}
 <h1> Nouveau séjour en pension </h1>
 <form method="post" id="sejourForm" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
    {% csrf_token %}
    {{ form.as_p }}
    <div class="row">
+   
    	<div class="col-md-6">
-   		<a href = "{% url 'sejours' %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% if object %}
+   			<a href = "{% url 'detail_sejour' object.id %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% else %}
+   			<a href = "{% url 'sejours' %}"  class="btn-search cyan rounded">Annuler</a>
+   		{% endif %}
    	</div>
    	<div class="col-md-6">
    		<input class="btn-search cyan rounded" type="submit" />

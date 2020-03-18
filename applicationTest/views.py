@@ -147,7 +147,8 @@ class update_adoption(UpdateView):
 class create_sejour(CreateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
-    form_class = SejourForm  
+    form_class = SejourForm 
+     
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
         idProprietaire = self.request.GET.get('proprietaire','')
@@ -158,11 +159,22 @@ class create_sejour(CreateView):
         return form 
     
     def get_success_url(self):
-        idProprietaire = self.request.GET.get('proprietaire','')
-        if (idProprietaire):
-            return reverse_lazy('detail_proprietaire', kwargs={'pk' : idProprietaire})
-        else:
-            return reverse_lazy('sejours') 
+            return reverse_lazy('detail_sejour', kwargs={'pk' : object.id})
+  
+class update_sejour(UpdateView):
+    model = Sejour
+    template_name = 'applicationTest/sejour_form.html'
+    form_class = SejourForm
+    
+    def get_form(self, form_class=None):
+        form = UpdateView.get_form(self, form_class=form_class)   
+        sejour = self.object
+        proprietaire = sejour.proprietaire
+        form.fields['animaux'].queryset = Animal.objects.filter(proprietaire_id=proprietaire.id).order_by('nom')
+        return form 
+    
+    def get_success_url(self):
+            return reverse_lazy('detail_sejour', kwargs={'pk' : object.id})
   
 @login_required    
 def search_animal(request):

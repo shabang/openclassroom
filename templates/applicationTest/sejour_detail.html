@@ -24,7 +24,7 @@
 				<strong> Indications sur le séjour (soins divers, points d'attention...) </strong> : {{sejour.commentaire}}<br>
 			</p>
 			<div class="text-right">
-			<a href= "#" class="btn-search cyan rounded">Modifier</a>
+			<a href= "{% url 'modifier_sejour' sejour.id %}" class="btn-search cyan rounded">Modifier</a>
 			</div>
 		</div>
 	</div>

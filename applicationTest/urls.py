@@ -17,6 +17,7 @@ urlpatterns = [
     path('login/', views.connexion, name="login"),
     path('sejours/', views.search_sejour, name="sejours"),
     path('creer_sejour/', login_required(views.create_sejour.as_view()), name="creer_sejour"),
+    path('modifier_sejour/<int:pk>/', login_required(views.update_sejour.as_view()), name="modifier_sejour"),
     path('detail_sejour/<int:pk>/', login_required(DetailView.as_view(model=Sejour,)), name="detail_sejour"),
     path('visites/', views.search_visite, name="visites"),
     path('creer_visite/', login_required(views.create_visite.as_view()), name="creer_visite"),
