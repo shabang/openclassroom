@@ -51,8 +51,8 @@ def home(request):
     departs_pension = Sejour.objects.filter(date_depart__gt = today).filter(date_depart__lt = interval).count()
     presences = Sejour.objects.filter(date_arrivee__lt = today).filter(date_depart__gt = today).count()
     # Partie refuge
-    rdv_veterinaire = Animal.objects.filter(origine = "REFUGE").filter(date_visite__gt=today).filter(date_visite__lt= interval).count()
-    recuperations = Animal.objects.filter(origine = "REFUGE").filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
+    rdv_veterinaire = Animal.objects.filter(emplacement = "REFUGE").filter(date_visite__gt=today).filter(date_visite__lt= interval).count()
+    recuperations = Animal.objects.filter(emplacement = "REFUGE").filter(date_arrivee__gt = today).filter(date_arrivee__lt = interval).count()
     adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt= interval).count()
     
     return render(request, 'applicationTest/tableau_bord.html', locals())
@@ -68,7 +68,7 @@ class create_animal(CreateView):
         if (idProprietaire):
             proprietaire = Proprietaire.objects.get(id=idProprietaire)
             form.fields['proprietaire'].initial = proprietaire
-            form.fields['origine'].initial = "PENSION"
+            form.fields['emplacement'].initial = "PENSION"
         return form
     
     def get_success_url(self):
@@ -136,7 +136,7 @@ class create_visite(CreateView):
     
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
-        form.fields['animaux'].queryset = Animal.objects.filter(origine = "REFUGE")
+        form.fields['animaux'].queryset = Animal.objects.filter(emplacement = "REFUGE")
         return form
     
 class update_adoption(UpdateView):
@@ -188,7 +188,7 @@ def search_animal(request):
             if (proprietaire_form != None):
                 animals = animals.filter(proprietaire=proprietaire_form)
             if(provenance_form):
-                animals = animals.filter(origine = provenance_form)
+                animals = animals.filter(emplacement = provenance_form)
             if(type_animal_form):
                 animals = animals.filter(type_animal = type_animal_form)
             if(nom_form != None):
@@ -233,10 +233,10 @@ def search_animal(request):
                 animals = animals.filter(adoption__date__lte = interval)
             if (filter_data == "pension"):
                 form.fields['provenance'].initial = "PENSION"
-                animals = animals.filter(origine = "PENSION")
+                animals = animals.filter(emplacement = "PENSION")
             if (filter_data == "refuge"):
                 form.fields['provenance'].initial = "REFUGE"
-                animals = animals.filter(origine = "REFUGE")
+                animals = animals.filter(emplacement = "REFUGE")
                 
             
     return render(request, 'applicationTest/animal_list.html', locals())
@@ -378,7 +378,7 @@ def adoption_complete(request, pk):
             
             #l'animal ne fait plus partie du refuge
             animal.adoption = adoption
-            animal.origine = "PENSION"
+            animal.emplacement = "PENSION"
             animal.proprietaire = proprietaire
             animal.save()
 
@@ -404,7 +404,7 @@ def adoption_allegee(request, pk):
             
             #l'animal ne fait plus partie du refuge
             animal.adoption = adoption
-            animal.origine = "PENSION"
+            animal.emplacement = "PENSION"
             animal.proprietaire = adoption.proprietaire
             animal.save()
 

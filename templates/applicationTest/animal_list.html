@@ -87,7 +87,7 @@
     <td><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></td>
     <td>{{animal.get_type_animal_display}}</td>
 	<td>{{animal.get_sexe_display}}</td>
-	<td>{{animal.get_origine_display}}</td>
+	<td>{{animal.get_emplacement_display}}</td>
 	<td>
 	{% if animal.proprietaire %}
 	<a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a>

@@ -24,9 +24,16 @@ SEXE = (
     ('M', "Masculin")
 )
 
-ORIGINE = (
+EMPLACEMENT = (
     ('PENSION', "Pension"),
     ('REFUGE', "Refuge"),
+)
+
+ORIGINE = (
+    ('ABANDON', "Abandon particulier"),
+    ('REFUGE', "Transfert refuge"),
+    ('FOURRIERE', "Fourrière"),
+    ('AUTRE', "Autre"),
 )
 
 OUI_NON = (
@@ -64,8 +71,17 @@ class Adoption(models.Model):
     montant = models.DecimalField(verbose_name="Montant à payer" , max_digits=7, decimal_places=2, null=True)
     montant_restant = models.DecimalField(verbose_name="Montant restant à payer" , max_digits=7, decimal_places=2, blank=True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT)
+    nb_jours = models.IntegerField(null = True, verbose_name = "Nombre de jours au refuge avant adoption")
+    
     def __str__(self):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)
+    
+    def save(self, force_insert=False, force_update=False, using=None, 
+        update_fields=None):
+        if (self.animal):
+            self.nb_jours = abs((self.date - self.animal.date_arrivee).days)
+        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
 
 class Animal(models.Model):
     nom = models.CharField(max_length=100)
@@ -73,12 +89,13 @@ class Animal(models.Model):
     date_arrivee = models.DateField(verbose_name = "Date de première arrivée", blank = True, null=True)
     date_visite = models.DateField(verbose_name = "Date de prochaine visite vétérinaire", blank = True, null=True)
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",choices=TYPE_ANIMAL)
-    origine = models.CharField(max_length=30, verbose_name="Origine",choices=ORIGINE)
+    emplacement = models.CharField(max_length=30, verbose_name="Emplacement",choices=EMPLACEMENT)
+    origine = models.CharField(max_length=30, verbose_name="Origine (à remplir uniquement si animal du refuge)",choices=ORIGINE, blank = True)
     sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=SEXE)
     sterilise = models.CharField(max_length=30, verbose_name="Stérilisé",choices=OUI_NON, null=True)
     vaccine = models.CharField(max_length=30, verbose_name="Vacciné",choices=OUI_NON, null=True)
     date_dernier_vaccin = models.DateField(verbose_name = "Date du dernier rappel de vaccin", null=True, blank = True)
-    proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True, blank=True)
+    proprietaire = models.ForeignKey(Proprietaire,verbose_name = "Propriétaire (à remplir uniquement si animal de la pension)", on_delete=models.PROTECT, null=True, blank=True)
     adoption = models.OneToOneField(Adoption, on_delete=models.PROTECT, null=True, blank=True)
     description = models.CharField(max_length=2000, blank=True)
 
