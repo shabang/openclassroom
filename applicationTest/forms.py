@@ -65,7 +65,7 @@ class AnimalForm(forms.ModelForm):
                 msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
                 self._errors["proprietaire"] = self.error_class([msg])
                 del cleaned_data["proprietaire"]
-        if (cleaned_data.get('origine')):
+            if (cleaned_data.get('origine')):
                 msg = "L'origine n'est à remplir que pour un animal du refuge."
                 self._errors["origine"] = self.error_class([msg])
                 del cleaned_data["origine"]

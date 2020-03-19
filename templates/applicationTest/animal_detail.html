@@ -30,14 +30,16 @@
 			<strong> Description </strong> : {{animal.description}} <br>
 		</p>
 		
-		<div class="text-right">
+		<div >
+			<span class="pull-right">
 			<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
-		</div>
-		{% if animal.isFromRefuge %}
-		<div class="text-left">
+			</span>
+			{% if animal.isFromRefuge %}
+			<span class="pull-left">
 			<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
+			</span>
+			{% endif %}
 		</div>
-		{% endif %}
 		</div>
 		
 		</div>
@@ -52,6 +54,7 @@
 		<div class="panel-body">
 		<p>
 		    <strong> Date </strong> : {{animal.adoption.date}} <br>
+		    <strong> Nombre de jours au refuge avant adoption </strong> : {{animal.adoption.nb_jours}}<br>
 			<strong> Montant total </strong> : {{animal.adoption.montant}} €<br>
 			<strong> Montant restant à payer </strong> : {{animal.adoption.montant_restant}} €<br>
 		</p>

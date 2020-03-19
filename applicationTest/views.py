@@ -389,10 +389,10 @@ def adoption_complete(request, pk):
             #On rattache le nouveau proprietaire à l'adoption
             adoption = adoption_form.save(commit=False)
             adoption.proprietaire = proprietaire
+            adoption.animal = animal
             adoption.save()
             
             #l'animal ne fait plus partie du refuge
-            animal.adoption = adoption
             animal.emplacement = "PENSION"
             animal.proprietaire = proprietaire
             animal.save()
@@ -415,10 +415,11 @@ def adoption_allegee(request, pk):
         if adoption_form.is_valid():
             
             #On rattache le nouveau proprietaire à l'adoption
-            adoption = adoption_form.save()
+            adoption = adoption_form.save(commit=False)
             
             #l'animal ne fait plus partie du refuge
-            animal.adoption = adoption
+            adoption.animal = animal
+            adoption.save()
             animal.emplacement = "PENSION"
             animal.proprietaire = adoption.proprietaire
             animal.save()
