@@ -20,8 +20,8 @@
 			{% if animal.isFromRefuge %}
 			<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
 			{% endif %}
-			<strong> Date de naissance </strong> : {{animal.date_naissance}} <br>
-			<strong> Date de première arrivée </strong> : {{animal.date_arrivee}} <br>
+			<strong> Date de naissance </strong> : {{animal.date_naissance|default:" - "}} <br>
+			<strong> Date de première arrivée </strong> : {{animal.date_arrivee|default:" - "}} <br>
 			<strong> Vacciné </strong> : {{animal.getVaccinStr}} <br>
 			<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
 			{% if animal.isFromPension %}
@@ -94,7 +94,7 @@
             <th style="width:30%;">Raison de la visite</th>
 	        <th style="width:40%;">Commentaire</th>
        </tr>
-       {% for visite in animal.visite_medicale_set.all %}
+       {% for visite in animal.visitemedicale_set.all %}
        <tr>
             <td>{{visite.date}}</td>
 	        <td>{{visite.get_type_visite_display}}</td>

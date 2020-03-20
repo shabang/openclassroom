@@ -45,7 +45,7 @@
     <td>{{visite.date}}</td>
     <td>{{visite.get_type_visite_display}}</td>
 	<td>{{visite.montant}}</td>
-	<td>{% for animal in visite.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
+	<td>{% for animal in visite.animaux.all %}<a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a><br>{% endfor %}</td>
   </tr>
   {% endfor %}
 </table>

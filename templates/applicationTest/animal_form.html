@@ -8,7 +8,21 @@
 <h1> Créer un animal </h1>
 {% endif %}
 <br/>
-<form method="post" action="">
+   {% if object %}
+   	<strong> Nom </strong> : {{animal.nom}} <br>
+	<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
+	<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
+	<strong> Emplacement </strong> : {{animal.get_emplacement_display}} <br>
+	{% if animal.isFromRefuge %}
+	<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
+	{% endif %}
+	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
+	{% if animal.isFromPension %}
+	<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
+	{% endif %}
+	<br>
+   {% endif %}
+   <form method="post" action="">
    {% csrf_token %}
    {{ form.as_p }}
    <br/>

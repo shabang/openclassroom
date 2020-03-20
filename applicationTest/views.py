@@ -1,8 +1,8 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalForm, \
-ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm,\
+from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalUpdateForm, \
+AnimalCreateForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm,\
 AdoptionFormNoProprietaire, AdoptionForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour,\
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.utils.dateparse import parse_date
 from django.views.generic.detail import DetailView
+from django.core.exceptions import ObjectDoesNotExist
 
 def connexion(request):
     error = False
@@ -59,7 +60,7 @@ def home(request):
 
 class create_animal(CreateView):
     model = Animal
-    form_class = AnimalForm
+    form_class = AnimalCreateForm
     template_name = 'applicationTest/animal_form.html'
     
     def get_form(self, form_class=None):
@@ -76,7 +77,8 @@ class create_animal(CreateView):
     
 class update_animal(UpdateView):
     model = Animal
-    form_class = AnimalForm
+    form_class = AnimalUpdateForm
+    
     template_name = 'applicationTest/animal_form.html'
     
     def get_success_url(self):
@@ -159,7 +161,7 @@ class create_sejour(CreateView):
         return form 
     
     def get_success_url(self):
-            return reverse_lazy('detail_sejour', kwargs={'pk' : object.id})
+            return reverse_lazy('detail_sejour', kwargs={'pk' : self.object.id})
   
 class update_sejour(UpdateView):
     model = Sejour
@@ -174,7 +176,7 @@ class update_sejour(UpdateView):
         return form 
     
     def get_success_url(self):
-            return reverse_lazy('detail_sejour', kwargs={'pk' : object.id})
+            return reverse_lazy('detail_sejour', kwargs={'pk' : self.object.id})
   
 @login_required    
 def search_animal(request):
@@ -404,6 +406,10 @@ def adoption_complete(request, pk):
         user_form = UserForm()
         proprietaire_form = ProprietaireForm()
         adoption_form = AdoptionFormNoProprietaire()
+        montant_adoption = getMontantAdoption(animal)
+        if (montant_adoption):
+            adoption_form.fields['montant'].initial = montant_adoption
+            adoption_form.fields['montant_restant'].initial = montant_adoption
         
     return render(request,'applicationTest/adoption_complete.html', locals())
 
@@ -429,5 +435,14 @@ def adoption_allegee(request, pk):
     
     else:
         adoption_form = AdoptionForm()
+        montant_adoption = getMontantAdoption(animal)
+        adoption_form.fields['montant'].initial = montant_adoption
+        adoption_form.fields['montant_restant'].initial = montant_adoption
     return render(request,'applicationTest/adoption_allegee.html', locals())
-    
+
+def getMontantAdoption(animal):
+    try :
+        tarif_applicable = TarifAdoption.objects.get(type_animal = animal.type_animal, sexe = animal.sexe, sterilise = animal.sterilise)
+        return tarif_applicable.montant_adoption
+    except ObjectDoesNotExist:
+        return None

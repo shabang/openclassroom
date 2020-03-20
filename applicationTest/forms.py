@@ -36,12 +36,30 @@ class VisiteSearchForm(forms.Form):
     date_min = forms.DateField(label = "Date de la visite médicale entre le", required=False, widget=DateInput())
     date_max = forms.DateField(label = " et le ",required=False, widget=DateInput())
     
-class AnimalForm(forms.ModelForm):
+class AnimalCreateForm(forms.ModelForm):
     class Meta:
         model = models.Animal
         fields = ('nom','type_animal', 'emplacement', 'origine','sexe', 
                   'description', 'date_naissance', 'date_arrivee', 'sterilise', 
                    'vaccine', 'date_dernier_vaccin', 'proprietaire')
+        date_naissance = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_arrivee = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_dernier_vaccin = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        
+class AnimalUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Animal
+        fields = ( 'description', 'date_naissance', 'date_arrivee', 'sterilise', 
+                   'vaccine', 'date_dernier_vaccin')
         date_naissance = forms.DateField(
             widget=forms.DateInput(format='%d/%m/%Y'),
             input_formats=('%d/%m/%Y', )
