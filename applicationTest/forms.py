@@ -54,25 +54,6 @@ class AnimalCreateForm(forms.ModelForm):
             widget=forms.DateInput(format='%d/%m/%Y'),
             input_formats=('%d/%m/%Y', )
         )
-        
-class AnimalUpdateForm(forms.ModelForm):
-    class Meta:
-        model = models.Animal
-        fields = ( 'description', 'date_naissance', 'date_arrivee', 'sterilise', 
-                   'vaccine', 'date_dernier_vaccin')
-        date_naissance = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y', )
-        )
-        date_arrivee = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y', )
-        )
-        date_dernier_vaccin = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y', )
-        )
-    
     #Appelé à la validation du formulaire
     def clean(self):
         cleaned_data = forms.ModelForm.clean(self)
@@ -102,6 +83,49 @@ class AnimalUpdateForm(forms.ModelForm):
                 msg = "Si l'animal arrive au refuge, il n'a pas de propriétaire."
                 self._errors["proprietaire"] = self.error_class([msg])
                 del cleaned_data["proprietaire"]
+        #Si l'animal est vaccine, la date de dernier vaccin est obligatoire
+        vaccine = cleaned_data.get('vaccine')
+        if (vaccine == "OUI"):
+            date_vaccin = cleaned_data.get('date_dernier_vaccin')
+            if (not date_vaccin):
+                msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
+                self._errors["date_dernier_vaccin"] = self.error_class([msg])
+                del cleaned_data["date_dernier_vaccin"]
+                
+        return cleaned_data
+        
+        
+class AnimalUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Animal
+        fields = ( 'description', 'date_naissance', 'date_arrivee', 'sterilise', 
+                   'vaccine', 'date_dernier_vaccin')
+        date_naissance = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_arrivee = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+        date_dernier_vaccin = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y', )
+        )
+    
+    #Appelé à la validation du formulaire
+    def clean(self):
+        cleaned_data = forms.ModelForm.clean(self)
+        emplacement = self.object.emplacement
+        
+        #Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
+        #Et il n'a pas de proprietaire
+        if (emplacement == "REFUGE"):
+            if (not cleaned_data.get('date_arrivee')):
+                msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
+                self._errors["date_arrivee"] = self.error_class([msg])
+                del cleaned_data["date_arrivee"]
+            
         #Si l'animal est vaccine, la date de dernier vaccin est obligatoire
         vaccine = cleaned_data.get('vaccine')
         if (vaccine == "OUI"):
