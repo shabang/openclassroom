@@ -130,3 +130,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/applicationTest/login/'
+
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'information@lesgrandesoreilles.local'
+EMAIL_HOST_PASSWORD = 'myMailSPass'
+
+
