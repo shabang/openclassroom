@@ -169,7 +169,32 @@ class ProprietaireForm(forms.ModelForm):
         fields = ('adresse', 'telephone')
 
 
-class AdoptionForm(forms.ModelForm):
+class AdoptionValidator:
+    def clean(self):
+        cleaned_data = {**super().clean()}
+
+        # Le montant restant ne peut être supérieur au montant total
+        montant = cleaned_data.get('montant')
+        montant_restant = cleaned_data.get('montant_restant')
+        if montant < montant_restant:
+            msg = "Le montant restant ne peut-être supérieur au montant total."
+            self._errors["montant_restant"] = self.error_class([msg])
+            del cleaned_data["montant_restant"]
+
+        return cleaned_data
+
+
+class AdoptionUpdateForm(AdoptionValidator, forms.ModelForm):
+    class Meta:
+        model = models.Adoption
+        fields = ('montant', 'montant_restant')
+        date = forms.DateField(
+            widget=forms.DateInput(format='%d/%m/%Y'),
+            input_formats=('%d/%m/%Y',)
+        )
+
+
+class AdoptionForm(AdoptionValidator, forms.ModelForm):
     class Meta:
         model = models.Adoption
         fields = ('date', 'proprietaire', 'montant', 'montant_restant')
@@ -179,21 +204,13 @@ class AdoptionForm(forms.ModelForm):
         )
 
 
-class AdoptionFormNoProprietaire(forms.ModelForm):
+class AdoptionFormNoProprietaire(AdoptionValidator, forms.ModelForm):
     class Meta:
         model = models.Adoption
         fields = ('date', 'montant', 'montant_restant')
 
 
-class SejourForm(forms.ModelForm):
-    date_arrivee = forms.SplitDateTimeField(required=True, widget=AdminSplitDateTime())
-    date_depart = forms.SplitDateTimeField(required=True, widget=AdminSplitDateTime())
-
-    class Meta:
-        model = models.Sejour
-        fields = ('date_arrivee', 'date_depart', 'proprietaire', 'animaux', 'nb_cages_fournies', 'nb_cages_a_fournir',
-                  'vaccination', 'soin', 'injection', 'commentaire')
-
+class SejourFormBase :
     # Pour gérer le lien entre le champ "propriétaire et le champ "Animaux"
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -208,19 +225,29 @@ class SejourForm(forms.ModelForm):
                 pass  # invalid input from the client; ignore and fallback to empty animaux queryset
 
     # Appelé à la validation du formulaire
-    @property
     def clean(self):
-        cleaned_data = forms.ModelForm.clean(self)
-        date_arrivee = cleaned_data.get('date_arrivee')
-        date_depart = cleaned_data.get('date_depart')
-        # Vérification de la cohérence de la date d'arrivée et de la date de départ
-        if date_arrivee and date_arrivee < timezone.now():
-            msg = "La date d'arrivée ne peut être avant aujourd'hui"
-            self._errors["date_arrivee"] = self.error_class([msg])
-            del cleaned_data["date_arrivee"]
-        if date_arrivee and date_depart and date_arrivee > date_depart:
-            msg = "La date de départ ne peuse trouver avant la date d'arrivée"
-            self._errors["date_depart"] = self.error_class([msg])
-            del cleaned_data["date_depart"]
+        cleaned_data = {**super().clean()}
+        if self.instance.pk is None:
+            date_arrivee = cleaned_data.get('date_arrivee')
+            date_depart = cleaned_data.get('date_depart')
+            # Vérification de la cohérence de la date d'arrivée et de la date de départ
+            if date_arrivee and date_arrivee < timezone.now():
+                msg = "La date d'arrivée ne peut être avant aujourd'hui"
+                self._errors["date_arrivee"] = self.error_class([msg])
+                del cleaned_data["date_arrivee"]
+            if date_arrivee and date_depart and date_arrivee > date_depart:
+                msg = "La date de départ ne peuse trouver avant la date d'arrivée"
+                self._errors["date_depart"] = self.error_class([msg])
+                del cleaned_data["date_depart"]
 
         return cleaned_data
+
+
+class SejourForm(SejourFormBase, forms.ModelForm):
+    date_arrivee = forms.SplitDateTimeField(required=True, widget=AdminSplitDateTime())
+    date_depart = forms.SplitDateTimeField(required=True, widget=AdminSplitDateTime())
+
+    class Meta:
+        model = models.Sejour
+        fields = ('date_arrivee', 'date_depart', 'proprietaire', 'animaux', 'nb_cages_fournies', 'nb_cages_a_fournir',
+                  'vaccination', 'soin', 'injection', 'commentaire', 'montant','montant_restant')

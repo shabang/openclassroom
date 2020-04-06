@@ -16,7 +16,6 @@
 	{% if animal.isFromRefuge %}
 	<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
 	{% endif %}
-	<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
 	{% if animal.isFromPension %}
 	<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
 	{% endif %}

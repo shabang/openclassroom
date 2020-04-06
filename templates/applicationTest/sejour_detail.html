@@ -14,8 +14,8 @@
 			    <strong> Animaux concernés </strong> : {% for animal in sejour.animaux.all %} <a href= "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a>, {% endfor %} <br>
 				<strong> Dates </strong> : {{sejour}} <br>
 				<strong> Nombre de jours de présence </strong> : {{sejour.nb_jours}} <br>
-				<strong> Montant total </strong> : {{sejour.montant}} € <br>
-				<strong> Montant restant à payer </strong> : {{sejour.montant}} €<br>
+				<strong> Montant total </strong> : {{sejour.montant|default:" - "}} € <br>
+				<strong> Montant restant à payer </strong> : {{sejour.montant_restant|default:" - "}} €<br>
 				<strong> Nombre de cages fournies par le proriétaire </strong> : {{sejour.nb_cages_fournies}}<br>
 				<strong> Nombre de cage à fournir par le refuge </strong> : {{sejour.nb_cages_a_fournir}}<br>
 				<strong> Tous les animaux du séjour sont correctement vaccinés pour toute la durée du séjour </strong> : {{sejour.get_vaccination_display}}<br>

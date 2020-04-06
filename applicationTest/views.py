@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
 from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalUpdateForm, \
     AnimalCreateForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm, \
-    AdoptionFormNoProprietaire, AdoptionForm
+    AdoptionFormNoProprietaire, AdoptionForm, AdoptionUpdateForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, \
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
 from django.urls import reverse_lazy
@@ -144,10 +144,11 @@ class CreateVisite(CreateView):
 class UpdateAdoption(UpdateView):
     model = Adoption
     template_name = 'applicationTest/update_adoption.html'
-    fields = ('montant', 'montant_restant')
+    form_class = AdoptionUpdateForm
 
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk': self.object.animal.id})
+
 
 
 class CreateSejour(CreateView):
