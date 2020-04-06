@@ -206,13 +206,13 @@ def search_animal(request):
             date_adoption_min = form.cleaned_data['date_adoption_min']
             date_adoption_max = form.cleaned_data['date_adoption_max']
 
-            if proprietaire_form != None:
+            if proprietaire_form is not None:
                 animals = animals.filter(proprietaire=proprietaire_form)
             if provenance_form:
                 animals = animals.filter(emplacement=provenance_form)
             if type_animal_form:
                 animals = animals.filter(type_animal=type_animal_form)
-            if nom_form != None:
+            if nom_form is not None:
                 animals = animals.filter(nom__icontains=nom_form)
             if date_naissance_min:
                 animals = animals.filter(date_naissance__gte=date_naissance_min)
@@ -326,7 +326,7 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=date_fin_min_form)
             if date_fin_max_form:
                 sejours = sejours.filter(date_depart__lte=date_fin_max_form)
-            if proprietaire_form != None:
+            if proprietaire_form is not None:
                 sejours = sejours.filter(proprietaire=proprietaire_form)
     else:
         form = SejourSearchForm()
@@ -414,7 +414,7 @@ def adoption_complete(request, pk):
         proprietaire_form = ProprietaireForm()
         adoption_form = AdoptionFormNoProprietaire()
         montant_adoption = get_montant_adoption(animal)
-        if (montant_adoption):
+        if montant_adoption:
             adoption_form.fields['montant'].initial = montant_adoption
             adoption_form.fields['montant_restant'].initial = montant_adoption
 

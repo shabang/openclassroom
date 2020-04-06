@@ -8,7 +8,7 @@
         <div class="panel-heading text-center">
 			<h4>Recherche</h4>
 		</div>
-		<form action = "{% url "animals" %}" method="post">
+		<form action = "{% url 'animals' %}" method="post">
         <div class="panel-body">
 			{%csrf_token %}
 		    <div class="row">

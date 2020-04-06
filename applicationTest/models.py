@@ -166,7 +166,8 @@ class Sejour(models.Model):
     animaux = models.ManyToManyField(Animal)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True)
     vaccination = models.CharField(max_length=3,
-                                   verbose_name="Tous les animaux du séjour sont correctement vaccinés pour toute la durée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",
+                                   verbose_name="Tous les animaux du séjour sont correctement vaccinés pour toute la "
+                                                "durée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",
                                    choices=OUI_NON, default="OUI")
     soin = models.CharField(max_length=3,
                             verbose_name="Un de vos animaux nécessite un soin quotidien (a préciser ci-dessous) ",

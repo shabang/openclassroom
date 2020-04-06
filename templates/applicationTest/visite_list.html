@@ -9,7 +9,7 @@
 		<h4>Recherche</h4>
 		</div>
 
-		<form action = "{% url "visites" %}" method="post">
+		<form action = "{% url 'visites' %}" method="post">
 		<div class="panel-body">
 		{%csrf_token %}
 			<div class="row">
