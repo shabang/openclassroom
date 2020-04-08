@@ -97,6 +97,14 @@ class Animal(models.Model):
     def is_from_refuge(self):
         return self.emplacement == 'REFUGE'
 
+    def is_adopted_refuge(self):
+        result = False
+        try:
+            result = self.adoption is not None
+        except Adoption.DoesNotExist:
+            pass
+        return result
+
     def get_vaccin_str(self):
         if self.date_dernier_vaccin:
             return str(self.get_vaccine_display()) + " (dernier rappel le " + self.date_dernier_vaccin.strftime(
@@ -167,7 +175,7 @@ class Sejour(models.Model):
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT, null=True)
     vaccination = models.CharField(max_length=3,
                                    verbose_name="Tous les animaux du séjour sont correctement vaccinés pour toute la "
-                                                "durée du séjour? (majoration de 90€ si ce n'est pas le cas) : ",
+                                                "durée du séjour? (majoration de 90€ si ce n'est pas le cas) ",
                                    choices=OUI_NON, default="OUI")
     soin = models.CharField(max_length=3,
                             verbose_name="Un de vos animaux nécessite un soin quotidien (a préciser ci-dessous) ",

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+import sys
+from decimal import Decimal
+
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
 from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalUpdateForm, \
@@ -7,7 +12,7 @@ from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, Anim
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, \
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
 from django.urls import reverse_lazy
-from _datetime import timedelta
+from _datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
@@ -148,7 +153,6 @@ class UpdateAdoption(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk': self.object.animal.id})
-
 
 
 class CreateSejour(CreateView):
@@ -365,6 +369,70 @@ def load_animals(request):
     proprietaire_id = request.GET.get('proprietaire')
     animaux = Animal.objects.filter(proprietaire_id=proprietaire_id)
     return render(request, 'applicationTest/sejour_form_select_animals.html', {'animaux': animaux})
+
+
+@login_required
+def calcul_montant_sejour(request):
+    montant_sejour = Decimal(0)
+    # Inutile de calculer le montant si les données ne sont pas correctement remplies
+    # On commence donc par vérifier toutes les données essentielles au calcul
+    date_arrivee = datetime.strptime(request.POST["date_arrivee_0"], '%d/%m/%Y')
+    heure_arrivee = request.POST["date_arrivee_1"]
+    date_depart = datetime.strptime(request.POST["date_depart_0"], '%d/%m/%Y')
+    heure_depart = request.POST["date_depart_1"]
+    nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
+    nb_cages_fournies = request.POST["nb_cages_fournies"]
+    if not nb_cages_fournies:
+        test = "test"
+    if not (date_arrivee and heure_arrivee and date_depart and
+            heure_depart and nb_cages_a_fournir and nb_cages_fournies):
+        # Si on a pas les données pour faire le calcul le montant reste à 0
+        return JsonResponse({'montant': montant_sejour})
+    else:
+        nb_jours = Decimal(abs((date_depart - date_arrivee).days))
+        nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
+        animaux = request.POST.getlist("animaux")
+        # On commence par calculer le prix pour chaque animal
+        for i, elt in enumerate(animaux):
+            animal = Animal.objects.get(id=elt)
+            adopte_refuge = "OUI" if animal.is_adopted_refuge() else "NON"
+            if i < nb_cages:
+                tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
+                                                      Q(supplementaire="NON") & Q(adopte_refuge=adopte_refuge))
+            else:
+                tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
+                                                      Q(supplementaire="OUI") & Q(adopte_refuge=adopte_refuge))
+            montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+        # Ensuite, on calcule les suppléments
+        supplement_cage = ParametreTarifairePension.objects.get(type_supplement = "CAGE")
+        montant_sejour = montant_sejour + (supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours)
+        injection = request.POST["injection"]
+        soin = request.POST["soin"]
+        vaccination = request.POST["vaccination"]
+        if injection and injection == "OUI":
+            supplement_injection = ParametreTarifairePension.objects.get(type_supplement = "INJECTION")
+            montant_sejour = montant_sejour + (supplement_injection.montant * nb_jours)
+        elif soin and soin == "OUI":
+            supplement_soin = ParametreTarifairePension.objects.get(type_supplement="MEDICAMENT")
+            montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
+        if vaccination and vaccination == "OUI":
+            supplement_vaccination = ParametreTarifairePension.objects.get(type_supplement="VACCINATION")
+            montant_sejour = montant_sejour + supplement_vaccination.montant
+        supplement_samedi = ParametreTarifairePension.objects.get(type_supplement="SAMEDI")
+        # TODO : partie samedi non opérationnelle, manque partie horaire
+        if date_arrivee.weekday == 5:
+            montant_sejour = montant_sejour + supplement_samedi.montant
+        if date_depart.weekday == 5:
+            montant_sejour = montant_sejour + supplement_samedi.montant
+
+
+
+    sys.stdout.flush()
+
+    # Recuperer les parametres tarifaires
+    # Calcul du montant du séjour
+    # Renvoyer vue json
+    return JsonResponse({'montant': montant_sejour})
 
 
 @login_required

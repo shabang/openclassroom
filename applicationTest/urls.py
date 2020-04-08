@@ -27,4 +27,5 @@ urlpatterns = [
     path('animals/adoption_complete/<int:pk>/',  views.adoption_complete, name="adoption_complete"),
     path('animals/adoption_allegee/<int:pk>/',  views.adoption_allegee, name="adoption_allegee"),
     path('animals/update_adoption/<int:pk>/', login_required(views.UpdateAdoption.as_view()), name="update_adoption"),
+    path('ajax/calcul_montant/', views.calcul_montant_sejour, name="calcul_montant_sejour"),
 ]

@@ -12,7 +12,7 @@
 	<th style="width:25%;">Animal supplémentaire dans la même cage</th>
 	<th style="width:25%;">Tarif journalier</th>
   </tr>
-  {% for tarif in tarifsJournaliersPension %}
+  {% for tarif in tarifs_journaliers_pension %}
   <tr>
     <td>{{tarif.get_type_animal_display}}</td>
     <td>{{tarif.get_adopte_refuge_display}}</td>
@@ -32,7 +32,7 @@
     <th style="width:30%;">Supplément journalier?</th>
 	<th style="width:30%;">Montant du supplément</th>
   </tr>
-  {% for tarif in tarifsSupplements %}
+  {% for tarif in tarifs_supplements %}
   <tr>
     <td>{{tarif.get_type_supplement_display}}</td>
     <td>{{tarif.get_supplement_journalier_display}}</td>
@@ -52,7 +52,7 @@
 	<th style="width:30%;">Stérilisé?</th>
 	<th style="width:30%;">Montant</th>
   </tr>
-  {% for tarif in tarifsAdoption %}
+  {% for tarif in tarifs_adoption %}
   <tr>
     <td>{{tarif.get_type_animal_display}}</td>
     <td>{{tarif.get_sexe_display}}</td>
