@@ -419,10 +419,10 @@ def calcul_montant_sejour(request):
             supplement_vaccination = ParametreTarifairePension.objects.get(type_supplement="VACCINATION")
             montant_sejour = montant_sejour + supplement_vaccination.montant
         supplement_samedi = ParametreTarifairePension.objects.get(type_supplement="SAMEDI")
-        # TODO : partie samedi non opérationnelle, manque partie horaire
-        if date_arrivee.weekday == 5:
+        # TODO : manque partie horaire
+        if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
-        if date_depart.weekday == 5:
+        if date_depart.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
 
 
