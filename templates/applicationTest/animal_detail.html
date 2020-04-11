@@ -34,7 +34,7 @@
 			<span class="pull-right">
 			<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
 			</span>
-			{% if animal.isFromRefuge %}
+			{% if animal.is_from_refuge %}
 			<span class="pull-left">
 			<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
 			</span>

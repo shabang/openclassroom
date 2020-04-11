@@ -1,3 +1,5 @@
+import sys
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -7,9 +9,9 @@ from enum import Enum
 
 
 class TypeAnimalChoice(Enum):
-    LAPIN = "Lapin",
+    LAPIN = "Lapin"
     CHINCHILLA = "Chinchilla"
-    COCHON_DINDE ="Cochon d'inde"
+    COCHON_DINDE = "Cochon d'inde"
 
 
 class TypeSupplementChoice(Enum):
@@ -77,17 +79,17 @@ class Animal(models.Model):
     date_arrivee = models.DateField(verbose_name="Date de première arrivée", null=True, blank=True)
     date_visite = models.DateField(verbose_name="Date de prochaine visite vétérinaire", null=True, blank=True)
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",
-                                   choices=[(tag, tag.value) for tag in TypeAnimalChoice])
+                                   choices=[(tag.name, tag.value) for tag in TypeAnimalChoice])
     emplacement = models.CharField(max_length=30, verbose_name="Emplacement",
-                                   choices=[(tag, tag.value) for tag in EmplacementChoice])
+                                   choices=[(tag.name, tag.value) for tag in EmplacementChoice])
     origine = models.CharField(max_length=30, verbose_name="Origine (à remplir uniquement si animal du refuge)",
-                               choices=[(tag, tag.value) for tag in OrigineChoice], blank=True)
+                               choices=[(tag.name, tag.value) for tag in OrigineChoice], blank=True)
     sexe = models.CharField(max_length=30, verbose_name="Sexe",
-                            choices=[(tag, tag.value) for tag in SexeChoice])
+                            choices=[(tag.name, tag.value) for tag in SexeChoice])
     sterilise = models.CharField(max_length=30, verbose_name="Stérilisé",
-                                 choices=[(tag, tag.value) for tag in OuiNonChoice])
+                                 choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     vaccine = models.CharField(max_length=30, verbose_name="Vacciné",
-                               choices=[(tag, tag.value) for tag in OuiNonChoice])
+                               choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     date_dernier_vaccin = models.DateField(verbose_name="Date du dernier rappel de vaccin", null=True, blank=True)
     proprietaire = models.ForeignKey(Proprietaire,
                                      verbose_name="Propriétaire (à remplir uniquement si animal de la pension)",
@@ -98,10 +100,10 @@ class Animal(models.Model):
         return self.nom
 
     def is_from_pension(self):
-        return self.emplacement == EmplacementChoice.PENSION
+        return self.emplacement == EmplacementChoice.PENSION.name
 
     def is_from_refuge(self):
-        return self.emplacement == EmplacementChoice.REFUGE
+        return self.emplacement == EmplacementChoice.REFUGE.name
 
     def is_adopted_refuge(self):
         result = False
@@ -125,7 +127,7 @@ class Animal(models.Model):
         date_rappel_vaccin = self.date_dernier_vaccin
         date_visites = VisiteMedicale.objects.filter(animaux=self).aggregate(models.Min('date')).get('date__min')
         if date_rappel_vaccin is not None:
-            self.vaccine = OuiNonChoice.OUI
+            self.vaccine = OuiNonChoice.OUI.name
             if date_visites is not None:
                 self.date_visite = date_visites if date_visites.date() < date_rappel_vaccin else date_rappel_vaccin
             else:
@@ -159,7 +161,7 @@ class Adoption(models.Model):
 class VisiteMedicale(models.Model):
     date = models.DateTimeField(verbose_name="Date de la visite")
     type_visite = models.CharField(max_length=30, verbose_name="Objet de la visite",
-                                   choices=[(tag, tag.value) for tag in TypeVisiteVetoChoice])
+                                   choices=[(tag.name, tag.value) for tag in TypeVisiteVetoChoice])
     commentaire = models.CharField(max_length=2000, blank=True)
     montant = models.DecimalField(verbose_name="Montant", max_digits=7, decimal_places=2, null=True)
     animaux = models.ManyToManyField(Animal)
@@ -183,12 +185,12 @@ class Sejour(models.Model):
     vaccination = models.CharField(max_length=3,
                                    verbose_name="Tous les animaux du séjour sont correctement vaccinés pour toute la "
                                                 "durée du séjour? (majoration de 90€ si ce n'est pas le cas) ",
-                                   choices=[(tag, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.OUI)
+                                   choices=[(tag.name, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.OUI.name)
     soin = models.CharField(max_length=3,
                             verbose_name="Un de vos animaux nécessite un soin quotidien (a préciser ci-dessous) ",
-                            choices=[(tag, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON)
+                            choices=[(tag, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON.name)
     injection = models.CharField(max_length=3, verbose_name="Le soin quotidien de votre animal se fait par injection ",
-                                 choices=[(tag, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON)
+                                 choices=[(tag.name, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON.name)
     commentaire = models.CharField(max_length=1000,
                                    verbose_name="Indications sur le séjour (soins divers, points d'attention...)",
                                    blank=True)
@@ -206,11 +208,11 @@ class Sejour(models.Model):
 
 class TarifJournalier(models.Model):
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",
-                                   choices=[(tag, tag.value) for tag in TypeAnimalChoice])
+                                   choices=[(tag.name, tag.value) for tag in TypeAnimalChoice])
     adopte_refuge = models.CharField(max_length=3, verbose_name="Adopté au refuge",
-                                     choices=[(tag, tag.value) for tag in OuiNonChoice])
+                                     choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     supplementaire = models.CharField(max_length=3, verbose_name="Animal supplémentaire dans la même cage",
-                                      choices=[(tag, tag.value) for tag in OuiNonChoice])
+                                      choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     montant_jour = models.DecimalField(verbose_name="Prix par jour", max_digits=7, decimal_places=2)
 
     def __str__(self):
@@ -219,10 +221,10 @@ class TarifJournalier(models.Model):
 
 class TarifAdoption(models.Model):
     type_animal = models.CharField(max_length=30, verbose_name="Type d'animal",
-                                   choices=[(tag, tag.value) for tag in TypeAnimalChoice])
-    sexe = models.CharField(max_length=30, verbose_name="Sexe",choices=[(tag, tag.value) for tag in SexeChoice])
+                                   choices=[(tag.name, tag.value) for tag in TypeAnimalChoice])
+    sexe = models.CharField(max_length=30, verbose_name="Sexe", choices=[(tag, tag.value) for tag in SexeChoice])
     sterilise = models.CharField(max_length=3, verbose_name="Stérilisé",
-                                 choices=[(tag, tag.value) for tag in OuiNonChoice])
+                                 choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     montant_adoption = models.DecimalField(verbose_name="Prix par jour", max_digits=7, decimal_places=2)
 
     def __str__(self):
@@ -231,9 +233,9 @@ class TarifAdoption(models.Model):
 
 class ParametreTarifairePension(models.Model):
     type_supplement = models.CharField(max_length=50, verbose_name="Libellé du supplément",
-                                       choices=[(tag, tag.value) for tag in TypeSupplementChoice])
+                                       choices=[(tag.name, tag.value) for tag in TypeSupplementChoice])
     supplement_journalier = models.CharField(max_length=3, verbose_name="Supplément journalier?",
-                                             choices=[(tag, tag.value) for tag in OuiNonChoice])
+                                             choices=[(tag.name, tag.value) for tag in OuiNonChoice])
     montant = models.DecimalField(max_digits=7, decimal_places=2)
 
     def __str__(self):

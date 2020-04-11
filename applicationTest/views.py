@@ -56,9 +56,9 @@ def home(request):
     departs_pension = Sejour.objects.filter(date_depart__gt=today).filter(date_depart__lt=interval).count()
     presences = Sejour.objects.filter(date_arrivee__lt=today).filter(date_depart__gt=today).count()
     # Partie refuge
-    rdv_veterinaire = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE).filter(date_visite__gt=today).filter(
+    rdv_veterinaire = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name).filter(date_visite__gt=today).filter(
         date_visite__lt=interval).count()
-    recuperations = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE).filter(date_arrivee__gt=today).filter(
+    recuperations = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name).filter(date_arrivee__gt=today).filter(
         date_arrivee__lt=interval).count()
     adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt=interval).count()
 
@@ -76,7 +76,7 @@ class CreateAnimal(LoginRequiredMixin, CreateView):
         if id_proprietaire:
             proprietaire = Proprietaire.objects.get(id=id_proprietaire)
             form.fields['proprietaire'].initial = proprietaire
-            form.fields['emplacement'].initial = EmplacementChoice.PENSION
+            form.fields['emplacement'].initial = EmplacementChoice.PENSION.name
         return form
 
     def get_success_url(self):
@@ -144,7 +144,7 @@ class CreateVisite(LoginRequiredMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
-        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE)
+        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
         return form
 
 
@@ -203,7 +203,7 @@ def search_animal(request):
             proprietaire_form = form.cleaned_data['proprietaire']
             type_animal_form = form.cleaned_data['type_animal']
             nom_form = form.cleaned_data['nom']
-            provenance_form = form.cleaned_data['provenance']
+            provenance_form = form.cleaned_data['emplacement']
             date_naissance_min = form.cleaned_data['date_naissance_min']
             date_naissance_max = form.cleaned_data['date_naissance_max']
             date_arrivee_min = form.cleaned_data['date_arrivee_min']
@@ -260,11 +260,11 @@ def search_animal(request):
                 animals = animals.filter(adoption__date__gte=today)
                 animals = animals.filter(adoption__date__lte=interval)
             if filter_data == "pension":
-                form.fields['provenance'].initial = EmplacementChoice.PENSION
-                animals = animals.filter(emplacement=EmplacementChoice.PENSION)
+                form.fields['emplacement'].initial = EmplacementChoice.PENSION.name
+                animals = animals.filter(emplacement=EmplacementChoice.PENSION.name)
             if filter_data == "refuge":
-                form.fields['provenance'].initial = EmplacementChoice.REFUGE
-                animals = animals.filter(emplacement=EmplacementChoice.REFUGE)
+                form.fields['emplacement'].initial = EmplacementChoice.REFUGE.name
+                animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
 
     return render(request, 'applicationTest/animal_list.html', locals())
 
@@ -397,14 +397,14 @@ def calcul_montant_sejour(request):
         # On commence par calculer le prix pour chaque animal
         for i, elt in enumerate(animaux):
             animal = Animal.objects.get(id=elt)
-            adopte_refuge = OuiNonChoice.OUI if animal.is_adopted_refuge() else OuiNonChoice.NON
+            adopte_refuge = OuiNonChoice.OUI.name if animal.is_adopted_refuge() else OuiNonChoice.NON.name
             if i < nb_cages:
                 tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
-                                                      Q(supplementaire=OuiNonChoice.NON) & Q(
+                                                      Q(supplementaire=OuiNonChoice.NON.name) & Q(
                     adopte_refuge=adopte_refuge))
             else:
                 tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
-                                                      Q(supplementaire=OuiNonChoice.OUI) & Q(
+                                                      Q(supplementaire=OuiNonChoice.OUI.name) & Q(
                     adopte_refuge=adopte_refuge))
             montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
         # Ensuite, on calcule les suppléments
@@ -413,17 +413,19 @@ def calcul_montant_sejour(request):
         injection = request.POST["injection"]
         soin = request.POST["soin"]
         vaccination = request.POST["vaccination"]
-        if injection and injection == OuiNonChoice.OUI:
-            supplement_injection = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.INJECTION)
+        if injection and injection == OuiNonChoice.OUI.name:
+            supplement_injection = ParametreTarifairePension.objects.get(
+                type_supplement=TypeSupplementChoice.INJECTION.name)
             montant_sejour = montant_sejour + (supplement_injection.montant * nb_jours)
-        elif soin and soin == OuiNonChoice.OUI:
-            supplement_soin = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.MEDICAMENT)
+        elif soin and soin == OuiNonChoice.OUI.name:
+            supplement_soin = ParametreTarifairePension.objects.get(
+                type_supplement=TypeSupplementChoice.MEDICAMENT.name)
             montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
-        if vaccination and vaccination == OuiNonChoice.OUI:
+        if vaccination and vaccination == OuiNonChoice.OUI.name:
             supplement_vaccination = ParametreTarifairePension.objects.get(
-                type_supplement=TypeSupplementChoice.VACCINATION)
+                type_supplement=TypeSupplementChoice.VACCINATION.name)
             montant_sejour = montant_sejour + supplement_vaccination.montant
-        supplement_samedi = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.SAMEDI)
+        supplement_samedi = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.SAMEDI.name)
         # TODO : manque partie horaire
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
@@ -475,7 +477,7 @@ def adoption_complete(request, pk):
             adoption.save()
 
             # l'animal ne fait plus partie du refuge
-            animal.emplacement = EmplacementChoice.PENSION
+            animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = proprietaire
             animal.save()
 
@@ -505,7 +507,7 @@ def adoption_allegee(request, pk):
             # l'animal ne fait plus partie du refuge
             new_adoption.animal = animal
             new_adoption.save()
-            animal.emplacement = EmplacementChoice.PENSION
+            animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = adoption.proprietaire
             animal.save()
 
