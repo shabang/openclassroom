@@ -2,6 +2,7 @@
 import sys
 from decimal import Decimal
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -10,7 +11,8 @@ from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, Anim
     AnimalCreateForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm, \
     AdoptionFormNoProprietaire, AdoptionForm, AdoptionUpdateForm
 from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, \
-    Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension
+    Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension, \
+    TypeSupplementChoice, OuiNonChoice, EmplacementChoice
 from django.urls import reverse_lazy
 from _datetime import timedelta, datetime
 from django.contrib.auth.decorators import login_required, permission_required
@@ -54,16 +56,16 @@ def home(request):
     departs_pension = Sejour.objects.filter(date_depart__gt=today).filter(date_depart__lt=interval).count()
     presences = Sejour.objects.filter(date_arrivee__lt=today).filter(date_depart__gt=today).count()
     # Partie refuge
-    rdv_veterinaire = Animal.objects.filter(emplacement="REFUGE").filter(date_visite__gt=today).filter(
+    rdv_veterinaire = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE).filter(date_visite__gt=today).filter(
         date_visite__lt=interval).count()
-    recuperations = Animal.objects.filter(emplacement="REFUGE").filter(date_arrivee__gt=today).filter(
+    recuperations = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE).filter(date_arrivee__gt=today).filter(
         date_arrivee__lt=interval).count()
     adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt=interval).count()
 
     return render(request, 'applicationTest/tableau_bord.html', locals())
 
 
-class CreateAnimal(CreateView):
+class CreateAnimal(LoginRequiredMixin, CreateView):
     model = Animal
     form_class = AnimalCreateForm
     template_name = 'applicationTest/animal_form.html'
@@ -74,14 +76,14 @@ class CreateAnimal(CreateView):
         if id_proprietaire:
             proprietaire = Proprietaire.objects.get(id=id_proprietaire)
             form.fields['proprietaire'].initial = proprietaire
-            form.fields['emplacement'].initial = "PENSION"
+            form.fields['emplacement'].initial = EmplacementChoice.PENSION
         return form
 
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk': self.object.id})
 
 
-class UpdateAnimal(UpdateView):
+class UpdateAnimal(LoginRequiredMixin, UpdateView):
     model = Animal
     form_class = AnimalUpdateForm
 
@@ -134,7 +136,7 @@ def update_proprietaire(request, pk):
     return render(request, 'applicationTest/proprietaire_form.html', locals())
 
 
-class CreateVisite(CreateView):
+class CreateVisite(LoginRequiredMixin, CreateView):
     model = VisiteMedicale
     template_name = 'applicationTest/visite_form.html'
     fields = ('date', 'type_visite', 'montant', 'animaux', 'commentaire')
@@ -142,11 +144,11 @@ class CreateVisite(CreateView):
 
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
-        form.fields['animaux'].queryset = Animal.objects.filter(emplacement="REFUGE")
+        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE)
         return form
 
 
-class UpdateAdoption(UpdateView):
+class UpdateAdoption(LoginRequiredMixin, UpdateView):
     model = Adoption
     template_name = 'applicationTest/update_adoption.html'
     form_class = AdoptionUpdateForm
@@ -155,7 +157,7 @@ class UpdateAdoption(UpdateView):
         return reverse_lazy('detail_animal', kwargs={'pk': self.object.animal.id})
 
 
-class CreateSejour(CreateView):
+class CreateSejour(LoginRequiredMixin, CreateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
     form_class = SejourForm
@@ -173,7 +175,7 @@ class CreateSejour(CreateView):
         return reverse_lazy('detail_sejour', kwargs={'pk': self.object.id})
 
 
-class UpdateSejour(UpdateView):
+class UpdateSejour(LoginRequiredMixin, UpdateView):
     model = Sejour
     template_name = 'applicationTest/sejour_form.html'
     form_class = SejourForm
@@ -258,11 +260,11 @@ def search_animal(request):
                 animals = animals.filter(adoption__date__gte=today)
                 animals = animals.filter(adoption__date__lte=interval)
             if filter_data == "pension":
-                form.fields['provenance'].initial = "PENSION"
-                animals = animals.filter(emplacement="PENSION")
+                form.fields['provenance'].initial = EmplacementChoice.PENSION
+                animals = animals.filter(emplacement=EmplacementChoice.PENSION)
             if filter_data == "refuge":
-                form.fields['provenance'].initial = "REFUGE"
-                animals = animals.filter(emplacement="REFUGE")
+                form.fields['provenance'].initial = EmplacementChoice.REFUGE
+                animals = animals.filter(emplacement=EmplacementChoice.REFUGE)
 
     return render(request, 'applicationTest/animal_list.html', locals())
 
@@ -395,37 +397,38 @@ def calcul_montant_sejour(request):
         # On commence par calculer le prix pour chaque animal
         for i, elt in enumerate(animaux):
             animal = Animal.objects.get(id=elt)
-            adopte_refuge = "OUI" if animal.is_adopted_refuge() else "NON"
+            adopte_refuge = OuiNonChoice.OUI if animal.is_adopted_refuge() else OuiNonChoice.NON
             if i < nb_cages:
                 tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
-                                                      Q(supplementaire="NON") & Q(adopte_refuge=adopte_refuge))
+                                                      Q(supplementaire=OuiNonChoice.NON) & Q(
+                    adopte_refuge=adopte_refuge))
             else:
                 tarif_j = TarifJournalier.objects.get(Q(type_animal=animal.type_animal) &
-                                                      Q(supplementaire="OUI") & Q(adopte_refuge=adopte_refuge))
+                                                      Q(supplementaire=OuiNonChoice.OUI) & Q(
+                    adopte_refuge=adopte_refuge))
             montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
         # Ensuite, on calcule les suppléments
-        supplement_cage = ParametreTarifairePension.objects.get(type_supplement = "CAGE")
+        supplement_cage = ParametreTarifairePension.objects.get(type_supplement="CAGE")
         montant_sejour = montant_sejour + (supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours)
         injection = request.POST["injection"]
         soin = request.POST["soin"]
         vaccination = request.POST["vaccination"]
-        if injection and injection == "OUI":
-            supplement_injection = ParametreTarifairePension.objects.get(type_supplement = "INJECTION")
+        if injection and injection == OuiNonChoice.OUI:
+            supplement_injection = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.INJECTION)
             montant_sejour = montant_sejour + (supplement_injection.montant * nb_jours)
-        elif soin and soin == "OUI":
-            supplement_soin = ParametreTarifairePension.objects.get(type_supplement="MEDICAMENT")
+        elif soin and soin == OuiNonChoice.OUI:
+            supplement_soin = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.MEDICAMENT)
             montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
-        if vaccination and vaccination == "OUI":
-            supplement_vaccination = ParametreTarifairePension.objects.get(type_supplement="VACCINATION")
+        if vaccination and vaccination == OuiNonChoice.OUI:
+            supplement_vaccination = ParametreTarifairePension.objects.get(
+                type_supplement=TypeSupplementChoice.VACCINATION)
             montant_sejour = montant_sejour + supplement_vaccination.montant
-        supplement_samedi = ParametreTarifairePension.objects.get(type_supplement="SAMEDI")
+        supplement_samedi = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.SAMEDI)
         # TODO : manque partie horaire
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
         if date_depart.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
-
-
 
     sys.stdout.flush()
 
@@ -472,7 +475,7 @@ def adoption_complete(request, pk):
             adoption.save()
 
             # l'animal ne fait plus partie du refuge
-            animal.emplacement = "PENSION"
+            animal.emplacement = EmplacementChoice.PENSION
             animal.proprietaire = proprietaire
             animal.save()
 
@@ -502,7 +505,7 @@ def adoption_allegee(request, pk):
             # l'animal ne fait plus partie du refuge
             new_adoption.animal = animal
             new_adoption.save()
-            animal.emplacement = "PENSION"
+            animal.emplacement = EmplacementChoice.PENSION
             animal.proprietaire = adoption.proprietaire
             animal.save()
 

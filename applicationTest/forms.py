@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.admin.widgets import AdminSplitDateTime
 
+from .models import EmplacementChoice
+
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -70,7 +72,7 @@ class AnimalCreateForm(forms.ModelForm):
         cleaned_data = forms.ModelForm.clean(self)
         emplacement = cleaned_data.get('emplacement')
         # Si l'animal est inscrit en pension, il doit avoir un proprietaire
-        if emplacement == "PENSION":
+        if emplacement == EmplacementChoice.PENSION:
             if not cleaned_data.get('proprietaire'):
                 msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
                 self._errors["proprietaire"] = self.error_class([msg])
@@ -81,7 +83,7 @@ class AnimalCreateForm(forms.ModelForm):
                 del cleaned_data["origine"]
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
-        elif emplacement == "REFUGE":
+        elif emplacement == EmplacementChoice.REFUGE:
             if not cleaned_data.get('date_arrivee'):
                 msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
                 self._errors["date_arrivee"] = self.error_class([msg])
@@ -96,7 +98,7 @@ class AnimalCreateForm(forms.ModelForm):
                 del cleaned_data["proprietaire"]
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
         vaccine = cleaned_data.get('vaccine')
-        if vaccine == "OUI":
+        if vaccine == models.OuiNonChoice.OUI:
             date_vaccin = cleaned_data.get('date_dernier_vaccin')
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
@@ -131,7 +133,7 @@ class AnimalUpdateForm(forms.ModelForm):
 
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
-        if emplacement == "REFUGE":
+        if emplacement == EmplacementChoice.REFUGE:
             if not cleaned_data.get('date_arrivee'):
                 msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
                 self._errors["date_arrivee"] = self.error_class([msg])
@@ -139,7 +141,7 @@ class AnimalUpdateForm(forms.ModelForm):
 
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
         vaccine = cleaned_data.get('vaccine')
-        if vaccine == "OUI":
+        if vaccine == models.OuiNonChoice.OUI:
             date_vaccin = cleaned_data.get('date_dernier_vaccin')
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
