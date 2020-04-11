@@ -14,7 +14,7 @@ from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour,
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension, \
     TypeSupplementChoice, OuiNonChoice, EmplacementChoice
 from django.urls import reverse_lazy
-from _datetime import timedelta, datetime
+from _datetime import timedelta, datetime, time
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
@@ -379,9 +379,9 @@ def calcul_montant_sejour(request):
     # Inutile de calculer le montant si les données ne sont pas correctement remplies
     # On commence donc par vérifier toutes les données essentielles au calcul
     date_arrivee = datetime.strptime(request.POST["date_arrivee_0"], '%d/%m/%Y')
-    heure_arrivee = request.POST["date_arrivee_1"]
+    heure_arrivee =  datetime.strptime(request.POST["date_arrivee_1"], '%H:%M:%S').time()
     date_depart = datetime.strptime(request.POST["date_depart_0"], '%d/%m/%Y')
-    heure_depart = request.POST["date_depart_1"]
+    heure_depart = datetime.strptime(request.POST["date_depart_1"], '%H:%M:%S').time()
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     if not nb_cages_fournies:
@@ -413,6 +413,7 @@ def calcul_montant_sejour(request):
         injection = request.POST["injection"]
         soin = request.POST["soin"]
         vaccination = request.POST["vaccination"]
+        # Supplément soin par voie orale ou par injection
         if injection and injection == OuiNonChoice.OUI.name:
             supplement_injection = ParametreTarifairePension.objects.get(
                 type_supplement=TypeSupplementChoice.INJECTION.name)
@@ -421,16 +422,33 @@ def calcul_montant_sejour(request):
             supplement_soin = ParametreTarifairePension.objects.get(
                 type_supplement=TypeSupplementChoice.MEDICAMENT.name)
             montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
-        if vaccination and vaccination == OuiNonChoice.OUI.name:
+        # Supplément vaccination
+        if vaccination and vaccination == OuiNonChoice.NON.name:
             supplement_vaccination = ParametreTarifairePension.objects.get(
                 type_supplement=TypeSupplementChoice.VACCINATION.name)
             montant_sejour = montant_sejour + supplement_vaccination.montant
+        # Supplément samedi ou supplément horaire
         supplement_samedi = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.SAMEDI.name)
-        # TODO : manque partie horaire
+        supplement_horaire = ParametreTarifairePension.objects.get(type_supplement=TypeSupplementChoice.HORAIRE.name)
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
+        elif date_arrivee.weekday() in (0,1,2,3,4)and\
+                not is_time_between(time(18,0),time(19,30), heure_arrivee):
+                montant_sejour = montant_sejour + supplement_horaire.montant
+        elif date_arrivee.weekday() == 6 and \
+            not is_time_between(time(15,0),time(18,30), heure_arrivee):
+            montant_sejour = montant_sejour + supplement_horaire.montant
         if date_depart.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
+        elif date_depart.weekday() in (0,1,2,3,4) and\
+                not is_time_between(time(18,0),time(19,30), heure_depart):
+                montant_sejour = montant_sejour + supplement_horaire.montant
+        elif date_depart.weekday() == 6 and \
+            not is_time_between(time(15,0),time(18,30), heure_depart):
+            montant_sejour = montant_sejour + supplement_horaire.montant
+
+
+
 
     sys.stdout.flush()
 
@@ -439,6 +457,8 @@ def calcul_montant_sejour(request):
     # Renvoyer vue json
     return JsonResponse({'montant': montant_sejour})
 
+def is_time_between(begin_time, end_time,check_time):
+    return check_time > begin_time and check_time < end_time
 
 @login_required
 def parametrage_tarifaire(request):

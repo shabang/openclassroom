@@ -188,7 +188,7 @@ class Sejour(models.Model):
                                    choices=[(tag.name, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.OUI.name)
     soin = models.CharField(max_length=3,
                             verbose_name="Un de vos animaux nécessite un soin quotidien (a préciser ci-dessous) ",
-                            choices=[(tag, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON.name)
+                            choices=[(tag.name, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON.name)
     injection = models.CharField(max_length=3, verbose_name="Le soin quotidien de votre animal se fait par injection ",
                                  choices=[(tag.name, tag.value) for tag in OuiNonChoice], default=OuiNonChoice.NON.name)
     commentaire = models.CharField(max_length=1000,
