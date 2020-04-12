@@ -1,5 +1,5 @@
 """
-WSGI config for openclassroom project.
+WSGI config for les_grandes_oreilles project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'openclassroom.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'les_grandes_oreilles.settings')
 
 application = get_wsgi_application()

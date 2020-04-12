@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from applicationTest.models import Proprietaire, Animal, VisiteMedicale, Sejour, Adoption, \
+from admin_interface.models import Proprietaire, Animal, VisiteMedicale, Sejour, Adoption, \
     TarifJournalier, TarifAdoption, ParametreTarifairePension
 
 

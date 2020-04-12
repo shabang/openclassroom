@@ -1,5 +1,5 @@
 """
-ASGI config for openclassroom project.
+ASGI config for les_grandes_oreilles project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'openclassroom.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'les_grandes_oreilles.settings')
 
 application = get_asgi_application()

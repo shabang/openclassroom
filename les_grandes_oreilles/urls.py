@@ -1,4 +1,4 @@
-"""openclassroom URL Configuration
+"""les_grandes_oreilles URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -19,5 +19,5 @@ from django.urls import path, include
 urlpatterns = [
 
     path('admin/le5gr4nde5oreille5/', admin.site.urls),
-    path('applicationTest/', include('applicationTest.urls')),
+    path('admin_interface/', include('admin_interface.urls')),
 ]

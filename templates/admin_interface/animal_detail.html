@@ -1,4 +1,4 @@
-{% extends "applicationTest/base.html" %}
+{% extends "admin_interface/base.html" %}
 
 {% block content %}
 <div class="row">
@@ -17,14 +17,14 @@
 			<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
 			<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
 			<strong> Emplacement </strong> : {{animal.get_emplacement_display}} <br>
-			{% if animal.isFromRefuge %}
+			{% if animal.is_from_refuge %}
 			<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
 			{% endif %}
 			<strong> Date de naissance </strong> : {{animal.date_naissance|default:" - "}} <br>
 			<strong> Date de première arrivée </strong> : {{animal.date_arrivee|default:" - "}} <br>
-			<strong> Vacciné </strong> : {{animal.getVaccinStr}} <br>
+			<strong> Vacciné </strong> : {{animal.get_vaccin_str}} <br>
 			<strong> Stérilisé </strong> : {{animal.get_sterilise_display}} <br>
-			{% if animal.isFromPension %}
+			{% if animal.is_from_pension %}
 			<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
 			{% endif %}
 			<strong> Description </strong> : {{animal.description}} <br>

@@ -7,10 +7,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import CreateView, UpdateView
-from applicationTest.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalUpdateForm, \
+from admin_interface.forms import AnimalSearchForm, ProprietaireSearchForm, AnimalUpdateForm, \
     AnimalCreateForm, ConnexionForm, VisiteSearchForm, SejourSearchForm, UserForm, ProprietaireForm, SejourForm, \
     AdoptionFormNoProprietaire, AdoptionForm, AdoptionUpdateForm
-from applicationTest.models import Animal, Proprietaire, VisiteMedicale, Sejour, \
+from admin_interface.models import Animal, Proprietaire, VisiteMedicale, Sejour, \
     Adoption, TarifJournalier, TarifAdoption, ParametreTarifairePension, \
     TypeSupplementChoice, OuiNonChoice, EmplacementChoice
 from django.urls import reverse_lazy
@@ -38,10 +38,10 @@ def connexion(request):
                 error = True
     else:
         form = ConnexionForm()
-    return render(request, 'applicationTest/login.html', locals())
+    return render(request, 'admin_interface/login.html', locals())
 
 
-@permission_required('applicationTest.view_animal')
+@permission_required('admin_interface.view_animal')
 def home(request):
     # Pour la sidebar
     selected = "tableau_bord"
@@ -62,13 +62,13 @@ def home(request):
         date_arrivee__lt=interval).count()
     adoptions = Adoption.objects.filter(date__gt=today).filter(date__lt=interval).count()
 
-    return render(request, 'applicationTest/tableau_bord.html', locals())
+    return render(request, 'admin_interface/tableau_bord.html', locals())
 
 
 class CreateAnimal(LoginRequiredMixin, CreateView):
     model = Animal
     form_class = AnimalCreateForm
-    template_name = 'applicationTest/animal_form.html'
+    template_name = 'admin_interface/animal_form.html'
 
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
@@ -87,7 +87,7 @@ class UpdateAnimal(LoginRequiredMixin, UpdateView):
     model = Animal
     form_class = AnimalUpdateForm
 
-    template_name = 'applicationTest/animal_form.html'
+    template_name = 'admin_interface/animal_form.html'
 
     def get_success_url(self):
         return reverse_lazy('detail_animal', kwargs={'pk': self.object.id})
@@ -114,7 +114,7 @@ def create_proprietaire(request):
         user_form = UserForm()
         proprietaire_form = ProprietaireForm()
     # Render the template depending on the context.
-    return render(request, 'applicationTest/proprietaire_form.html', locals())
+    return render(request, 'admin_interface/proprietaire_form.html', locals())
 
 
 @login_required
@@ -133,12 +133,12 @@ def update_proprietaire(request, pk):
         user_form = UserForm(instance=proprietaire_to_update.user)
         proprietaire_form = ProprietaireForm(instance=proprietaire_to_update)
     # Render the template depending on the context.
-    return render(request, 'applicationTest/proprietaire_form.html', locals())
+    return render(request, 'admin_interface/proprietaire_form.html', locals())
 
 
 class CreateVisite(LoginRequiredMixin, CreateView):
     model = VisiteMedicale
-    template_name = 'applicationTest/visite_form.html'
+    template_name = 'admin_interface/visite_form.html'
     fields = ('date', 'type_visite', 'montant', 'animaux', 'commentaire')
     success_url = reverse_lazy('visites')
 
@@ -150,7 +150,7 @@ class CreateVisite(LoginRequiredMixin, CreateView):
 
 class UpdateAdoption(LoginRequiredMixin, UpdateView):
     model = Adoption
-    template_name = 'applicationTest/update_adoption.html'
+    template_name = 'admin_interface/update_adoption.html'
     form_class = AdoptionUpdateForm
 
     def get_success_url(self):
@@ -159,7 +159,7 @@ class UpdateAdoption(LoginRequiredMixin, UpdateView):
 
 class CreateSejour(LoginRequiredMixin, CreateView):
     model = Sejour
-    template_name = 'applicationTest/sejour_form.html'
+    template_name = 'admin_interface/sejour_form.html'
     form_class = SejourForm
 
     def get_form(self, form_class=None):
@@ -177,7 +177,7 @@ class CreateSejour(LoginRequiredMixin, CreateView):
 
 class UpdateSejour(LoginRequiredMixin, UpdateView):
     model = Sejour
-    template_name = 'applicationTest/sejour_form.html'
+    template_name = 'admin_interface/sejour_form.html'
     form_class = SejourForm
 
     def get_form(self, form_class=None):
@@ -266,7 +266,7 @@ def search_animal(request):
                 form.fields['emplacement'].initial = EmplacementChoice.REFUGE.name
                 animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
 
-    return render(request, 'applicationTest/animal_list.html', locals())
+    return render(request, 'admin_interface/animal_list.html', locals())
 
 
 @login_required
@@ -284,7 +284,7 @@ def search_proprietaire(request):
                 proprietaires = proprietaires.filter(nom__icontains=nom_form)
     else:
         form = ProprietaireSearchForm()
-    return render(request, 'applicationTest/proprietaire_list.html', locals())
+    return render(request, 'admin_interface/proprietaire_list.html', locals())
 
 
 @login_required
@@ -307,7 +307,7 @@ def search_visite(request):
     else:
         form = VisiteSearchForm()
 
-    return render(request, 'applicationTest/visite_list.html', locals())
+    return render(request, 'admin_interface/visite_list.html', locals())
 
 
 @login_required
@@ -363,14 +363,14 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=interval)
                 sejours = sejours.filter(date_arrivee__lte=today)
 
-    return render(request, 'applicationTest/sejour_list.html', locals())
+    return render(request, 'admin_interface/sejour_list.html', locals())
 
 
 @login_required
 def load_animals(request):
     proprietaire_id = request.GET.get('proprietaire')
     animaux = Animal.objects.filter(proprietaire_id=proprietaire_id)
-    return render(request, 'applicationTest/sejour_form_select_animals.html', {'animaux': animaux})
+    return render(request, 'admin_interface/sejour_form_select_animals.html', {'animaux': animaux})
 
 
 @login_required
@@ -447,13 +447,6 @@ def calcul_montant_sejour(request):
             not is_time_between(time(15,0),time(18,30), heure_depart):
             montant_sejour = montant_sejour + supplement_horaire.montant
 
-
-
-
-    sys.stdout.flush()
-
-    # Recuperer les parametres tarifaires
-    # Calcul du montant du séjour
     # Renvoyer vue json
     return JsonResponse({'montant': montant_sejour})
 
@@ -466,13 +459,13 @@ def parametrage_tarifaire(request):
     tarifs_journaliers_pension = TarifJournalier.objects.all()
     tarifs_supplements = ParametreTarifairePension.objects.all()
     tarifs_adoption = TarifAdoption.objects.all()
-    return render(request, 'applicationTest/parametrage_tarifaire.html', locals())
+    return render(request, 'admin_interface/parametrage_tarifaire.html', locals())
 
 
 @login_required
 def adoption(request, pk):
     animal = Animal.objects.get(id=pk)
-    return render(request, 'applicationTest/adoption.html', locals())
+    return render(request, 'admin_interface/adoption.html', locals())
 
 
 @login_required
@@ -512,7 +505,7 @@ def adoption_complete(request, pk):
             adoption_form.fields['montant'].initial = montant_adoption
             adoption_form.fields['montant_restant'].initial = montant_adoption
 
-    return render(request, 'applicationTest/adoption_complete.html', locals())
+    return render(request, 'admin_interface/adoption_complete.html', locals())
 
 
 @login_required
@@ -528,7 +521,7 @@ def adoption_allegee(request, pk):
             new_adoption.animal = animal
             new_adoption.save()
             animal.emplacement = EmplacementChoice.PENSION.name
-            animal.proprietaire = adoption.proprietaire
+            animal.proprietaire = new_adoption.proprietaire
             animal.save()
 
             return redirect('detail_animal', pk=animal.id)
@@ -538,7 +531,7 @@ def adoption_allegee(request, pk):
         montant_adoption = get_montant_adoption(animal)
         adoption_form.fields['montant'].initial = montant_adoption
         adoption_form.fields['montant_restant'].initial = montant_adoption
-    return render(request, 'applicationTest/adoption_allegee.html', locals())
+    return render(request, 'admin_interface/adoption_allegee.html', locals())
 
 
 def get_montant_adoption(animal):

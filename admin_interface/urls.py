@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import DetailView
-from applicationTest.models import Animal, Proprietaire, Sejour
+from admin_interface.models import Animal, Proprietaire, Sejour
 from . import views
 from django.contrib.auth.decorators import login_required
 
