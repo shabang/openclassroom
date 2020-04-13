@@ -5,7 +5,7 @@ from . import views
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('accueil/', views.home, name="accueil"),
+    path('', views.home, name="accueil"),
     path('animals/', views.search_animal, name="animals"),
     path('creer_animals/', views.CreateAnimal.as_view(), name="creer_animal"),
     path('modifier_animal/<int:pk>/', views.UpdateAnimal.as_view(), name="modifier_animal"),
