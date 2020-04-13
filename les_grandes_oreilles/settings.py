@@ -128,7 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_URL = '/admin_interface/login/'
+LOGIN_REDIRECT_URL = 'accueil'
 
 EMAIL_HOST = '127.0.0.1'
 EMAIL_PORT = 587

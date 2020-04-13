@@ -1,9 +1,10 @@
 
 from django.db import models
 
-from . import TypeAnimalChoice, EmplacementChoice, OrigineChoice, SexeChoice, OuiNonChoice, VisiteMedicale
+from . import TypeAnimalChoice, EmplacementChoice, OrigineChoice, SexeChoice, OuiNonChoice
 from .adoptions import Adoption
 from .proprietaires import Proprietaire
+from .visite_medicales import VisiteMedicale
 
 
 class Animal(models.Model):
@@ -53,8 +54,7 @@ class Animal(models.Model):
         else:
             return self.get_vaccine_display()
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         # A l'enregistrement de l'animal on met à jour sa date de prochaine visite vétérinaire et ses informations de
         # vaccination
         date_rappel_vaccin = self.date_dernier_vaccin
@@ -67,7 +67,4 @@ class Animal(models.Model):
                 self.date_visite = date_rappel_vaccin
         else:
             self.date_visite = date_visites
-        return models.Model.save(self, force_insert=force_insert, force_update=force_update, using=using,
-                                 update_fields=update_fields)
-
-
+        return super().save(*args, **kwargs)

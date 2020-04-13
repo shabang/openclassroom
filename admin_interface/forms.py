@@ -1,11 +1,14 @@
 from django import forms
 from django.db.models.fields import BLANK_CHOICE_DASH
-from . import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.admin.widgets import AdminSplitDateTime
 
-from .models import EmplacementChoice, TypeAnimalChoice
+from .models import EmplacementChoice, TypeAnimalChoice, OuiNonChoice
+from .models.adoptions import Adoption
+from .models.animaux import Animal
+from .models.proprietaires import Proprietaire
+from .models.sejours import Sejour
 
 
 class DateInput(forms.DateInput):
@@ -18,7 +21,7 @@ class AnimalSearchForm(forms.Form):
                                     required=False)
     type_animal = forms.ChoiceField(choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in TypeAnimalChoice], widget=forms.Select(),
                                     required=False)
-    proprietaire = forms.ModelChoiceField(queryset=models.Proprietaire.objects.all(), required=False)
+    proprietaire = forms.ModelChoiceField(queryset=Proprietaire.objects.all(), required=False)
     date_naissance_min = forms.DateField(label="Date de naissance entre le", required=False, widget=DateInput())
     date_naissance_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
     date_arrivee_min = forms.DateField(label="Date de première arrivée entre le", required=False, widget=DateInput())
@@ -39,7 +42,7 @@ class SejourSearchForm(forms.Form):
     date_debut_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
     date_fin_min = forms.DateField(label="Date de fin du séjour entre le", required=False, widget=DateInput())
     date_fin_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    proprietaire = forms.ModelChoiceField(queryset=models.Proprietaire.objects.all(), required=False)
+    proprietaire = forms.ModelChoiceField(queryset=Proprietaire.objects.all(), required=False)
 
 
 class VisiteSearchForm(forms.Form):
@@ -49,7 +52,7 @@ class VisiteSearchForm(forms.Form):
 
 class AnimalCreateForm(forms.ModelForm):
     class Meta:
-        model = models.Animal
+        model = Animal
         fields = ('nom', 'type_animal', 'emplacement', 'origine', 'sexe',
                   'description', 'date_naissance', 'date_arrivee', 'sterilise',
                   'vaccine', 'date_dernier_vaccin', 'proprietaire')
@@ -98,7 +101,7 @@ class AnimalCreateForm(forms.ModelForm):
                 del cleaned_data["proprietaire"]
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
         vaccine = cleaned_data.get('vaccine')
-        if vaccine == models.OuiNonChoice.OUI.name:
+        if vaccine == OuiNonChoice.OUI.name:
             date_vaccin = cleaned_data.get('date_dernier_vaccin')
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
@@ -110,7 +113,7 @@ class AnimalCreateForm(forms.ModelForm):
 
 class AnimalUpdateForm(forms.ModelForm):
     class Meta:
-        model = models.Animal
+        model = Animal
         fields = ('description', 'date_naissance', 'date_arrivee', 'sterilise',
                   'vaccine', 'date_dernier_vaccin')
         date_naissance = forms.DateField(
@@ -141,7 +144,7 @@ class AnimalUpdateForm(forms.ModelForm):
 
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
         vaccine = cleaned_data.get('vaccine')
-        if vaccine == models.OuiNonChoice.OUI.name:
+        if vaccine == OuiNonChoice.OUI.name:
             date_vaccin = cleaned_data.get('date_dernier_vaccin')
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
@@ -167,7 +170,7 @@ class UserForm(forms.ModelForm):
 
 class ProprietaireForm(forms.ModelForm):
     class Meta:
-        model = models.Proprietaire
+        model = Proprietaire
         fields = ('adresse', 'telephone')
 
 
@@ -188,7 +191,7 @@ class AdoptionValidator:
 
 class AdoptionUpdateForm(AdoptionValidator, forms.ModelForm):
     class Meta:
-        model = models.Adoption
+        model = Adoption
         fields = ('montant', 'montant_restant')
         date = forms.DateField(
             widget=forms.DateInput(format='%d/%m/%Y'),
@@ -198,7 +201,7 @@ class AdoptionUpdateForm(AdoptionValidator, forms.ModelForm):
 
 class AdoptionForm(AdoptionValidator, forms.ModelForm):
     class Meta:
-        model = models.Adoption
+        model = Adoption
         fields = ('date', 'proprietaire', 'montant', 'montant_restant')
         date = forms.DateField(
             widget=forms.DateInput(format='%d/%m/%Y'),
@@ -208,7 +211,7 @@ class AdoptionForm(AdoptionValidator, forms.ModelForm):
 
 class AdoptionFormNoProprietaire(AdoptionValidator, forms.ModelForm):
     class Meta:
-        model = models.Adoption
+        model = Adoption
         fields = ('date', 'montant', 'montant_restant')
 
 
@@ -216,12 +219,12 @@ class SejourFormBase :
     # Pour gérer le lien entre le champ "propriétaire et le champ "Animaux"
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['animaux'].queryset = models.Animal.objects.none()
+        self.fields['animaux'].queryset = Animal.objects.none()
 
         if 'proprietaire' in self.data:
             try:
                 proprietaire_id = int(self.data.get('proprietaire'))
-                self.fields['animaux'].queryset = models.Animal.objects.filter(
+                self.fields['animaux'].queryset = Animal.objects.filter(
                     proprietaire_id=proprietaire_id).order_by('nom')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty animaux queryset
@@ -250,6 +253,6 @@ class SejourForm(SejourFormBase, forms.ModelForm):
     date_depart = forms.SplitDateTimeField(required=True, widget=AdminSplitDateTime())
 
     class Meta:
-        model = models.Sejour
+        model = Sejour
         fields = ('date_arrivee', 'date_depart', 'proprietaire', 'animaux', 'nb_cages_fournies', 'nb_cages_a_fournir',
                   'vaccination', 'soin', 'injection', 'commentaire', 'montant','montant_restant')

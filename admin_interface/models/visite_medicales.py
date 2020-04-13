@@ -3,7 +3,6 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
 from . import TypeVisiteVetoChoice, OuiNonChoice
-from .animaux import Animal
 
 
 class VisiteMedicale(models.Model):
@@ -12,15 +11,15 @@ class VisiteMedicale(models.Model):
                                    choices=[(tag.name, tag.value) for tag in TypeVisiteVetoChoice])
     commentaire = models.CharField(max_length=2000, blank=True)
     montant = models.DecimalField(verbose_name="Montant", max_digits=7, decimal_places=2, blank=True, null=True)
-    animaux = models.ManyToManyField(Animal)
+    animaux = models.ManyToManyField("Animal")
 
     def __str__(self):
         return f"visite {self.type_visite} le {self.date}"
 
-    
-@receiver(m2m_changed, sender = VisiteMedicale.animaux.through)
+
+@receiver(m2m_changed, sender=VisiteMedicale.animaux.through)
 def visite_medicale_save_action(sender, instance, **kwargs):
-   # Instance est une visite médicale
+    # Instance est une visite médicale
     if instance.type_visite in (TypeVisiteVetoChoice.STE.name, TypeVisiteVetoChoice.VAC.name):
         for animal in instance.animaux.all():
             if instance.type_visite == TypeVisiteVetoChoice.STE.name:
@@ -29,4 +28,3 @@ def visite_medicale_save_action(sender, instance, **kwargs):
                 animal.vaccine = OuiNonChoice.OUI.name
                 animal.date_dernier_vaccin = instance.date
             animal.save()
-

@@ -1,7 +1,11 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from admin_interface.models import Proprietaire, Animal, VisiteMedicale, Sejour, Adoption, \
-    TarifJournalier, TarifAdoption, ParametreTarifairePension
+from admin_interface.models.proprietaires import Proprietaire
+from admin_interface.models.animaux import Animal
+from admin_interface.models.visite_medicales import VisiteMedicale
+from admin_interface.models.sejours import Sejour
+from admin_interface.models.adoptions import Adoption
+from admin_interface.models.tarifs import TarifJournalier, TarifAdoption, ParametreTarifairePension
 
 
 @admin.register(Proprietaire)

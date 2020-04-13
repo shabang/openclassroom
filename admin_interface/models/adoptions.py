@@ -1,6 +1,5 @@
 from django.db import models
 
-from .animaux import Animal
 from .proprietaires import Proprietaire
 
 
@@ -11,14 +10,12 @@ class Adoption(models.Model):
                                           null=True, blank=True)
     proprietaire = models.ForeignKey(Proprietaire, on_delete=models.PROTECT)
     nb_jours = models.IntegerField(null=True, verbose_name="Nombre de jours au refuge avant adoption")
-    animal = models.OneToOneField(Animal, on_delete=models.PROTECT)
+    animal = models.OneToOneField("Animal", on_delete=models.PROTECT)
 
     def __str__(self):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, *args, **kwargs):
         if self.animal:
             self.nb_jours = abs((self.date - self.animal.date_arrivee).days)
-        return super().save(self, force_insert=force_insert, force_update=force_update, using=using,
-                            update_fields=update_fields)
+        return super().save(*args, **kwargs)
