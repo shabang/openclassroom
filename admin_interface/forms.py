@@ -12,25 +12,51 @@ from .models.sejours import Sejour
 
 
 class DateInput(forms.DateInput):
-    input_type = 'date'
+    input_type = "date"
 
 
 class AnimalSearchForm(forms.Form):
     nom = forms.CharField(max_length=100, required=False)
-    emplacement = forms.ChoiceField(choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in EmplacementChoice], widget=forms.Select(),
-                                    required=False)
-    type_animal = forms.ChoiceField(choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in TypeAnimalChoice], widget=forms.Select(),
-                                    required=False)
-    proprietaire = forms.ModelChoiceField(queryset=Proprietaire.objects.all(), required=False)
-    date_naissance_min = forms.DateField(label="Date de naissance entre le", required=False, widget=DateInput())
-    date_naissance_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    date_arrivee_min = forms.DateField(label="Date de première arrivée entre le", required=False, widget=DateInput())
-    date_arrivee_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    date_prochaine_visite_min = forms.DateField(label="Date de prochaine visite vétérinaire entre le", required=False,
-                                                widget=DateInput())
-    date_prochaine_visite_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    date_adoption_min = forms.DateField(label="Date d'adoption entre le", required=False, widget=DateInput())
-    date_adoption_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
+    emplacement = forms.ChoiceField(
+        choices=BLANK_CHOICE_DASH
+        + [(tag.name, tag.value) for tag in EmplacementChoice],
+        widget=forms.Select(),
+        required=False,
+    )
+    type_animal = forms.ChoiceField(
+        choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in TypeAnimalChoice],
+        widget=forms.Select(),
+        required=False,
+    )
+    proprietaire = forms.ModelChoiceField(
+        queryset=Proprietaire.objects.all(), required=False
+    )
+    date_naissance_min = forms.DateField(
+        label="Date de naissance entre le", required=False, widget=DateInput()
+    )
+    date_naissance_max = forms.DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
+    date_arrivee_min = forms.DateField(
+        label="Date de première arrivée entre le", required=False, widget=DateInput()
+    )
+    date_arrivee_max = forms.DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
+    date_prochaine_visite_min = forms.DateField(
+        label="Date de prochaine visite vétérinaire entre le",
+        required=False,
+        widget=DateInput(),
+    )
+    date_prochaine_visite_max = forms.DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
+    date_adoption_min = forms.DateField(
+        label="Date d'adoption entre le", required=False, widget=DateInput()
+    )
+    date_adoption_max = forms.DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
 
 
 class ProprietaireSearchForm(forms.Form):
@@ -38,71 +64,89 @@ class ProprietaireSearchForm(forms.Form):
 
 
 class SejourSearchForm(forms.Form):
-    date_debut_min = forms.DateField(label="Date de début du séjour entre le", required=False, widget=DateInput())
-    date_debut_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    date_fin_min = forms.DateField(label="Date de fin du séjour entre le", required=False, widget=DateInput())
+    date_debut_min = forms.DateField(
+        label="Date de début du séjour entre le", required=False, widget=DateInput()
+    )
+    date_debut_max = forms.DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
+    date_fin_min = forms.DateField(
+        label="Date de fin du séjour entre le", required=False, widget=DateInput()
+    )
     date_fin_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
-    proprietaire = forms.ModelChoiceField(queryset=Proprietaire.objects.all(), required=False)
+    proprietaire = forms.ModelChoiceField(
+        queryset=Proprietaire.objects.all(), required=False
+    )
 
 
 class VisiteSearchForm(forms.Form):
-    date_min = forms.DateField(label="Date de la visite médicale entre le", required=False, widget=DateInput())
+    date_min = forms.DateField(
+        label="Date de la visite médicale entre le", required=False, widget=DateInput()
+    )
     date_max = forms.DateField(label=" et le ", required=False, widget=DateInput())
 
 
 class AnimalCreateForm(forms.ModelForm):
     class Meta:
         model = Animal
-        fields = ('nom', 'type_animal', 'emplacement', 'origine', 'sexe',
-                  'description', 'date_naissance', 'date_arrivee', 'sterilise',
-                  'vaccine', 'date_dernier_vaccin', 'proprietaire')
+        fields = (
+            "nom",
+            "type_animal",
+            "emplacement",
+            "origine",
+            "sexe",
+            "description",
+            "date_naissance",
+            "date_arrivee",
+            "sterilise",
+            "vaccine",
+            "date_dernier_vaccin",
+            "proprietaire",
+        )
         date_naissance = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
         date_arrivee = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
         date_dernier_vaccin = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
 
     # Appelé à la validation du formulaire
 
     def clean(self):
         cleaned_data = forms.ModelForm.clean(self)
-        emplacement = cleaned_data.get('emplacement')
+        emplacement = cleaned_data.get("emplacement")
         # Si l'animal est inscrit en pension, il doit avoir un proprietaire
         if emplacement == EmplacementChoice.PENSION.name:
-            if not cleaned_data.get('proprietaire'):
+            if not cleaned_data.get("proprietaire"):
                 msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
                 self._errors["proprietaire"] = self.error_class([msg])
                 del cleaned_data["proprietaire"]
-            if cleaned_data.get('origine'):
+            if cleaned_data.get("origine"):
                 msg = "L'origine n'est à remplir que pour un animal du refuge."
                 self._errors["origine"] = self.error_class([msg])
                 del cleaned_data["origine"]
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
         elif emplacement == EmplacementChoice.REFUGE.name:
-            if not cleaned_data.get('date_arrivee'):
+            if not cleaned_data.get("date_arrivee"):
                 msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
                 self._errors["date_arrivee"] = self.error_class([msg])
                 del cleaned_data["date_arrivee"]
-            if not cleaned_data.get('origine'):
+            if not cleaned_data.get("origine"):
                 msg = "Veuillez indiquer obligatoirement l'origine de l'animmal."
                 self._errors["origine"] = self.error_class([msg])
                 del cleaned_data["origine"]
-            if cleaned_data.get('proprietaire'):
+            if cleaned_data.get("proprietaire"):
                 msg = "Si l'animal arrive au refuge, il n'a pas de propriétaire."
                 self._errors["proprietaire"] = self.error_class([msg])
                 del cleaned_data["proprietaire"]
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
-        vaccine = cleaned_data.get('vaccine')
+        vaccine = cleaned_data.get("vaccine")
         if vaccine == OuiNonChoice.OUI.name:
-            date_vaccin = cleaned_data.get('date_dernier_vaccin')
+            date_vaccin = cleaned_data.get("date_dernier_vaccin")
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
                 self._errors["date_dernier_vaccin"] = self.error_class([msg])
@@ -114,19 +158,22 @@ class AnimalCreateForm(forms.ModelForm):
 class AnimalUpdateForm(forms.ModelForm):
     class Meta:
         model = Animal
-        fields = ('description', 'date_naissance', 'date_arrivee', 'sterilise',
-                  'vaccine', 'date_dernier_vaccin')
+        fields = (
+            "description",
+            "date_naissance",
+            "date_arrivee",
+            "sterilise",
+            "vaccine",
+            "date_dernier_vaccin",
+        )
         date_naissance = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
         date_arrivee = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
         date_dernier_vaccin = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
 
     # Appelé à la validation du formulaire
@@ -137,15 +184,15 @@ class AnimalUpdateForm(forms.ModelForm):
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
         if emplacement == EmplacementChoice.REFUGE.name:
-            if not cleaned_data.get('date_arrivee'):
+            if not cleaned_data.get("date_arrivee"):
                 msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
                 self._errors["date_arrivee"] = self.error_class([msg])
                 del cleaned_data["date_arrivee"]
 
         # Si l'animal est vaccine, la date de dernier vaccin est obligatoire
-        vaccine = cleaned_data.get('vaccine')
+        vaccine = cleaned_data.get("vaccine")
         if vaccine == OuiNonChoice.OUI.name:
-            date_vaccin = cleaned_data.get('date_dernier_vaccin')
+            date_vaccin = cleaned_data.get("date_dernier_vaccin")
             if not date_vaccin:
                 msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
                 self._errors["date_dernier_vaccin"] = self.error_class([msg])
@@ -165,13 +212,13 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ("first_name", "last_name", "email")
 
 
 class ProprietaireForm(forms.ModelForm):
     class Meta:
         model = Proprietaire
-        fields = ('adresse', 'telephone')
+        fields = ("adresse", "telephone")
 
 
 class AdoptionValidator:
@@ -179,8 +226,8 @@ class AdoptionValidator:
         cleaned_data = {**super().clean()}
 
         # Le montant restant ne peut être supérieur au montant total
-        montant = cleaned_data.get('montant')
-        montant_restant = cleaned_data.get('montant_restant')
+        montant = cleaned_data.get("montant")
+        montant_restant = cleaned_data.get("montant_restant")
         if montant < montant_restant:
             msg = "Le montant restant ne peut-être supérieur au montant total."
             self._errors["montant_restant"] = self.error_class([msg])
@@ -192,40 +239,39 @@ class AdoptionValidator:
 class AdoptionUpdateForm(AdoptionValidator, forms.ModelForm):
     class Meta:
         model = Adoption
-        fields = ('montant', 'montant_restant')
+        fields = ("montant", "montant_restant")
         date = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
 
 
 class AdoptionForm(AdoptionValidator, forms.ModelForm):
     class Meta:
         model = Adoption
-        fields = ('date', 'proprietaire', 'montant', 'montant_restant')
+        fields = ("date", "proprietaire", "montant", "montant_restant")
         date = forms.DateField(
-            widget=forms.DateInput(format='%d/%m/%Y'),
-            input_formats=('%d/%m/%Y',)
+            widget=forms.DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
 
 
 class AdoptionFormNoProprietaire(AdoptionValidator, forms.ModelForm):
     class Meta:
         model = Adoption
-        fields = ('date', 'montant', 'montant_restant')
+        fields = ("date", "montant", "montant_restant")
 
 
-class SejourFormBase :
+class SejourFormBase:
     # Pour gérer le lien entre le champ "propriétaire et le champ "Animaux"
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['animaux'].queryset = Animal.objects.none()
+        self.fields["animaux"].queryset = Animal.objects.none()
 
-        if 'proprietaire' in self.data:
+        if "proprietaire" in self.data:
             try:
-                proprietaire_id = int(self.data.get('proprietaire'))
-                self.fields['animaux'].queryset = Animal.objects.filter(
-                    proprietaire_id=proprietaire_id).order_by('nom')
+                proprietaire_id = int(self.data.get("proprietaire"))
+                self.fields["animaux"].queryset = Animal.objects.filter(
+                    proprietaire_id=proprietaire_id
+                ).order_by("nom")
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty animaux queryset
 
@@ -233,8 +279,8 @@ class SejourFormBase :
     def clean(self):
         cleaned_data = {**super().clean()}
         if self.instance.pk is None:
-            date_arrivee = cleaned_data.get('date_arrivee')
-            date_depart = cleaned_data.get('date_depart')
+            date_arrivee = cleaned_data.get("date_arrivee")
+            date_depart = cleaned_data.get("date_depart")
             # Vérification de la cohérence de la date d'arrivée et de la date de départ
             if date_arrivee and date_arrivee < timezone.now():
                 msg = "La date d'arrivée ne peut être avant aujourd'hui"
@@ -254,5 +300,17 @@ class SejourForm(SejourFormBase, forms.ModelForm):
 
     class Meta:
         model = Sejour
-        fields = ('date_arrivee', 'date_depart', 'proprietaire', 'animaux', 'nb_cages_fournies', 'nb_cages_a_fournir',
-                  'vaccination', 'soin', 'injection', 'commentaire', 'montant','montant_restant')
+        fields = (
+            "date_arrivee",
+            "date_depart",
+            "proprietaire",
+            "animaux",
+            "nb_cages_fournies",
+            "nb_cages_a_fournir",
+            "vaccination",
+            "soin",
+            "injection",
+            "commentaire",
+            "montant",
+            "montant_restant",
+        )

@@ -7,10 +7,15 @@ from . import OuiNonChoice, TypeVisiteVetoChoice
 
 class VisiteMedicale(models.Model):
     date = models.DateField(verbose_name="Date de la visite")
-    type_visite = models.CharField(max_length=30, verbose_name="Objet de la visite",
-                                   choices=[(tag.name, tag.value) for tag in TypeVisiteVetoChoice])
+    type_visite = models.CharField(
+        max_length=30,
+        verbose_name="Objet de la visite",
+        choices=[(tag.name, tag.value) for tag in TypeVisiteVetoChoice],
+    )
     commentaire = models.CharField(max_length=2000, blank=True)
-    montant = models.DecimalField(verbose_name="Montant", max_digits=7, decimal_places=2, blank=True, null=True)
+    montant = models.DecimalField(
+        verbose_name="Montant", max_digits=7, decimal_places=2, blank=True, null=True
+    )
     animaux = models.ManyToManyField("Animal")
 
     def __str__(self):
@@ -20,7 +25,10 @@ class VisiteMedicale(models.Model):
 @receiver(m2m_changed, sender=VisiteMedicale.animaux.through)
 def visite_medicale_save_action(sender, instance, **kwargs):
     # Instance est une visite médicale
-    if instance.type_visite in (TypeVisiteVetoChoice.STE.name, TypeVisiteVetoChoice.VAC.name):
+    if instance.type_visite in (
+        TypeVisiteVetoChoice.STE.name,
+        TypeVisiteVetoChoice.VAC.name,
+    ):
         for animal in instance.animaux.all():
             if instance.type_visite == TypeVisiteVetoChoice.STE.name:
                 animal.sterilise = OuiNonChoice.OUI.name

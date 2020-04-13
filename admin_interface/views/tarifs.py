@@ -14,4 +14,4 @@ def parametrage_tarifaire(request):
     tarifs_journaliers_pension = TarifJournalier.objects.all()
     tarifs_supplements = ParametreTarifairePension.objects.all()
     tarifs_adoption = TarifAdoption.objects.all()
-    return render(request, 'admin_interface/parametrage_tarifaire.html', locals())
+    return render(request, "admin_interface/parametrage_tarifaire.html", locals())

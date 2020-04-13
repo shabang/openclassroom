@@ -1,4 +1,3 @@
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
@@ -13,26 +12,31 @@ from admin_interface.models.visite_medicales import VisiteMedicale
 
 class CreateVisite(LoginRequiredMixin, CreateView):
     model = VisiteMedicale
-    template_name = 'admin_interface/visite_form.html'
-    fields = ('date', 'type_visite', 'montant', 'animaux', 'commentaire')
-    success_url = reverse_lazy('visites')
+    template_name = "admin_interface/visite_form.html"
+    fields = ("date", "type_visite", "montant", "animaux", "commentaire")
+    success_url = reverse_lazy("visites")
 
     def get_form(self, form_class=None):
         form = CreateView.get_form(self, form_class=form_class)
-        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
+        form.fields["animaux"].queryset = Animal.objects.filter(
+            emplacement=EmplacementChoice.REFUGE.name
+        )
         return form
+
 
 class UpdateVisite(LoginRequiredMixin, UpdateView):
     model = VisiteMedicale
-    template_name = 'admin_interface/visite_form.html'
-    fields = ('date', 'type_visite', 'montant', 'animaux', 'commentaire')
+    template_name = "admin_interface/visite_form.html"
+    fields = ("date", "type_visite", "montant", "animaux", "commentaire")
 
     def get_success_url(self):
-        return reverse_lazy('detail_visite', kwargs={'pk': self.object.id})
+        return reverse_lazy("detail_visite", kwargs={"pk": self.object.id})
 
     def get_form(self, form_class=None):
         form = UpdateView.get_form(self, form_class=form_class)
-        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
+        form.fields["animaux"].queryset = Animal.objects.filter(
+            emplacement=EmplacementChoice.REFUGE.name
+        )
         return form
 
 
@@ -41,12 +45,12 @@ def search_visite(request):
     selected = "visites"
     visites = VisiteMedicale.objects.all()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = VisiteSearchForm(request.POST)
         if form.is_valid():
 
-            date_min_form = form.cleaned_data['date_min']
-            date_max_form = form.cleaned_data['date_max']
+            date_min_form = form.cleaned_data["date_min"]
+            date_max_form = form.cleaned_data["date_max"]
 
             if date_min_form:
                 visites = visites.filter(date__gte=date_min_form)
@@ -56,4 +60,4 @@ def search_visite(request):
     else:
         form = VisiteSearchForm()
 
-    return render(request, 'admin_interface/visite_list.html', locals())
+    return render(request, "admin_interface/visite_list.html", locals())
