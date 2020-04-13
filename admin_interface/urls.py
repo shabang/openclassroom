@@ -1,11 +1,21 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.generic import DetailView
+
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
 from admin_interface.models.sejours import Sejour
 from admin_interface.models.visite_medicales import VisiteMedicale
-from .views import home, animaux, proprietaires, sejours, tarifs, visite_medicales, adoptions
-from django.contrib.auth.decorators import login_required
+
+from .views import (
+    adoptions,
+    animaux,
+    home,
+    proprietaires,
+    sejours,
+    tarifs,
+    visite_medicales,
+)
 
 urlpatterns = [
     path('', home.index, name="accueil"),

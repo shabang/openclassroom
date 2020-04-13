@@ -1,16 +1,14 @@
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, UpdateView
-from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView
 
+from admin_interface.forms import VisiteSearchForm
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.visite_medicales import VisiteMedicale
-
-from admin_interface.forms import VisiteSearchForm
-
 
 
 class CreateVisite(LoginRequiredMixin, CreateView):

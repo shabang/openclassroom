@@ -1,8 +1,8 @@
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.text import slugify
-from django.contrib.auth.hashers import make_password
 
 
 class Proprietaire(models.Model):

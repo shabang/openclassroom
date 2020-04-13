@@ -1,16 +1,16 @@
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, UpdateView
-from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.utils.dateparse import parse_date
-from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+from django.views.generic import CreateView, UpdateView
 
+from admin_interface.forms import AnimalCreateForm, AnimalSearchForm, AnimalUpdateForm
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
-from admin_interface.forms import AnimalCreateForm, AnimalUpdateForm, AnimalSearchForm
 
 
 class CreateAnimal(LoginRequiredMixin, CreateView):

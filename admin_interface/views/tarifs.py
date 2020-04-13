@@ -1,7 +1,11 @@
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
-from admin_interface.models.tarifs import TarifJournalier, ParametreTarifairePension, TarifAdoption
+from admin_interface.models.tarifs import (
+    ParametreTarifairePension,
+    TarifAdoption,
+    TarifJournalier,
+)
 
 
 @login_required

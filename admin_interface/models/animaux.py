@@ -1,7 +1,13 @@
 
 from django.db import models
 
-from . import TypeAnimalChoice, EmplacementChoice, OrigineChoice, SexeChoice, OuiNonChoice
+from . import (
+    EmplacementChoice,
+    OrigineChoice,
+    OuiNonChoice,
+    SexeChoice,
+    TypeAnimalChoice,
+)
 from .adoptions import Adoption
 from .proprietaires import Proprietaire
 from .visite_medicales import VisiteMedicale

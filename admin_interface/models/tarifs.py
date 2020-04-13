@@ -1,6 +1,6 @@
 from django.db import models
 
-from . import TypeAnimalChoice, OuiNonChoice, TypeSupplementChoice, SexeChoice
+from . import OuiNonChoice, SexeChoice, TypeAnimalChoice, TypeSupplementChoice
 
 
 class TarifJournalier(models.Model):

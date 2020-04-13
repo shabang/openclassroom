@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
-from . import TypeVisiteVetoChoice, OuiNonChoice
+from . import OuiNonChoice, TypeVisiteVetoChoice
 
 
 class VisiteMedicale(models.Model):

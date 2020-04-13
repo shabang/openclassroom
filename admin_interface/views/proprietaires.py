@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
-from admin_interface.forms import ProprietaireForm, UserForm, ProprietaireSearchForm
+from admin_interface.forms import ProprietaireForm, ProprietaireSearchForm, UserForm
 from admin_interface.models.proprietaires import Proprietaire
 
 

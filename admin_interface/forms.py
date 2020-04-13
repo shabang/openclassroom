@@ -1,10 +1,10 @@
 from django import forms
-from django.db.models.fields import BLANK_CHOICE_DASH
-from django.contrib.auth.models import User
-from django.utils import timezone
 from django.contrib.admin.widgets import AdminSplitDateTime
+from django.contrib.auth.models import User
+from django.db.models.fields import BLANK_CHOICE_DASH
+from django.utils import timezone
 
-from .models import EmplacementChoice, TypeAnimalChoice, OuiNonChoice
+from .models import EmplacementChoice, OuiNonChoice, TypeAnimalChoice
 from .models.adoptions import Adoption
 from .models.animaux import Animal
 from .models.proprietaires import Proprietaire

@@ -1,12 +1,12 @@
 from datetime import timedelta
 
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
 from django.utils import timezone
-from django.contrib.auth.decorators import permission_required
 
 from admin_interface.models import EmplacementChoice
-from admin_interface.models.animaux import Animal
 from admin_interface.models.adoptions import Adoption
+from admin_interface.models.animaux import Animal
 from admin_interface.models.sejours import Sejour
 
 

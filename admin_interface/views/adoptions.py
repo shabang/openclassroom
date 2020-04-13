@@ -1,13 +1,20 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views.generic import UpdateView
+
+from admin_interface.forms import (
+    AdoptionForm,
+    AdoptionFormNoProprietaire,
+    AdoptionUpdateForm,
+    ProprietaireForm,
+    UserForm,
+)
 from admin_interface.models import EmplacementChoice
-from admin_interface.forms import AdoptionUpdateForm, UserForm, ProprietaireForm, AdoptionFormNoProprietaire, AdoptionForm
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
 from admin_interface.models.tarifs import TarifAdoption
-from django.shortcuts import render, redirect
 
 
 class UpdateAdoption(LoginRequiredMixin, UpdateView):

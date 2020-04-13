@@ -1,21 +1,22 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, UpdateView
-from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.dateparse import parse_date
-from django.utils import timezone
-from django.shortcuts import render
-from decimal import Decimal
 from datetime import datetime, time
-from django.http import JsonResponse
-from django.db.models import Q
+from decimal import Decimal
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+from django.views.generic import CreateView, UpdateView
+
+from admin_interface.forms import SejourForm, SejourSearchForm
 from admin_interface.models import OuiNonChoice, TypeSupplementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
 from admin_interface.models.sejours import Sejour
-from admin_interface.models.tarifs import TarifJournalier, ParametreTarifairePension
-from admin_interface.forms import SejourForm, SejourSearchForm
+from admin_interface.models.tarifs import ParametreTarifairePension, TarifJournalier
 from admin_interface.utils import is_time_between
 
 
