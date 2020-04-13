@@ -95,7 +95,8 @@ class Animal(models.Model):
             return self.get_vaccine_display()
 
     def save(self, *args, **kwargs):
-        # A l'enregistrement de l'animal on met à jour sa date de prochaine visite vétérinaire et ses informations de
+        # A l'enregistrement de l'animal on met à jour sa date de
+        # prochaine visite vétérinaire et ses informations de
         # vaccination
         date_rappel_vaccin = self.date_dernier_vaccin
         date_visites = (

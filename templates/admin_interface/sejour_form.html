@@ -7,7 +7,7 @@
    {% csrf_token %}
    {{ form.as_p }}
    <div class="row">
-   
+
    	<div class="col-md-6">
    		{% if object %}
    			<a href = "{% url 'detail_sejour' object.id %}"  class="btn-search cyan rounded">Annuler</a>

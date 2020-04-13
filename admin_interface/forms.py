@@ -148,7 +148,10 @@ class AnimalCreateForm(forms.ModelForm):
         if vaccine == OuiNonChoice.OUI.name:
             date_vaccin = cleaned_data.get("date_dernier_vaccin")
             if not date_vaccin:
-                msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
+                msg = (
+                    "Comme l'animal est vacciné, veuillez obligatoirement indiquer "
+                    "la date du dernier vaccin"
+                )
                 self._errors["date_dernier_vaccin"] = self.error_class([msg])
                 del cleaned_data["date_dernier_vaccin"]
 
@@ -194,7 +197,10 @@ class AnimalUpdateForm(forms.ModelForm):
         if vaccine == OuiNonChoice.OUI.name:
             date_vaccin = cleaned_data.get("date_dernier_vaccin")
             if not date_vaccin:
-                msg = "Comme l'animal est vacciné, veuillez obligatoirement indiquer la date du dernier vaccin"
+                msg = (
+                    "Comme l'animal est vacciné, veuillez obligatoirement "
+                    "indiquer la date du dernier vaccin"
+                )
                 self._errors["date_dernier_vaccin"] = self.error_class([msg])
                 del cleaned_data["date_dernier_vaccin"]
 
