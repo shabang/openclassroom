@@ -1,4 +1,4 @@
-migrations
 /*.sqlite3
 __pycache__
 .idea
+admin_interface/migrations/0001_initial.py
