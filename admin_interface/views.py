@@ -147,6 +147,19 @@ class CreateVisite(LoginRequiredMixin, CreateView):
         form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
         return form
 
+class UpdateVisite(LoginRequiredMixin, UpdateView):
+    model = VisiteMedicale
+    template_name = 'admin_interface/visite_form.html'
+    fields = ('date', 'type_visite', 'montant', 'animaux', 'commentaire')
+
+    def get_success_url(self):
+        return reverse_lazy('detail_visite', kwargs={'pk': self.object.id})
+
+    def get_form(self, form_class=None):
+        form = UpdateView.get_form(self, form_class=form_class)
+        form.fields['animaux'].queryset = Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
+        return form
+
 
 class UpdateAdoption(LoginRequiredMixin, UpdateView):
     model = Adoption

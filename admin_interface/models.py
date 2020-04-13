@@ -2,10 +2,12 @@ import sys
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, m2m_changed
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.core.validators import RegexValidator
 from enum import Enum
+from django.dispatch import receiver
 
 
 class TypeAnimalChoice(Enum):
@@ -129,7 +131,7 @@ class Animal(models.Model):
         if date_rappel_vaccin is not None:
             self.vaccine = OuiNonChoice.OUI.name
             if date_visites is not None:
-                self.date_visite = date_visites if date_visites.date() < date_rappel_vaccin else date_rappel_vaccin
+                self.date_visite = date_visites if date_visites < date_rappel_vaccin else date_rappel_vaccin
             else:
                 self.date_visite = date_rappel_vaccin
         else:
@@ -159,16 +161,27 @@ class Adoption(models.Model):
 
 
 class VisiteMedicale(models.Model):
-    date = models.DateTimeField(verbose_name="Date de la visite")
+    date = models.DateField(verbose_name="Date de la visite")
     type_visite = models.CharField(max_length=30, verbose_name="Objet de la visite",
                                    choices=[(tag.name, tag.value) for tag in TypeVisiteVetoChoice])
     commentaire = models.CharField(max_length=2000, blank=True)
-    montant = models.DecimalField(verbose_name="Montant", max_digits=7, decimal_places=2, null=True)
+    montant = models.DecimalField(verbose_name="Montant", max_digits=7, decimal_places=2, blank=True, null=True)
     animaux = models.ManyToManyField(Animal)
 
     def __str__(self):
         return "visite " + str(self.type_visite) + " le " + str(self.date)
 
+@receiver(m2m_changed, sender = VisiteMedicale.animaux.through)
+def visite_medicale_save_action(sender, instance, **kwargs):
+   # Instance est une visite médicale
+    if instance.type_visite in (TypeVisiteVetoChoice.STE.name, TypeVisiteVetoChoice.VAC.name):
+        for animal in instance.animaux.all():
+            if instance.type_visite == TypeVisiteVetoChoice.STE.name:
+                animal.sterilise = OuiNonChoice.OUI.name
+            elif instance.type_visite == TypeVisiteVetoChoice.VAC.name:
+                animal.vaccine = OuiNonChoice.OUI.name
+                animal.date_dernier_vaccin = instance.date
+            animal.save()
 
 class Sejour(models.Model):
     date_arrivee = models.DateTimeField(verbose_name="Date d'arrivée")

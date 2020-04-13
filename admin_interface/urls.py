@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import DetailView
-from admin_interface.models import Animal, Proprietaire, Sejour
+from admin_interface.models import Animal, Proprietaire, Sejour, VisiteMedicale
 from . import views
 from django.contrib.auth.decorators import login_required
 
@@ -21,6 +21,8 @@ urlpatterns = [
     path('detail_sejour/<int:pk>/', login_required(DetailView.as_view(model=Sejour,)), name="detail_sejour"),
     path('visites/', views.search_visite, name="visites"),
     path('creer_visite/',views.CreateVisite.as_view(), name="creer_visite"),
+    path('update_visite/<int:pk>/',views.UpdateVisite.as_view(), name="update_visite"),
+    path('detail_visite/<int:pk>/', login_required(DetailView.as_view(model=VisiteMedicale,)), name="detail_visite"),
     path('ajax/load-animals/', views.load_animals, name='ajax_load_animals'),
     path('parametrage_tarifaire/', views.parametrage_tarifaire, name="parametrage_tarifaire"),
     path('animals/adoption/<int:pk>/',  views.adoption, name="adoption"),

@@ -42,9 +42,9 @@
   </tr>
   {% for visite in visites %}
   <tr>
-    <td>{{visite.date}}</td>
+    <td><a href = "{% url 'detail_visite' visite.id %}">{{visite.date}}</a></td>
     <td>{{visite.get_type_visite_display}}</td>
-	<td>{{visite.montant}}</td>
+	<td>{{visite.montant|default:" - "}}</td>
 	<td>{% for animal in visite.animaux.all %}<a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a><br>{% endfor %}</td>
   </tr>
   {% endfor %}

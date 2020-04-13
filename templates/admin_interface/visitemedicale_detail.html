@@ -1,0 +1,27 @@
+{% extends "admin_interface/base.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-12">
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+			<h4> Informations de la visite médicale </h4>
+		</div>
+		<div class="panel-body">
+			<p>
+				<strong> Date </strong> : {{visitemedicale.date}} <br>
+                <strong> Raison de la visite </strong> : {{visitemedicale.get_type_visite_display}} <br>
+                <strong> Montant </strong> : {{visitemedicale.montant|default:" - "}} €<br>
+			    <strong> Animaux concernés </strong> : {% for animal in visitemedicale.animaux.all %} <a href= "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a>, {% endfor %} <br>
+
+			</p>
+			<div class="text-right">
+			<a href= "{% url 'update_visite' visitemedicale.id %}" class="btn-search cyan rounded">Modifier</a>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+
+{% endblock %}
