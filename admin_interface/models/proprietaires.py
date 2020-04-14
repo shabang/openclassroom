@@ -24,7 +24,7 @@ class Proprietaire(models.Model):
                 slugify(self.user.last_name) + ".password"
             )
             self.user.save()
-        return super().save(self, *args, **kwargs)
+        return super(Proprietaire,self).save( *args, **kwargs)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
