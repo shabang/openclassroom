@@ -2,3 +2,5 @@
 __pycache__
 .idea
 admin_interface/migrations/0001_initial.py
+media
+migrations

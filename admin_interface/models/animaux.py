@@ -65,6 +65,7 @@ class Animal(models.Model):
         blank=True,
     )
     description = models.CharField(max_length=2000, blank=True)
+    photo = models.ImageField(upload_to='animaux/', blank=True)
 
     def __str__(self):
         return self.nom

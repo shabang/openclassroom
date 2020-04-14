@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.generic import CreateView, UpdateView
 
-from admin_interface.forms import SejourForm, SejourSearchForm
+from admin_interface.forms.sejours import SejourForm, SejourSearchForm
 from admin_interface.models import OuiNonChoice, TypeSupplementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire

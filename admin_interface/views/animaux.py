@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.generic import CreateView, UpdateView
 
-from admin_interface.forms import AnimalCreateForm, AnimalSearchForm, AnimalUpdateForm
+from admin_interface.forms.animaux import AnimalCreateForm, AnimalUpdateForm, AnimalSearchForm
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from admin_interface.forms import VisiteSearchForm
+from admin_interface.forms.visites import VisiteSearchForm
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.visite_medicales import VisiteMedicale

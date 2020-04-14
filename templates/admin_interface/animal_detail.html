@@ -1,9 +1,12 @@
 {% extends "admin_interface/base.html" %}
 
 {% block content %}
+
 <div class="row">
-	{% if animal.adoption %}
-    <div class="col-sm-6">
+	{% if animal.adoption and animal.photo %}
+    <div class="col-sm-3">
+	{% elif animal.adoption or animal.photo %}
+	<div class="col-sm-6">
     {% else %}
     <div class="col-sm-12">
     {% endif %}
@@ -44,9 +47,22 @@
 
 		</div>
 	</div>
+	{% if animal.photo %}
+		{% if animal.adoption %}
+		<div class="col-sm-3">
+		{% else %}
+		<div class="col-sm-6">
+		{% endif %}
+		<img src={{animal.photo.url}} />
+		</div>
+	{%endif}
 
 	{% if animal.adoption %}
-	<div class="col-sm-6">
+		{% if animal.photo %}
+		<div class="col-sm-3">
+		{% else %}
+		<div class="col-sm-6">
+		{% endif %}
 	<div class="panel panel-default">
         <div class="panel-heading text-center">
 		<h4>Informations de l'adoption </h4>
