@@ -23,6 +23,9 @@ class Proprietaire(models.Model):
             self.user.password = make_password(
                 slugify(self.user.last_name) + ".password"
             )
+            # Pour l'instant on desactive les utilisateurs
+            # La partie acces propriétaires est pour plus tard
+            self.user.is_active = False
             self.user.save()
         return super(Proprietaire,self).save( *args, **kwargs)
 
