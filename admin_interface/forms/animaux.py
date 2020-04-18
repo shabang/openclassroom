@@ -1,5 +1,5 @@
 from django.db.models import BLANK_CHOICE_DASH
-from django.forms import DateField, Form, CharField, ChoiceField, Select, ModelChoiceField, ModelForm
+from django.forms import DateField, Form, CharField, ChoiceField, Select, ModelChoiceField, ModelForm, FileInput
 
 from admin_interface.forms import DateInput
 from admin_interface.models import EmplacementChoice, TypeAnimalChoice, OuiNonChoice
@@ -85,6 +85,7 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
             "vaccine",
             "date_dernier_vaccin",
             "proprietaire",
+            "photo",
         )
         date_naissance = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
@@ -95,7 +96,6 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
         date_dernier_vaccin = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
-
         # Appelé à la validation du formulaire
 
         def clean(self):
@@ -140,6 +140,7 @@ class AnimalUpdateForm(AnimalValidator, ModelForm):
             "sterilise",
             "vaccine",
             "date_dernier_vaccin",
+            "photo",
         )
         date_naissance = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
@@ -154,7 +155,7 @@ class AnimalUpdateForm(AnimalValidator, ModelForm):
     # Appelé à la validation du formulaire
     def clean(self):
         cleaned_data = ModelForm.clean(self)
-        emplacement = self.object.emplacement
+        emplacement = self.instance.emplacement
 
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
