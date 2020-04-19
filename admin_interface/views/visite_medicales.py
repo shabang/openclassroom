@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
@@ -59,5 +60,16 @@ def search_visite(request):
 
     else:
         form = VisiteSearchForm()
+
+    # Pagination : 10 éléments par page
+    paginator = Paginator(visites, 10)
+    try:
+        page = request.GET.get("page")
+        if not page:
+            page = 1
+        visites = paginator.page(page)
+    except EmptyPage:
+        # Si on dépasse la limite de pages, on prend la dernière
+        visites = paginator.page(paginator.num_pages())
 
     return render(request, "admin_interface/visite_list.html", locals())

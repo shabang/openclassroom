@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -110,6 +111,16 @@ def search_sejour(request):
                 form.fields["date_debut_max"].initial = today_str
                 sejours = sejours.filter(date_depart__gte=interval)
                 sejours = sejours.filter(date_arrivee__lte=today)
+    # Pagination : 10 éléments par page
+    paginator = Paginator(sejours, 10)
+    try:
+        page = request.GET.get("page")
+        if not page:
+            page = 1
+        sejours = paginator.page(page)
+    except EmptyPage:
+        # Si on dépasse la limite de pages, on prend la dernière
+        sejours = paginator.page(paginator.num_pages())
 
     return render(request, "admin_interface/sejour_list.html", locals())
 

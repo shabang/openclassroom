@@ -63,6 +63,20 @@
   {% endfor %}
 </table>
 
+<div class="pagination">
+   {% if sejours.has_previous %}
+       <a href="{% url 'sejours'%}?page={{ sejours.previous_page_number}}">Précédente</a> -
+   {% endif %}
+
+   <span class="current">
+       Page {{ sejours.number }} sur {{ sejours.paginator.num_pages }}
+   </span>
+
+   {% if sejours.has_next %}
+		<a href="{% url 'sejours'%}?page={{ sejours.next_page_number}}">Suivante</a>
+   {% endif %}
+</div>
+
 <div class="text-right">
 <a href= "{% url 'creer_sejour' %}" class="btn-search cyan rounded">Programmer un nouveau séjour</a>
 </div>

@@ -82,7 +82,7 @@
 	<th style="width:20%;">Provenance</th>
 	<th style="width:20%;">Propriétaire</th>
   </tr>
-  {% for animal in animals %}
+  {% for animal in animal_list %}
   <tr>
     <td><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></td>
     <td>{{animal.get_type_animal_display}}</td>
@@ -96,6 +96,20 @@
   </tr>
   {% endfor %}
 </table>
+
+<div class="pagination">
+   {% if animal_list.has_previous %}
+       <a href="{% url 'animals'%}?page={{ animal_list.previous_page_number}}">Précédente</a> -
+   {% endif %}
+
+   <span class="current">
+       Page {{ animal_list.number }} sur {{ animal_list.paginator.num_pages }}
+   </span>
+
+   {% if animal_list.has_next %}
+       - <a href="{% url 'animals'%}?page={{ animal_list.next_page_number}}">Suivante</a>
+   {% endif %}
+</div>
 
 <div class="text-right">
 <a href= "{% url 'creer_animal' %}" class="btn-search cyan rounded">Ajouter animal</a>

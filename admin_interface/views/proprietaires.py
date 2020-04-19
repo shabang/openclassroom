@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import redirect, render
 
 from admin_interface.forms import UserForm
@@ -54,7 +55,7 @@ def update_proprietaire(request, pk):
 @login_required
 def search_proprietaire(request):
     selected = "proprietaires"
-    proprietaires = Proprietaire.objects.all()
+    proprietaire_list = Proprietaire.objects.all()
 
     if request.method == "POST":
         form = ProprietaireSearchForm(request.POST)
@@ -63,7 +64,17 @@ def search_proprietaire(request):
             nom_form = form.cleaned_data["nom"]
 
             if nom_form is not None:
-                proprietaires = proprietaires.filter(nom__icontains=nom_form)
+                proprietaires = proprietaire_list.filter(nom__icontains=nom_form)
     else:
         form = ProprietaireSearchForm()
+    # Pagination : 10 éléments par page
+    paginator = Paginator(proprietaire_list, 10)
+    try:
+        page = request.GET.get("page")
+        if not page:
+            page = 1
+        proprietaires = paginator.page(page)
+    except EmptyPage:
+        # Si on dépasse la limite de pages, on prend la dernière
+        proprietaires = paginator.page(paginator.num_pages())
     return render(request, "admin_interface/proprietaire_list.html", locals())

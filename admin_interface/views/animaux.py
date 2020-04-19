@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -114,7 +115,16 @@ def search_animal(request):
             if filter_data == "refuge":
                 form.fields["emplacement"].initial = EmplacementChoice.REFUGE.name
                 animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
-
+    # Pagination : 10 éléments par page
+    paginator = Paginator(animals, 10)
+    try:
+        page = request.GET.get("page")
+        if not page :
+            page = 1
+        animal_list = paginator.page(page)
+    except EmptyPage:
+        # Si on dépasse la limite de pages, on prend la dernière
+        animal_list = paginator.page(paginator.num_pages())
     return render(request, "admin_interface/animal_list.html", locals())
 
 

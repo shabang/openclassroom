@@ -40,6 +40,20 @@
   {% endfor %}
 </table>
 
+<div class="pagination">
+   {% if proprietaires.has_previous %}
+       <a href="{% url 'proprietaires'%}?page={{ proprietaires.previous_page_number}}">Précédente</a> -
+   {% endif %}
+
+   <span class="current">
+       Page {{ proprietaires.number }} sur {{ proprietaires.paginator.num_pages }}
+   </span>
+
+   {% if proprietaires.has_next %}
+       - <a href="{% url 'proprietaires'%}?page={{ proprietaires.next_page_number}}">Suivante</a>
+   {% endif %}
+</div>
+
 <div class="text-right">
 <a class="btn-search cyan rounded" href= "{% url 'creer_proprietaire' %}">Ajouter un propriétaire</a>
 </div>
