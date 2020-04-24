@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
+from import_export.resources import ModelResource
 
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
@@ -13,8 +15,20 @@ from admin_interface.models.visite_medicales import VisiteMedicale
 from import_export.admin import ImportExportModelAdmin
 
 
+class ProprietaireResource(ModelResource):
+
+    class Meta:
+        model = Proprietaire
+
+
 @admin.register(Proprietaire)
 class ProprietaireAdmin(ImportExportModelAdmin):
+    resource_class = ProprietaireResource
+
+admin.site.unregister(User)
+
+@admin.register(User)
+class UserAdmin(ImportExportModelAdmin):
     pass
 
 

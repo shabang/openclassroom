@@ -37,7 +37,7 @@ class Animal(models.Model):
         max_length=30,
         verbose_name="Origine (à remplir uniquement si animal du refuge)",
         choices=[(tag.name, tag.value) for tag in OrigineChoice],
-        blank=True,
+        blank=True, default="",
     )
     sexe = models.CharField(
         max_length=30,
@@ -64,7 +64,7 @@ class Animal(models.Model):
         null=True,
         blank=True,
     )
-    description = models.CharField(max_length=2000, blank=True)
+    description = models.CharField(max_length=2000, blank=True ,default="")
     photo = models.ImageField(upload_to='animaux/', blank=True, null=True)
 
     def __str__(self):
