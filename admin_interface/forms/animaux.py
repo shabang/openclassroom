@@ -79,6 +79,7 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
             "origine",
             "sexe",
             "description",
+            "sante",
             "date_naissance",
             "date_arrivee",
             "sterilise",
@@ -135,6 +136,7 @@ class AnimalUpdateForm(AnimalValidator, ModelForm):
         model = Animal
         fields = (
             "description",
+            "sante",
             "date_naissance",
             "date_arrivee",
             "sterilise",

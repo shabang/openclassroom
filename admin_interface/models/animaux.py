@@ -64,7 +64,8 @@ class Animal(models.Model):
         null=True,
         blank=True,
     )
-    description = models.CharField(max_length=2000, blank=True ,default="")
+    description = models.CharField(max_length=2000, blank=True )
+    sante = models.CharField(max_length=2000, blank=True ,verbose_name="Informations sur la santé de l'animal")
     photo = models.ImageField(upload_to='animaux/', blank=True, null=True)
 
     def __str__(self):

@@ -31,6 +31,7 @@
 			<strong> Propriétaire </strong> : <a href = "{% url 'detail_proprietaire' animal.proprietaire.id %}">{{animal.proprietaire}}</a> <br>
 			{% endif %}
 			<strong> Description </strong> : {{animal.description}} <br>
+			<strong> Informations sur la santé de l'animal </strong> : {{animal.sante}} <br>
 		</p>
 
 		<div >
