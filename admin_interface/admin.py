@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from import_export.fields import Field
 from import_export.resources import ModelResource
+from import_export.widgets import ForeignKeyWidget
 
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
@@ -16,9 +18,10 @@ from import_export.admin import ImportExportModelAdmin
 
 
 class ProprietaireResource(ModelResource):
-
+    user = Field(column_name='user', attribute='user', widget=ForeignKeyWidget(User, 'username'))
     class Meta:
         model = Proprietaire
+        fields = ('id','user','adresse','telephone')
 
 
 @admin.register(Proprietaire)
