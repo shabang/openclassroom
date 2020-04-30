@@ -21,7 +21,7 @@ class CreateVisite(LoginRequiredMixin, CreateView):
         form = CreateView.get_form(self, form_class=form_class)
         form.fields["animaux"].queryset = Animal.objects.filter(
             emplacement=EmplacementChoice.REFUGE.name
-        )
+        ).filter(inactif=False)
         return form
 
 
@@ -37,7 +37,7 @@ class UpdateVisite(LoginRequiredMixin, UpdateView):
         form = UpdateView.get_form(self, form_class=form_class)
         form.fields["animaux"].queryset = Animal.objects.filter(
             emplacement=EmplacementChoice.REFUGE.name
-        )
+        ).filter(inactif=False)
         return form
 
 

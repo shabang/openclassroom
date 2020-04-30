@@ -76,6 +76,7 @@ class Animal(models.Model):
     description = models.CharField(max_length=2000, blank=True )
     sante = models.CharField(max_length=2000, blank=True ,verbose_name="Informations sur la santé de l'animal")
     photo = models.ImageField(upload_to='animaux/', blank=True, null=True)
+    inactif = models.BooleanField(default=False,verbose_name="Desactivé (Ne cocher que si vous ne souhaitez plus gérer cet animal dans l'application) ")
 
     def __str__(self):
         return self.nom

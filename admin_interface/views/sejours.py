@@ -34,7 +34,7 @@ class CreateSejour(LoginRequiredMixin, CreateView):
             form.fields["proprietaire"].initial = proprietaire
             form.fields["animaux"].queryset = Animal.objects.filter(
                 proprietaire_id=id_proprietaire
-            ).order_by("nom")
+            ).filter(inactif=False).order_by("nom")
         return form
 
     def get_success_url(self):
@@ -131,9 +131,9 @@ def calcul_montant_sejour(request):
     # Inutile de calculer le montant si les données ne sont pas correctement remplies
     # On commence donc par vérifier toutes les données essentielles au calcul
     date_arrivee = datetime.strptime(request.POST["date_arrivee_0"], "%d/%m/%Y")
-    heure_arrivee = datetime.strptime(request.POST["date_arrivee_1"], "%H:%M:%S").time()
+    heure_arrivee = datetime.strptime(request.POST["date_arrivee_1"], "%H:%M").time()
     date_depart = datetime.strptime(request.POST["date_depart_0"], "%d/%m/%Y")
-    heure_depart = datetime.strptime(request.POST["date_depart_1"], "%H:%M:%S").time()
+    heure_depart = datetime.strptime(request.POST["date_depart_1"], "%H:%M").time()
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
 

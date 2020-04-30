@@ -88,7 +88,6 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
             "date_dernier_vaccin",
             "poids",
             "proprietaire",
-            "photo",
         )
         date_naissance = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
@@ -146,7 +145,7 @@ class AnimalUpdateForm(AnimalValidator, ModelForm):
             "vaccine",
             "date_dernier_vaccin",
             "poids",
-            "photo",
+            "inactif",
         )
         date_naissance = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)

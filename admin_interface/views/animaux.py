@@ -43,7 +43,7 @@ class UpdateAnimal(LoginRequiredMixin, UpdateView):
 
 @login_required
 def search_animal(request):
-    animals = Animal.objects.all()
+    animals = Animal.objects.filter(inactif=False)
     selected = "animals"
 
     if request.method == "POST":
@@ -131,7 +131,7 @@ def search_animal(request):
 @login_required
 def load_animals(request):
     proprietaire_id = request.GET.get("proprietaire")
-    animaux = Animal.objects.filter(proprietaire_id=proprietaire_id)
+    animaux = Animal.objects.filter(inactif=False).filter(proprietaire_id=proprietaire_id)
     return render(
         request, "admin_interface/sejour_form_select_animals.html", {"animaux": animaux}
     )

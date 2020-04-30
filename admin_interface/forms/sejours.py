@@ -1,5 +1,5 @@
 from django.contrib.admin.widgets import AdminSplitDateTime
-from django.forms import Form, DateField, ModelChoiceField, ModelForm, SplitDateTimeField
+from django.forms import Form, DateField, ModelChoiceField, ModelForm, SplitDateTimeField, SplitDateTimeWidget
 from django.utils import timezone
 
 from admin_interface.forms import DateInput
@@ -35,7 +35,7 @@ class SejourFormBase:
                 proprietaire_id = int(self.data.get("proprietaire"))
                 self.fields["animaux"].queryset = Animal.objects.filter(
                     proprietaire_id=proprietaire_id
-                ).order_by("nom")
+                ).filter(inactif=False).order_by("nom")
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty animaux queryset
 
@@ -59,8 +59,8 @@ class SejourFormBase:
 
 
 class SejourForm(SejourFormBase, ModelForm):
-    date_arrivee = SplitDateTimeField(required=True, widget=AdminSplitDateTime())
-    date_depart = SplitDateTimeField(required=True, widget=AdminSplitDateTime())
+    date_arrivee = SplitDateTimeField(required=True, widget=SplitDateTimeWidget(time_format=('%H:%M')))
+    date_depart = SplitDateTimeField(required=True, widget=SplitDateTimeWidget(time_format=('%H:%M')))
 
     class Meta:
         model = Sejour
