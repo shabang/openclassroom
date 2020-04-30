@@ -57,6 +57,15 @@ class Animal(models.Model):
     date_dernier_vaccin = models.DateField(
         verbose_name="Date du dernier rappel de vaccin", null=True, blank=True
     )
+    date_sterilisation = models.DateField(
+        verbose_name="Date de stérilisation", null=True, blank=True
+    )
+    poids = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
     proprietaire = models.ForeignKey(
         Proprietaire,
         verbose_name="Propriétaire (à remplir uniquement si animal de la pension)",
@@ -95,6 +104,17 @@ class Animal(models.Model):
             )
         else:
             return self.get_vaccine_display()
+
+    def get_sterilisation_str(self):
+        if self.date_sterilisation:
+            return (
+                str(self.get_sterilise_display())
+                + " (en date du "
+                + self.date_sterilisation.strftime("%d/%m/%Y")
+                + " )"
+            )
+        else:
+            return self.get_sterilise_display()
 
     def save(self, *args, **kwargs):
         # A l'enregistrement de l'animal on met à jour sa date de

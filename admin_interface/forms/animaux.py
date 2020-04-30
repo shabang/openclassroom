@@ -83,8 +83,10 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
             "date_naissance",
             "date_arrivee",
             "sterilise",
+            "date_sterilisation",
             "vaccine",
             "date_dernier_vaccin",
+            "poids",
             "proprietaire",
             "photo",
         )
@@ -140,8 +142,10 @@ class AnimalUpdateForm(AnimalValidator, ModelForm):
             "date_naissance",
             "date_arrivee",
             "sterilise",
+            "date_sterilisation",
             "vaccine",
             "date_dernier_vaccin",
+            "poids",
             "photo",
         )
         date_naissance = DateField(

@@ -32,6 +32,7 @@ def visite_medicale_save_action(sender, instance, **kwargs):
         for animal in instance.animaux.all():
             if instance.type_visite == TypeVisiteVetoChoice.STE.name:
                 animal.sterilise = OuiNonChoice.OUI.name
+                animal.date_sterilisation = instance.date
             elif instance.type_visite == TypeVisiteVetoChoice.VAC.name:
                 animal.vaccine = OuiNonChoice.OUI.name
                 animal.date_dernier_vaccin = instance.date
