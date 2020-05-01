@@ -19,6 +19,7 @@ from .views import (
 
 urlpatterns = [
     path("", home.index, name="accueil"),
+    path("statistiques/", home.stats, name="statistiques"),
     # Animaux
     path("animals/", animaux.search_animal, name="animals"),
     path("animals/create", animaux.CreateAnimal.as_view(), name="creer_animal"),
