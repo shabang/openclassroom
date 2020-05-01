@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
 <link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 <script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>
 </head>
 <body>
@@ -19,7 +20,7 @@
   	<li class="header">Accueil</li>
     <li>
       <a href="{% url 'accueil' %}">
-        <i class="fa fa-home" aria-hidden="true"></i>
+        <i class="fa fa-home {% if selected == 'tableau_bord' %}selected{% endif %}" aria-hidden="true"></i>
         <span {% if selected == 'tableau_bord' %} class = "selected" {% endif %}> Tableau de bord </span>
       </a>
     </li>
@@ -27,33 +28,33 @@
     <li class="header">Général</li>
     <li>
       <a href="{% url 'animals' %}">
-      	<i class="fa fa-home" aria-hidden="true"></i>
+      	<i class="fa fa-paw {% if selected == 'animals' %}selected{% endif %}" aria-hidden="true"></i>
         <span {% if selected == "animals" %} class = "selected" {% endif %}> Liste des animaux </span>
       </a>
     </li>
     <li>
       <a href="{% url 'proprietaires' %}">
-        <i class="fa fa-users" aria-hidden="true"></i>
+        <i class="fa fa-users {% if selected == 'proprietaires' %}selected{% endif %}" aria-hidden="true"></i>
          <span {% if selected == "proprietaires" %} class = "selected" {% endif %}> Liste des propriétaires </span>
       </a>
     </li>
     <li class="header">Gestion</li>
     <li>
       <a href="{% url 'visites' %}">
-        <i class="fa fa-users" aria-hidden="true"></i>
+        <i class="fa fa-clinic-medical {% if selected == 'visites' %}selected{% endif %}" aria-hidden="true"></i>
          <span {% if selected == "visites" %} class = "selected" {% endif %}> Liste des visites vétérinaire </span>
       </a>
     </li>
     <li>
       <a href="{% url 'sejours' %}">
-        <i class="fa fa-cog selected" aria-hidden="true"></i>
+        <i class="fa fa-hotel {% if selected == 'sejours' %}selected{% endif %}" aria-hidden="true"></i>
         <span {% if selected == "sejours" %} class = "selected" {% endif %}>Liste des séjours</span>
       </a>
     </li>
     <li class="header">Paramétrage</li>
     <li>
       <a href="{% url 'parametrage_tarifaire' %}">
-        <i class="fa fa-users" aria-hidden="true"></i>
+        <i class="fa fa-cog {% if selected == 'parametrage_tarifaire' %}selected{% endif %}" aria-hidden="true"></i>
          <span {% if selected == "parametrage_tarifaire" %} class = "selected" {% endif %}> Paramétrage des tarifs </span>
       </a>
     </li>

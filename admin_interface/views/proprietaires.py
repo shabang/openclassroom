@@ -1,3 +1,4 @@
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import redirect, render
@@ -62,9 +63,8 @@ def search_proprietaire(request):
         if form.is_valid():
 
             nom_form = form.cleaned_data["nom"]
-
             if nom_form is not None:
-                proprietaires = proprietaire_list.filter(nom__icontains=nom_form)
+                proprietaire_list = proprietaire_list.filter(user__last_name__icontains=nom_form)
     else:
         form = ProprietaireSearchForm()
     # Pagination : 10 éléments par page
