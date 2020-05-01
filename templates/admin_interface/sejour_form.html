@@ -1,7 +1,6 @@
 {% extends "admin_interface/base.html" %}
-
 {% block content %}
-{{object}}
+
 <h1> Nouveau séjour en pension </h1>
 <form method="post" id="sejourForm" data-calcul-montant-url="{% url 'calcul_montant_sejour' %}" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
    {% csrf_token %}
@@ -20,34 +19,4 @@
    	</div>
    </div>
 </form>
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $("#id_proprietaire").change(function () {
-      var url = $("#sejourForm").data("animals-url");  // get the url of the `load_animals` view
-      var proprietaireId = $(this).val();  // get the selected proprietaire ID from the HTML input
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-animals/)
-        data: {
-          'proprietaire': proprietaireId       // add the proprietaire id to the GET parameters
-        },
-        success: function (data) {   // `data` is the return of the `load_animals` view function
-          $("#id_animaux").html(data);  // replace the contents of the proprietaire input with the data that came from the server
-        }
-      });
-
-    });
-    $('#sejourForm').on('change', '*', function(event) {
-    	var champs = ['commentaire','montant','montant_restant','proprietaire'];
-    	if (champs.indexOf(event.target.name)==-1){
-    		var url = $("#sejourForm").data("calcul-montant-url");
-    		$.post(url,$('#sejourForm').serialize(),function (data){
-         		$("#id_montant").val(data["montant"]);
-      		});
-      	}
-    });
-  </script>
-
-
 {% endblock %}
