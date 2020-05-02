@@ -1,5 +1,7 @@
 import sys
 from datetime import timedelta
+
+from django.db.models import Sum
 from random import randrange
 
 from django.contrib.auth.decorators import permission_required, login_required
@@ -62,22 +64,30 @@ def index(request):
 def stats(request):
     selected = "statistiques"
 
-    labels = []
-    data = []
-    colors = []
+    labels_adoption = []
+    data_adoption = []
+    labels_pension = []
+    data_pension = []
+    
 
-    queryset = Proprietaire.objects.all()
-    for proprietaire in queryset:
-        labels.append(proprietaire.user.username)
-        data.append(proprietaire.animal_set.all().count())
-        print("Calcul couleurs \n")
-        color = "rgb("+ str(randrange(0,255)) + "," + str(randrange(255)) + "," + str(randrange(255)) + ")"
-        print(color)
-        sys.stdout.flush()
-        colors.append(color)
+    adoptions = Adoption.objects.all()
+    i = 0
+    while (i < 52):
+        labels_adoption.append("\n Semaine " + str(i))
+        labels_pension.append("\n Semaine " + str(i))
+        data_adoption.append(adoptions.filter(date__year=2020).filter(date__week=i).count())
+        added_data = Sejour.objects.filter(date_arrivee__year=2020).filter(date_arrivee__week=i).\
+            aggregate(Sum('nb_jours'))['nb_jours__sum']
+        if added_data:
+            data_pension.append(added_data)
+        else:
+            data_pension.append(0)
+        i += 1
+
     return render(request, "admin_interface/statistiques.html", {
-        'labels':labels,
-        'data':data,
-        'colors':colors,
+        'labels_adoption':labels_adoption,
+        'data_adoption':data_adoption,
+        'labels_pension': labels_pension,
+        'data_pension': data_pension,
         'selected':selected,
     })

@@ -10,7 +10,7 @@ class AdoptionValidator:
         # Le montant restant ne peut être supérieur au montant total
         montant = cleaned_data.get("montant")
         montant_restant = cleaned_data.get("montant_restant")
-        if montant < montant_restant:
+        if montant_restant and montant < montant_restant:
             msg = "Le montant restant ne peut-être supérieur au montant total."
             self._errors["montant_restant"] = self.error_class([msg])
             del cleaned_data["montant_restant"]

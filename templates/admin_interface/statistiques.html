@@ -1,32 +1,57 @@
 {% extends "admin_interface/base.html" %}
+{% load static %}
 
 {% block content %}
- <canvas id="pie-chart"></canvas>
+ <div class="row">
+   <div class="col-sm-6">
+    <canvas id="adoption-line-chart" ></canvas>
+    </div>
+  <div class="col-sm-6">
+    <canvas id="pension-line-chart" ></canvas>
+    </div>
+ </div>
 
-<p>Répartition des animaux par propriétaire</p>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-
-    var config = {
-      type: 'pie',
-      data: {
-        datasets: [{
-          data: {{ data|safe }},
-          backgroundColor: {{ colors|safe }},
-          label: "Nombre d'animaux"
-        }],
-        labels: {{ labels|safe }}
+new Chart(document.getElementById("adoption-line-chart"), {
+  type: 'line',
+  data: {
+    labels: {{ labels_adoption|safe }},
+    datasets: [{
+        data: {{ data_adoption|safe }},
+        label: "Adoptions par semaine",
+        borderColor: "#3e95cd",
+        fill: false
       },
-      options: {
-        responsive: true
-      }
-    };
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Adoptions 2020'
+    }
+  }
+});
 
-    window.onload = function() {
-      var ctx = document.getElementById('pie-chart').getContext('2d');
-      window.myPie = new Chart(ctx, config);
-    };
-
-  </script>
+new Chart(document.getElementById("pension-line-chart"), {
+  type: 'line',
+  data: {
+    labels: {{ labels_pension|safe }},
+    datasets: [{
+        data: {{ data_pension|safe }},
+        label: "Jours de pension cumulés par semaine",
+        borderColor: "#3e95cd",
+        fill: false
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Pension 2020'
+    }
+  }
+});
+</script>
 {% endblock %}
