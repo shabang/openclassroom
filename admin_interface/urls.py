@@ -42,7 +42,7 @@ urlpatterns = [
         name="creer_proprietaire",
     ),
     path(
-        "proprietaires/update//<int:pk>/",
+        "proprietaires/update/<int:pk>/",
         proprietaires.update_proprietaire,
         name="modifier_proprietaire",
     ),
