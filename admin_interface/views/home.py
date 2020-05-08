@@ -2,7 +2,6 @@ import sys
 from datetime import timedelta
 
 from django.db.models import Sum
-from random import randrange
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
@@ -11,7 +10,6 @@ from django.utils import timezone
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
-from admin_interface.models.proprietaires import Proprietaire
 from admin_interface.models.sejours import Sejour
 
 

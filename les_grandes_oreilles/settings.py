@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "admin_interface",
     "import_export",
+    "django.contrib.admin",
 ]
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True

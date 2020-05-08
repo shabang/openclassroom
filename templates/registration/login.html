@@ -1,15 +1,42 @@
-<h1>Se connecter</h1>
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+<div class="container login-container">
 
-{% if error %}
-<p><strong>Utilisateur inexistant ou mauvais mot de passe.</strong></p>
-{% endif %}
+	{% if error %}
+	<p><strong>Utilisateur inexistant ou mauvais mot de passe.</strong></p>
+	{% endif %}
 
-{% if user.is_authenticated %}
-Vous n'avez pas accès à la page que vous essayez d'atteindre.
-{% else %}
-<form method="post" action=".">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" />
-</form>
-{% endif %}
+	{% if user.is_authenticated %}
+	Vous n'avez pas accès à la page que vous essayez d'atteindre.
+	{% else %}
+
+	<div class="sidenav">
+         <div class="login-main-text">
+			 <img class="text-center" src="{% static 'img/login.png' %}" alt="Logo">
+            <h2>Les grandes oreilles</h2>
+            <p>Bienvenue sur la page de connexion</p>
+         </div>
+      </div>
+      <div class="main">
+         <div class="col-md-12 col-sm-12">
+            <div class="login-form">
+               <form method="post" action=".">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<button type="submit" class="btn-search cyan rounded">Login</button>
+				</form>
+				</div>
+         </div>
+      </div>
+	{% endif %}
+
+</div>
+</body>
