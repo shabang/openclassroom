@@ -1,7 +1,15 @@
 {% extends "admin_interface/base.html" %}
-{% block content %}
 
-<h1> Nouveau séjour en pension </h1>
+{% block title %}
+<title>Formulaire séjour</title>
+{% endblock %}
+
+{% block content %}
+{% if object %}
+	<h1> Modification d'un séjour en pension </h1>
+{% else %}
+	<h1> Nouveau séjour en pension </h1>
+{% endif %}
 <form method="post" id="sejourForm" data-calcul-montant-url="{% url 'calcul_montant_sejour' %}" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
    {% csrf_token %}
    {{ form.as_p }}

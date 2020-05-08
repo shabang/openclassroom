@@ -1,5 +1,13 @@
 {% extends "admin_interface/base.html" %}
 
+{% block title %}
+{% if proprietaire_to_update %}
+<title>Modification de {{proprietaire_to_update}}</title>
+{% else %}
+<title> Créer un proprietaire </title>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 
 {% if proprietaire_to_update %}

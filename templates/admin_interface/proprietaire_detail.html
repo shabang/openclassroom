@@ -1,5 +1,9 @@
 {% extends "admin_interface/base.html" %}
 
+{% block title %}
+<title>{{proprietaire.user.first_name}} {{proprietaire.user.last_name}}</title>
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
