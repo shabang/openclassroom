@@ -1,3 +1,5 @@
+import sys
+
 from django.db import models
 
 from . import (
@@ -117,7 +119,7 @@ class Animal(models.Model):
         else:
             return self.get_sterilise_display()
 
-    def save(self, *args, **kwargs):
+    def save(self,*args, **kwargs):
         # A l'enregistrement de l'animal on met à jour sa date de
         # prochaine visite vétérinaire et ses informations de
         # vaccination
@@ -139,4 +141,31 @@ class Animal(models.Model):
                 self.date_visite = date_rappel_vaccin
         else:
             self.date_visite = date_visites
+
+        #Si le poids à changé ou si on est en création , on historise le nouveau poids
+        if self.pk is not None:
+            current = Animal.objects.filter(pk=self.pk)
+        else:
+            #Cas d'une création
+            saved_object = super().save(*args, **kwargs)
+            h_poids = HistoriquePoids(poids=self.poids, animal=self)
+            h_poids.save()
+            return saved_object
+
+        if (self.poids and (not current.exists() or self.poids!=current.first().poids)):
+            h_poids = HistoriquePoids(poids=self.poids,animal=self)
+            h_poids.save()
         return super().save(*args, **kwargs)
+
+class HistoriquePoids(models.Model):
+    date = models.DateField(auto_now_add=True)
+    poids = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+    )
+    animal = models.ForeignKey(
+        Animal,
+        on_delete=models.PROTECT
+    )
+    def __str__(self):
+        return "Poids de " + self.animal.nom

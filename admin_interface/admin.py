@@ -5,7 +5,7 @@ from import_export.resources import ModelResource
 from import_export.widgets import ForeignKeyWidget
 
 from admin_interface.models.adoptions import Adoption
-from admin_interface.models.animaux import Animal
+from admin_interface.models.animaux import Animal, HistoriquePoids
 from admin_interface.models.proprietaires import Proprietaire
 from admin_interface.models.sejours import Sejour
 from admin_interface.models.tarifs import (
@@ -67,4 +67,8 @@ class ParametreTarifairePensionAdmin(ImportExportModelAdmin):
 
 @admin.register(TarifAdoption)
 class TarifAdoptionAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(HistoriquePoids)
+class HistoriquePoidsAdmin(ImportExportModelAdmin):
     pass

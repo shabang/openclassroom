@@ -78,8 +78,24 @@
 	{% endif %}
 </div>
 
+{% if animal.historiquepoids_set.all.count > 1 %}
+	<h4>Historique de poids</h4>
+	<table id="myTable">
+        <tr class="header">
+		{% for poids in animal.historiquepoids_set.all %}
+		<th>{{poids.date}}</th>
+		{% endfor %}
+		</tr>
+		<tr>
+		{% for poids in animal.historiquepoids_set.all %}
+		<th>{{poids.poids}}</th>
+		{% endfor %}
+		</tr>
+	</table>
+{% endif %}
+
 {% if animal.is_from_pension %}
-    <h1> Liste des séjours à la pension</h1>
+    <h4> Liste des séjours à la pension</h4>
 	<table id="myTable">
         <tr class="header">
             <th style="width:40%;">Dates</th>
@@ -97,7 +113,7 @@
        {% endfor %}
     </table>
 {% else %}
-    <h1> Liste des visites vétérinaire</h1>
+    <h4> Liste des visites vétérinaire</h4>
 	<table id="myTable">
         <tr class="header">
             <th style="width:30%;">Date</th>
