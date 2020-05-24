@@ -1,5 +1,7 @@
 import sys
-from datetime import timedelta
+from datetime import timedelta, datetime
+import calendar
+import locale
 
 from django.db.models import Sum
 
@@ -60,32 +62,47 @@ def index(request):
 
 @login_required
 def stats(request):
+
     selected = "statistiques"
 
     labels_adoption = []
-    data_adoption = []
-    labels_pension = []
-    data_pension = []
+    # Adoptions pour l'année en cours
+    data_adoption_current = []
+    # Adoptions pour l'année précédente
+    data_adoption_past = []
     
 
     adoptions = Adoption.objects.all()
-    i = 0
-    while (i < 52):
-        labels_adoption.append("\n Semaine " + str(i))
-        labels_pension.append("\n Semaine " + str(i))
-        data_adoption.append(adoptions.filter(date__year=2020).filter(date__week=i).count())
-        added_data = Sejour.objects.filter(date_arrivee__year=2020).filter(date_arrivee__week=i).\
-            aggregate(Sum('nb_jours'))['nb_jours__sum']
-        if added_data:
-            data_pension.append(added_data)
-        else:
-            data_pension.append(0)
+    # Pour que les mois soient en français
+    locale.setlocale(locale.LC_ALL, 'fr_FR')
+    date = datetime.now()
+
+    i = 1
+    while (i < 13):
+        labels_adoption.append("\n Mois " + calendar.month_name[i])
+        data_adoption_current.append(adoptions.filter(date__year=date.year).filter(date__month=i).count())
+        data_adoption_past.append(adoptions.filter(date__year=date.year-1).filter(date__month=i).count())
         i += 1
+
+    pensions_calculees = Sejour.objects.filter(date_arrivee__year=date.year).\
+                             values('proprietaire__user__last_name','proprietaire__user__first_name'). \
+        annotate(total_pensions=Sum('nb_jours')).order_by('total_pensions')[:5]
+    palmares = []
+
+    for pension in pensions_calculees:
+        palmares.insert(0,DotDict(pension))
+
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_adoption':labels_adoption,
-        'data_adoption':data_adoption,
-        'labels_pension': labels_pension,
-        'data_pension': data_pension,
+        'data_adoption_current':data_adoption_current,
+        'data_adoption_past': data_adoption_past,
         'selected':selected,
+        'current':date.year,
+        'past': date.year-1,
+        'palmares':palmares,
     })
+
+class DotDict( dict):
+    def __getattr__( self, attr):
+        return self[attr] # or, return self.get( attr, default_value)
