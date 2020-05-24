@@ -58,7 +58,9 @@ class Sejour(models.Model):
     )
 
     def __str__(self):
-        return f"Séjour du {self.date_arrivee:%d/%m/%Y %H:%M} au {self.date_depart:%d/%m/%Y %H:%M}"
+        if self.date_arrivee and self.date_depart:
+            return f"Séjour du {self.date_arrivee:%d/%m/%Y %H:%M} au {self.date_depart:%d/%m/%Y %H:%M}"
+        return ""
 
     def save(self, *args, **kwargs):
         self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
