@@ -145,7 +145,7 @@ class Animal(models.Model):
         #Si le poids à changé ou si on est en création , on historise le nouveau poids
         if self.pk is not None:
             current = Animal.objects.filter(pk=self.pk)
-        else:
+        elif self.poids:
             #Cas d'une création
             saved_object = super().save(*args, **kwargs)
             h_poids = HistoriquePoids(poids=self.poids, animal=self)

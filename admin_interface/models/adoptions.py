@@ -25,6 +25,6 @@ class Adoption(models.Model):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)
 
     def save(self, *args, **kwargs):
-        if self.animal:
+        if self.animal and self.animal.date_arrivee:
             self.nb_jours = abs((self.date - self.animal.date_arrivee).days)
         return super().save(*args, **kwargs)
