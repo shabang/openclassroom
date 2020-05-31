@@ -203,6 +203,14 @@ class ImageForm(LoginRequiredMixin, FormView):
 def delete_wordpress(request, animal_id):
     animal = Animal.objects.get(id=animal_id)
     if request.method == "POST":
+        delete_wordpress_data(animal)
+        return redirect("detail_animal", pk=animal_id)
+
+    # Render the template depending on the context.
+    return render(request, "admin_interface/delete_wordpress.html", locals())
+
+def delete_wordpress_data(animal):
+    if (animal.wordpress_image_id):
         user = settings.WORDPRESS_USER
         key = settings.WORDPRESS_KEY
         url = settings.WORDPRESS_URL
@@ -210,8 +218,8 @@ def delete_wordpress(request, animal_id):
         token = base64.b64encode(creds.encode())
         headers = {'Authorization': 'Basic ' + token.decode('utf-8')}
         delete = {'force': 'true'}
-        #Suppression de l'article
-        r = requests.delete(url + '/posts/%s' %animal.wordpress_id, headers=headers, json=delete)
+        # Suppression de l'article
+        r = requests.delete(url + '/posts/%s' % animal.wordpress_id, headers=headers, json=delete)
         suppression_ok = r.json()['deleted']
         if suppression_ok:
             animal.wordpress_id = ""
@@ -223,7 +231,3 @@ def delete_wordpress(request, animal_id):
             animal.wordpress_image_id = ""
             animal.wordpress_image_url = ""
         animal.save()
-        return redirect("detail_animal", pk=animal_id)
-
-    # Render the template depending on the context.
-    return render(request, "admin_interface/delete_wordpress.html", locals())

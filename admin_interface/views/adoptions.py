@@ -11,6 +11,7 @@ from admin_interface.models import EmplacementChoice
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
 from admin_interface.models.tarifs import TarifAdoption
+from admin_interface.views.animaux import delete_wordpress_data
 
 
 class UpdateAdoption(LoginRequiredMixin, UpdateView):
@@ -56,6 +57,8 @@ def adoption_complete(request, pk):
             # l'animal ne fait plus partie du refuge
             animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = proprietaire
+            #Supression de l'article wordpress s'il y en a un
+            delete_wordpress_data(animal)
             animal.save()
 
             return redirect("detail_animal", pk=animal.id)
@@ -86,6 +89,8 @@ def adoption_allegee(request, pk):
             new_adoption.save()
             animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = new_adoption.proprietaire
+            # Supression de l'article wordpress s'il y en a un
+            delete_wordpress_data(animal)
             animal.save()
 
             return redirect("detail_animal", pk=animal.id)
