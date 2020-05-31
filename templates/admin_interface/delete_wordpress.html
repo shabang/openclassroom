@@ -1,0 +1,27 @@
+{% extends "admin_interface/base.html" %}
+
+{% block title %}
+<title>Suppression wordpress</title>
+{% endblock %}
+
+{% block content %}
+
+<h1>Suppression de l'article wordpress de {{animal.nom}}</h1>
+<br>
+<p> Etes vous sûr(e) de vouloir supprimer complètement l'article lié a cet animal dans wordpress? </p>
+<br>
+<br>
+<form method="post" enctype="multipart/form-data" action="">
+   {% csrf_token %}
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'detail_animal' animal.id %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+
+
+{% endblock %}

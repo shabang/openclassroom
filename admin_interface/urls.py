@@ -29,6 +29,16 @@ urlpatterns = [
         name="modifier_animal",
     ),
     path(
+        "animals/wordpress/<int:animal_id>/",
+        animaux.ImageForm.as_view(),
+        name="publication_wordpress",
+    ),
+    path(
+        "animals/wordpress/delete/<int:animal_id>/",
+        animaux.delete_wordpress,
+        name="delete_wordpress",
+    ),
+    path(
         "animals/<int:pk>/",
         login_required(DetailView.as_view(model=Animal)),
         name="detail_animal",

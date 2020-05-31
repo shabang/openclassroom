@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.forms import DateInput, Form, CharField, PasswordInput, ModelForm
+from django.forms import DateInput, Form, CharField, PasswordInput, ModelForm, FileField, ImageField
 from django.utils.text import slugify
 
 
@@ -32,3 +32,6 @@ class UserForm(ModelForm):
                 self._errors["first_name"] = self.error_class([msg])
                 del cleaned_data["first_name"]
         return cleaned_data
+
+class UploadImageForm(Form):
+    image = ImageField(label="Image pour article Wordpress")

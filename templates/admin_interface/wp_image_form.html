@@ -1,0 +1,29 @@
+{% extends "admin_interface/base.html" %}
+
+{% block title %}
+<title>Formulaire d'envoi à wordpress</title>
+{% endblock %}
+
+{% block content %}
+
+<h1> Mise en ligne d'un article wordpress pour {{animal.nom}}</h1>
+<br/>
+<br/>
+{% autoescape off %}
+<p> Les informations envoyées à wordpress seront les suivantes : <br/> {{animal.get_wordpress_article}}</p>
+{% endautoescape %}
+<form method="post" enctype="multipart/form-data" action="">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <div class="row">
+   	<div class="col-md-6">
+   		<a href = "{% url 'detail_animal' animal.id %}"  class="btn-search cyan rounded">Annuler</a>
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+
+
+{% endblock %}

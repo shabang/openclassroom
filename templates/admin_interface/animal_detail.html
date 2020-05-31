@@ -38,13 +38,25 @@
 			{% endif %}
 			<strong> Description </strong> : {{animal.description}} <br>
 			<strong> Informations sur la santé de l'animal </strong> : {{animal.sante}} <br>
+			{% if animal.wordpress_url %}
+			<strong> Lien vers l'article Wordpress </strong> : <a href = "{{animal.wordpress_url}}">{{animal.wordpress_url}}</a> <br>
+			{% endif %}
 		</p>
 
-		<div >
+		<div class="text-center" >
 			<span class="pull-right">
 			<a href= "{% url 'modifier_animal' animal.id %}" class="btn-search cyan rounded">Modifier</a>
 			</span>
-			{% if animal.is_from_refuge %}
+			<span>
+			{% if animal.is_from_refuge%}
+				{% if animal.wordpress_url %}
+				<a href= "{% url 'delete_wordpress' animal.id %}" class="btn-search cyan rounded">
+					Supprimer la publication Wordpress</a>
+				{% else %}
+				<a href= "{% url 'publication_wordpress' animal.id %}" class="btn-search cyan rounded">
+					Publier dans Wordpress</a>
+				{% endif %}
+			</span>
 			<span class="pull-left">
 			<a href = "{% url 'adoption' animal.id %}"  class="btn-search cyan rounded">Adoption</a>
 			</span>

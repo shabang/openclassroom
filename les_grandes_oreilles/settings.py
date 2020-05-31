@@ -120,3 +120,7 @@ EMAIL_HOST = '127.0.0.1'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "information@lesgrandesoreilles.local"
 EMAIL_HOST_PASSWORD = "myMailSPass"
+
+WORDPRESS_USER= 'lesgrandesoreillesrefuge'
+WORDPRESS_KEY = os.getenv("WORDPRESS_KEY")
+WORDPRESS_URL = 'https://lesgrandesoreillesrefuge.com/wp-json/wp/v2'

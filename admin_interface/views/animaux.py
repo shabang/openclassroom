@@ -1,16 +1,25 @@
+import sys
+
+import os
+
+import base64
+import requests
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_date
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, FormView
 
+from admin_interface.forms import UploadImageForm
 from admin_interface.forms.animaux import AnimalCreateForm, AnimalUpdateForm, AnimalSearchForm
 from admin_interface.models import EmplacementChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
+from les_grandes_oreilles import settings
 
 
 class CreateAnimal(LoginRequiredMixin, CreateView):
@@ -135,3 +144,86 @@ def load_animals(request):
     return render(
         request, "admin_interface/sejour_form_select_animals.html", {"animaux": animaux}
     )
+
+class ImageForm(LoginRequiredMixin, FormView):
+    template_name = 'admin_interface/wp_image_form.html'
+    form_class = UploadImageForm
+
+    def get_success_url(self):
+        return reverse_lazy("detail_animal", kwargs={"pk": self.kwargs['animal_id']})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        animal = Animal.objects.get(id=self.kwargs['animal_id'])
+        context['animal'] = animal
+        return context
+
+    def form_valid(self, form):
+        #Si le formulaire est valide on fait l'envoi à wordpress
+        #Recuperation de l'animal concerné
+        animal = Animal.objects.get(id=self.kwargs['animal_id'])
+        #Etape 1 : envoi de l'image
+        image = self.request.FILES['image']
+        data = image.read()
+        filename = image.name
+        content_type = image.content_type
+        user = settings.WORDPRESS_USER
+        key = settings.WORDPRESS_KEY
+        url = settings.WORDPRESS_URL
+        creds = user + ':' + key
+        token = base64.b64encode(creds.encode())
+        headers = {
+            'Authorization': 'Basic ' + token.decode('utf-8'),
+            'Content-disposition': 'attachment; filename=%s' % filename,
+            'Content-type': '%s' % content_type
+        }
+        r = requests.post(url + '/media', headers=headers, data=data)
+        #Etape 2 : récupération des informations de l'image postée
+        animal.wordpress_image_id = r.json()['id'];
+        animal.wordpress_image_url= r.json()['link']
+        #Etape 3 : Création de l'article
+        headers = {'Authorization': 'Basic ' + token.decode('utf-8')}
+
+        post = {'title': '%s %s' %(animal.get_type_animal_display(), animal.nom),
+                'status': 'publish',
+                'content': '<img src=%s"> <p> %s </p>' %(animal.wordpress_image_url,animal.get_wordpress_article()),
+                'excerpt': '<img src=%s"> <p> %s </p>' %(animal.wordpress_image_url,animal.get_wordpress_article()),
+                'format': 'standard',
+                'categories' : '603755569'
+                }
+        r = requests.post(url + '/posts', headers=headers, json=post)
+        #Etape 4 : récupération des informations de l'article
+        animal.wordpress_id = r.json()['id'];
+        animal.wordpress_url = r.json()['link']
+        #Sauvegarde
+        animal.save()
+        return super().form_valid(form)
+
+@login_required
+def delete_wordpress(request, animal_id):
+    animal = Animal.objects.get(id=animal_id)
+    if request.method == "POST":
+        user = settings.WORDPRESS_USER
+        key = settings.WORDPRESS_KEY
+        url = settings.WORDPRESS_URL
+        creds = user + ':' + key
+        token = base64.b64encode(creds.encode())
+        headers = {'Authorization': 'Basic ' + token.decode('utf-8')}
+        delete = {'force': 'true'}
+        #Suppression de l'article
+        r = requests.delete(url + '/posts/%s' %animal.wordpress_id, headers=headers, json=delete)
+        suppression_ok = r.json()['deleted']
+        if suppression_ok:
+            animal.wordpress_id = ""
+            animal.wordpress_url = ""
+        # Suppression de l'image
+        r = requests.delete(url + '/media/%s' % animal.wordpress_image_id, headers=headers, json=delete)
+        suppression_ok = r.json()['deleted']
+        if suppression_ok:
+            animal.wordpress_image_id = ""
+            animal.wordpress_image_url = ""
+        animal.save()
+        return redirect("detail_animal", pk=animal_id)
+
+    # Render the template depending on the context.
+    return render(request, "admin_interface/delete_wordpress.html", locals())
