@@ -169,6 +169,7 @@ class Animal(models.Model):
             informations.append("<B>Date de naissance</B> : %s <br/>" % str(self.date_naissance))
         informations.append("<B>Stérilisé/castré</B> : %s <br/>" % self.get_sterilise_display())
         informations.append("<B>Vacciné</B> : %s <br/>" % self.get_vaccin_str())
+        informations.append("<B>Provenance</B> : %s <br/>" % self.get_origine_display())
         informations.append("<B>Description générale</B> : %s <br/>" % self.description)
         if self.sante:
             informations.append("<B>Informations santé</B> : %s <br/>" % self.sante)
