@@ -125,7 +125,7 @@ def search_animal(request):
                 form.fields["emplacement"].initial = EmplacementChoice.REFUGE.name
                 animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
     # Pagination : 10 éléments par page
-    paginator = Paginator(animals, 10)
+    paginator = Paginator(animals.order_by('-date_mise_a_jour'), 10)
     try:
         page = request.GET.get("page")
         if not page :

@@ -62,7 +62,7 @@ def search_visite(request):
         form = VisiteSearchForm()
 
     # Pagination : 10 éléments par page
-    paginator = Paginator(visites, 10)
+    paginator = Paginator(visites.order_by('-date_mise_a_jour'), 10)
     try:
         page = request.GET.get("page")
         if not page:

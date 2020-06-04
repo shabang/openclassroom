@@ -6,6 +6,9 @@ from .proprietaires import Proprietaire
 
 
 class Sejour(models.Model):
+    date_mise_a_jour = models.DateField(
+        verbose_name="Date de mise à jour", auto_now=True
+    )
     date_arrivee = models.DateTimeField(verbose_name="Date d'arrivée")
     date_depart = models.DateTimeField(verbose_name="Date de départ")
     nb_cages_fournies = models.IntegerField(

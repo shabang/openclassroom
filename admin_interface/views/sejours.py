@@ -112,7 +112,7 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=interval)
                 sejours = sejours.filter(date_arrivee__lte=today)
     # Pagination : 10 éléments par page
-    paginator = Paginator(sejours, 10)
+    paginator = Paginator(sejours.order_by('-date_mise_a_jour'), 10)
     try:
         page = request.GET.get("page")
         if not page:

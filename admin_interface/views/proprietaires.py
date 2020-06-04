@@ -68,7 +68,7 @@ def search_proprietaire(request):
     else:
         form = ProprietaireSearchForm()
     # Pagination : 10 éléments par page
-    paginator = Paginator(proprietaire_list, 10)
+    paginator = Paginator(proprietaire_list.order_by('-date_mise_a_jour'), 10)
     try:
         page = request.GET.get("page")
         if not page:
