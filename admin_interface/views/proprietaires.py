@@ -56,7 +56,7 @@ def update_proprietaire(request, pk):
 @login_required
 def search_proprietaire(request):
     selected = "proprietaires"
-    proprietaire_list = Proprietaire.objects.all()
+    proprietaire_list = Proprietaire.objects.all().filter(inactif=False)
 
     if request.method == "POST":
         form = ProprietaireSearchForm(request.POST)

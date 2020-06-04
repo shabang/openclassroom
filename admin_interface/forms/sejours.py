@@ -20,7 +20,7 @@ class SejourSearchForm(Form):
     )
     date_fin_max = DateField(label=" et le ", required=False, widget=DateInput())
     proprietaire = ModelChoiceField(
-        queryset=Proprietaire.objects.all(), required=False
+        queryset=Proprietaire.objects.all().filter(inactif=False), required=False
     )
 
 
@@ -29,6 +29,8 @@ class SejourFormBase:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["animaux"].queryset = Animal.objects.none()
+        self.fields["proprietaire"].queryset = Proprietaire.objects.all().filter(inactif=False).\
+            order_by("user__last_name")
 
         if "proprietaire" in self.data:
             try:

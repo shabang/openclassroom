@@ -21,7 +21,7 @@ class AnimalSearchForm(Form):
         required=False,
     )
     proprietaire = ModelChoiceField(
-        queryset=Proprietaire.objects.all(), required=False
+        queryset=Proprietaire.objects.all().filter(inactif=False), required=False
     )
     date_naissance_min = DateField(
         label="Date de naissance entre le", required=False, widget=DateInput()
@@ -51,7 +51,13 @@ class AnimalSearchForm(Form):
     )
 
 
-class AnimalValidator:
+class AnimalBaseForm:
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["proprietaire"].queryset = Proprietaire.objects.all().filter(inactif=False).\
+            order_by("user__last_name")
+
     def clean(self):
         cleaned_data = {**super().clean()}
 
@@ -69,7 +75,7 @@ class AnimalValidator:
         return cleaned_data
 
 
-class AnimalCreateForm(AnimalValidator, ModelForm):
+class AnimalCreateForm(AnimalBaseForm, ModelForm):
     class Meta:
         model = Animal
         fields = (
@@ -132,7 +138,7 @@ class AnimalCreateForm(AnimalValidator, ModelForm):
             return cleaned_data
 
 
-class AnimalUpdateForm(AnimalValidator, ModelForm):
+class AnimalUpdateForm(AnimalBaseForm, ModelForm):
     class Meta:
         model = Animal
         fields = (

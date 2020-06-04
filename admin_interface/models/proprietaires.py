@@ -22,6 +22,9 @@ class Proprietaire(models.Model):
     telephone = models.CharField(validators=[telephone_regex], max_length=10)
     deuxieme_telephone = models.CharField(validators=[telephone_regex], max_length=10,blank=True)
     date_inscription = models.DateField(auto_now_add=True)
+    inactif = models.BooleanField(default=False,
+                                  verbose_name="Desactivé (Ne cocher que si vous ne souhaitez\
+                                       plus gérer ce propriétaire dans l'application) ")
 
     def save(self, *args, **kwargs):
         # Au premier enregistrement en base, on définit un login et un mot de passe par défaut

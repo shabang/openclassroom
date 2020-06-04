@@ -82,7 +82,8 @@ class Animal(models.Model):
     sante = models.CharField(max_length=2000, blank=True ,verbose_name="Informations sur la santé de l'animal")
     photo = models.ImageField(upload_to='animaux/', blank=True, null=True)
     inactif = models.BooleanField(default=False,
-                                  verbose_name="Desactivé (Ne cocher que si vous ne souhaitez plus gérer cet animal dans l'application) ")
+                                  verbose_name="Desactivé (Ne cocher que si vous ne souhaitez\
+                                   plus gérer cet animal dans l'application) ")
     wordpress_image_url = models.URLField(verbose_name = "Url de l'image pour l'article wordpress", blank=True)
     wordpress_image_id = models.CharField(max_length=10, verbose_name="Id de l'image pour l'article wordpress", blank=True)
     wordpress_url = models.URLField(verbose_name = "Lien vers l'article wordpress", blank=True)
