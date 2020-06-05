@@ -1,3 +1,5 @@
+
+
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms import DateField, Form, CharField, ChoiceField, Select, ModelChoiceField, ModelForm, FileInput
 
@@ -53,11 +55,6 @@ class AnimalSearchForm(Form):
 
 class AnimalBaseForm:
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["proprietaire"].queryset = Proprietaire.objects.all().filter(inactif=False).\
-            order_by("user__last_name")
-
     def clean(self):
         cleaned_data = {**super().clean()}
 
@@ -104,8 +101,13 @@ class AnimalCreateForm(AnimalBaseForm, ModelForm):
         date_dernier_vaccin = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
-        # Appelé à la validation du formulaire
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields["proprietaire"].queryset = Proprietaire.objects.all().filter(inactif=False). \
+                order_by("user__last_name")
+
+        # Appelé à la validation du formulaire
         def clean(self):
             cleaned_data = {**super().clean()}
             emplacement = cleaned_data.get("emplacement")

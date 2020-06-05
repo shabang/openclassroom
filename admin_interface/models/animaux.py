@@ -1,6 +1,8 @@
 import sys
+from datetime import timedelta
 
 from django.db import models
+from django.utils import timezone
 
 from . import (
     EmplacementChoice,
@@ -132,9 +134,11 @@ class Animal(models.Model):
         # A l'enregistrement de l'animal on met à jour sa date de
         # prochaine visite vétérinaire et ses informations de
         # vaccination
-        date_rappel_vaccin = self.date_dernier_vaccin
+        date_rappel_vaccin = self.date_dernier_vaccin + timedelta(weeks=52)
+        today = timezone.now()
         date_visites = (
             VisiteMedicale.objects.filter(animaux=self)
+            .filter(date__gt=today)
             .aggregate(models.Min("date"))
             .get("date__min")
         )

@@ -1,15 +1,17 @@
 import sys
 from datetime import timedelta, datetime
+from decimal import Decimal
+
 import calendar
 import locale
 
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 from django.utils import timezone
 
-from admin_interface.models import EmplacementChoice
+from admin_interface.models import EmplacementChoice, OuiNonChoice
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
 from admin_interface.models.sejours import Sejour
@@ -57,6 +59,24 @@ def index(request):
     adoptions = (
         Adoption.objects.filter(date__gt=today).filter(date__lt=interval).count()
     )
+    #Partie indicateurs paiements
+    paiements_adoptions = Adoption.objects.filter(montant_restant__gt=Decimal('0'))
+    nb_paiements_adoptions = paiements_adoptions.count()
+    total_paiements_adoptions = paiements_adoptions.aggregate(Sum('montant_restant'))
+    paiements_sejours = Sejour.objects.filter(montant_restant__gt=Decimal('0'))
+    nb_paiements_sejours = paiements_sejours.count()
+    paiements_sejours = paiements_sejours.aggregate(Sum('montant_restant'))
+    #Animaux refuge a steriliser ou vacciner
+    nb_visites_refuge = Animal.objects.filter(
+        Q(emplacement=EmplacementChoice.REFUGE.name),
+        Q(vaccine=OuiNonChoice.NON.name)|
+        Q(sterilise=OuiNonChoice.NON.name)
+    ).count()
+    #Animaux pension a vacciner
+    nb_vaccinations = Animal.objects.filter(
+        Q(emplacement=EmplacementChoice.PENSION.name),
+        Q(date_visite__gt=today)
+    ).count()
 
     return render(request, "admin_interface/tableau_bord.html", locals())
 

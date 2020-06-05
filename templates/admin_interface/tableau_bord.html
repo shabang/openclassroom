@@ -45,15 +45,12 @@
           <h5>Indicateurs de suivi</h5>
         </div>
         <div class="panel-body">
-          <p class="paiements">2 adoptions en attente de paiement complet pour un montant de 150 €</p>
-          <p class="paiements">4 séjours en attente de paiement complet pour un montant de 220 €</p>
-          <p class="vaccins">13 animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</p>
-          <p class="visites">5 animaux du refuge à castrer/stériliser ou vacciner</p>
-        </div>
-        <div class="panel-footer">
-          <a href= "#" class="btn-search violet rounded">Gérer les paiements</a>
-          <a href= "#" class="btn-search orange rounded">Mettre à jour les vaccins</a>
-          <a href= "#" class="btn-search vert rounded">Déclarer une visite médicale</a>
+          <p class="paiements">{{nb_paiements_adoptions}} adoption(s) en attente de paiement complet
+            pour un montant de {{total_paiements_adoptions.montant_restant__sum}} €</p>
+          <p class="paiements">{{nb_paiements_sejours}} séjour(s) en attente de
+            paiement complet pour un montant de {{total_paiements_sejours.montant_restant__sum}} €</p>
+          <p class="vaccins">{{nb_vaccinations}} animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</p>
+          <p class="visites">{{nb_visites_refuge}} animaux du refuge à castrer/stériliser ou vacciner</p>
         </div>
       </div>
     </div>
