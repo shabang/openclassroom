@@ -25,6 +25,8 @@ class Proprietaire(models.Model):
     inactif = models.BooleanField(default=False,
                                   verbose_name="Desactivé (Ne cocher que si vous ne souhaitez\
                                        plus gérer ce propriétaire dans l'application) ")
+    tarif_special = models.BooleanField(default=False,
+                                        verbose_name="Ce propriétaire bénéficie t-il de tarifs préférentiels (anciens tarifs)?")
 
     def save(self, *args, **kwargs):
         # Au premier enregistrement en base, on définit un login et un mot de passe par défaut

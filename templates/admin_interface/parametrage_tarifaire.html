@@ -11,10 +11,11 @@
 <br>
 <table id="myTable">
   <tr class="header">
-    <th style="width:25%;">Type d'animal</th>
-    <th style="width:25%;">Animal adopté au refuge</th>
-	<th style="width:25%;">Animal supplémentaire dans la même cage</th>
-	<th style="width:25%;">Tarif journalier</th>
+    <th style="width:20%;">Type d'animal</th>
+    <th style="width:20%;">Animal adopté au refuge</th>
+	<th style="width:20%;">Animal supplémentaire dans la même cage</th>
+	<th style="width:20%;">Tarif journalier</th>
+    <th style="width:20%;">Tarif préférentiel (ancien tarif)</th>
   </tr>
   {% for tarif in tarifs_journaliers_pension %}
   <tr>
@@ -22,6 +23,7 @@
     <td>{{tarif.get_adopte_refuge_display}}</td>
 	<td>{{tarif.get_supplementaire_display}}</td>
 	<td>{{tarif.montant_jour}}</td>
+    <td>{{tarif.tarif_special}}</td>
   </tr>
   {% endfor %}
 </table>

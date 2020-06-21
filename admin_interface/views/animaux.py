@@ -1,4 +1,5 @@
 import sys
+from decimal import Decimal
 
 import os
 
@@ -8,6 +9,7 @@ import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -16,7 +18,7 @@ from django.views.generic import CreateView, UpdateView, FormView
 
 from admin_interface.forms import UploadImageForm
 from admin_interface.forms.animaux import AnimalCreateForm, AnimalUpdateForm, AnimalSearchForm
-from admin_interface.models import EmplacementChoice
+from admin_interface.models import EmplacementChoice, OuiNonChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
 from les_grandes_oreilles import settings
@@ -92,6 +94,10 @@ def search_animal(request):
                 animals = animals.filter(date_visite__gte=date_prochaine_visite_min)
             if date_prochaine_visite_max:
                 animals = animals.filter(date_visite__lte=date_prochaine_visite_max)
+            if date_adoption_min:
+                animals = animals.filter(adoption__date__gte=date_adoption_min)
+            if date_adoption_max:
+                animals = animals.filter(adoption__date__lte=date_adoption_max)
     else:
         form = AnimalSearchForm()
         # Paramètres de l'url pour filtres par défaut
@@ -108,22 +114,36 @@ def search_animal(request):
                 form.fields["date_prochaine_visite_min"].initial = today_str
                 animals = animals.filter(date_visite__gte=today)
                 animals = animals.filter(date_visite__lte=interval)
-            if filter_data == "date_arrivee":
+            elif filter_data == "date_arrivee":
                 form.fields["date_arrivee_max"].initial = interval_str
                 form.fields["date_arrivee_min"].initial = today_str
                 animals = animals.filter(date_arrivee__gte=today)
                 animals = animals.filter(date_arrivee__lte=interval)
-            if filter_data == "date_adoption":
+            elif filter_data == "date_adoption":
                 form.fields["date_adoption_max"].initial = interval_str
                 form.fields["date_adoption_min"].initial = today_str
                 animals = animals.filter(adoption__date__gte=today)
                 animals = animals.filter(adoption__date__lte=interval)
-            if filter_data == "pension":
+            elif filter_data == "pension":
                 form.fields["emplacement"].initial = EmplacementChoice.PENSION.name
                 animals = animals.filter(emplacement=EmplacementChoice.PENSION.name)
-            if filter_data == "refuge":
+            elif filter_data == "refuge":
                 form.fields["emplacement"].initial = EmplacementChoice.REFUGE.name
                 animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
+            elif filter_data == "paiements_adoption":
+                animals = animals.filter(adoption__montant_restant__gt=Decimal('0'))
+            elif filter_data == "pension_vaccin":
+                animals = animals.filter(
+                    Q(emplacement=EmplacementChoice.PENSION.name),
+                    Q(date_visite__lt=today)
+                )
+            elif filter_data == "sante_refuge":
+                animals = animals.filter(
+                    Q(emplacement=EmplacementChoice.REFUGE.name),
+                    Q(vaccine=OuiNonChoice.NON.name)|
+                    Q(sterilise=OuiNonChoice.NON.name)
+                )
+
     # Pagination : 10 éléments par page
     paginator = Paginator(animals.order_by('-date_mise_a_jour'), 10)
     try:

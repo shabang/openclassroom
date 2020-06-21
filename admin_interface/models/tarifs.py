@@ -22,6 +22,8 @@ class TarifJournalier(models.Model):
     montant_jour = models.DecimalField(
         verbose_name="Prix par jour", max_digits=7, decimal_places=2
     )
+    tarif_special = models.BooleanField(default=False,
+                                        verbose_name="Tarif préférentiel (ancien tarif)?")
 
     def __str__(self):
         return "Tarif journalier pour " + self.type_animal

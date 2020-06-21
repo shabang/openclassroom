@@ -45,12 +45,15 @@
           <h5>Indicateurs de suivi</h5>
         </div>
         <div class="panel-body">
-          <p class="paiements">{{nb_paiements_adoptions}} adoption(s) en attente de paiement complet
-            pour un montant de {{total_paiements_adoptions.montant_restant__sum}} €</p>
-          <p class="paiements">{{nb_paiements_sejours}} séjour(s) en attente de
-            paiement complet pour un montant de {{total_paiements_sejours.montant_restant__sum}} €</p>
-          <p class="vaccins">{{nb_vaccinations}} animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</p>
-          <p class="visites">{{nb_visites_refuge}} animaux du refuge à castrer/stériliser ou vacciner</p>
+          <p><a href= "{% url 'animals' %}?filter=paiements_adoption">
+            {{nb_paiements_adoptions}} adoption(s) en attente de paiement complet
+            pour un montant de {{total_paiements_adoptions.montant_restant__sum}} € </a></p>
+          <p><a href= "{% url 'sejours' %}?filter=paiements_sejour">{{nb_paiements_sejours}} séjour(s) en attente de
+            paiement complet pour un montant de {{total_paiements_sejours.montant_restant__sum}} €</a></p>
+          <p><a href= "{% url 'animals' %}?filter=pension_vaccin">
+            {{nb_vaccinations}} animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</a></p>
+          <p><a href= "{% url 'animals' %}?filter=sante_refuge">
+            {{nb_visites_refuge}} animaux du refuge à castrer/stériliser ou vacciner</a></p>
         </div>
       </div>
     </div>

@@ -23,8 +23,8 @@ def index(request):
     selected = "tableau_bord"
 
     # Dates
-    today = timezone.now()
-    interval = timezone.now() + timedelta(days=7)
+    today = timezone.now().date()
+    interval = timezone.now().date() + timedelta(days=7)
     interval_str = interval.strftime("%Y-%m-%d")
     today_str = today.strftime("%Y-%m-%d")
     # Partie pension
@@ -65,7 +65,7 @@ def index(request):
     total_paiements_adoptions = paiements_adoptions.aggregate(Sum('montant_restant'))
     paiements_sejours = Sejour.objects.filter(montant_restant__gt=Decimal('0'))
     nb_paiements_sejours = paiements_sejours.count()
-    paiements_sejours = paiements_sejours.aggregate(Sum('montant_restant'))
+    total_paiements_sejours = paiements_sejours.aggregate(Sum('montant_restant'))
     #Animaux refuge a steriliser ou vacciner
     nb_visites_refuge = Animal.objects.filter(
         Q(emplacement=EmplacementChoice.REFUGE.name),
@@ -75,7 +75,7 @@ def index(request):
     #Animaux pension a vacciner
     nb_vaccinations = Animal.objects.filter(
         Q(emplacement=EmplacementChoice.PENSION.name),
-        Q(date_visite__gt=today)
+        Q(date_visite__lt=today)
     ).count()
 
     return render(request, "admin_interface/tableau_bord.html", locals())

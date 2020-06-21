@@ -10,4 +10,4 @@ class ProprietaireSearchForm(Form):
 class ProprietaireForm(ModelForm):
     class Meta:
         model = Proprietaire
-        fields = ("adresse","code_postal","ville", "telephone","deuxieme_telephone","inactif")
+        fields = ("adresse","code_postal","ville", "telephone","deuxieme_telephone","inactif", "tarif_special")

@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, time
 from decimal import Decimal
 
@@ -111,6 +112,8 @@ def search_sejour(request):
                 form.fields["date_debut_max"].initial = today_str
                 sejours = sejours.filter(date_depart__gte=interval)
                 sejours = sejours.filter(date_arrivee__lte=today)
+            if filter_data == "paiements_sejour":
+                sejours = sejours.filter(montant_restant__gt=Decimal('0'))
     # Pagination : 10 éléments par page
     paginator = Paginator(sejours.order_by('-date_mise_a_jour'), 10)
     try:
@@ -130,12 +133,17 @@ def calcul_montant_sejour(request):
     montant_sejour = Decimal(0)
     # Inutile de calculer le montant si les données ne sont pas correctement remplies
     # On commence donc par vérifier toutes les données essentielles au calcul
-    date_arrivee = datetime.strptime(request.POST["date_arrivee_0"], "%d/%m/%Y")
-    heure_arrivee = datetime.strptime(request.POST["date_arrivee_1"], "%H:%M").time()
-    date_depart = datetime.strptime(request.POST["date_depart_0"], "%d/%m/%Y")
-    heure_depart = datetime.strptime(request.POST["date_depart_1"], "%H:%M").time()
+    try:
+        date_arrivee = datetime.strptime(request.POST["date_arrivee_0"], "%d/%m/%Y")
+        heure_arrivee = datetime.strptime(request.POST["date_arrivee_1"], "%H:%M").time()
+        date_depart = datetime.strptime(request.POST["date_depart_0"], "%d/%m/%Y")
+        heure_depart = datetime.strptime(request.POST["date_depart_1"], "%H:%M").time()
+    except ValueError:
+        # Si les champs sont mal remplis, on arrpete le calcul
+        return JsonResponse({"montant": montant_sejour})
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
+    proprietaire_input = request.POST["proprietaire"]
 
     if not (
         date_arrivee
@@ -144,6 +152,7 @@ def calcul_montant_sejour(request):
         and heure_depart
         and nb_cages_a_fournir
         and nb_cages_fournies
+        and proprietaire_input
     ):
         # Si on a pas les données pour faire le calcul le montant reste à 0
         return JsonResponse({"montant": montant_sejour})
@@ -151,27 +160,33 @@ def calcul_montant_sejour(request):
         nb_jours = Decimal(abs((date_depart - date_arrivee).days))
         nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
         animaux = request.POST.getlist("animaux")
+        proprietaire = Proprietaire.objects.get(id=proprietaire_input)
+        try:
         # On commence par calculer le prix pour chaque animal
-        for i, elt in enumerate(animaux):
-            animal = Animal.objects.get(id=elt)
-            adopte_refuge = (
-                OuiNonChoice.OUI.name
-                if animal.is_adopted_refuge()
-                else OuiNonChoice.NON.name
-            )
-            if i < nb_cages:
-                tarif_j = TarifJournalier.objects.get(
-                    Q(type_animal=animal.type_animal)
-                    & Q(supplementaire=OuiNonChoice.NON.name)
-                    & Q(adopte_refuge=adopte_refuge)
+            for i, elt in enumerate(animaux):
+                animal = Animal.objects.get(id=elt)
+                adopte_refuge = (
+                    OuiNonChoice.OUI.name
+                    if animal.is_adopted_refuge()
+                    else OuiNonChoice.NON.name
                 )
-            else:
-                tarif_j = TarifJournalier.objects.get(
-                    Q(type_animal=animal.type_animal)
-                    & Q(supplementaire=OuiNonChoice.OUI.name)
-                    & Q(adopte_refuge=adopte_refuge)
-                )
-            montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+                if i < nb_cages:
+                    tarif_j = TarifJournalier.objects.get(
+                        Q(type_animal=animal.type_animal)
+                        & Q(supplementaire=OuiNonChoice.NON.name)
+                        & Q(adopte_refuge=adopte_refuge)
+                        & Q(tarif_special=proprietaire.tarif_special)
+                    )
+                else:
+                    tarif_j = TarifJournalier.objects.get(
+                        Q(type_animal=animal.type_animal)
+                        & Q(supplementaire=OuiNonChoice.OUI.name)
+                        & Q(adopte_refuge=adopte_refuge)
+                        & Q(tarif_special=proprietaire.tarif_special)
+                    )
+                montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+        except TarifJournalier.DoesNotExist:
+            return JsonResponse({"montant": montant_sejour})
         # Ensuite, on calcule les suppléments
         supplement_cage = ParametreTarifairePension.objects.get(type_supplement="CAGE")
         montant_sejour = montant_sejour + (

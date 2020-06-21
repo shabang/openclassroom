@@ -22,6 +22,8 @@
 				<strong> Ville </strong> : {{proprietaire.ville}} <br>
 				<strong> Téléphone </strong> : {{proprietaire.telephone}} <br>
 				<strong> Deuxième téléphone </strong> : {{proprietaire.deuxieme_telephone}} <br>
+				<strong> Ce propriétaire bénéficie des anciens tarifs
+				</strong> : {% if proprietaire.tarif_special %} Oui {% else %} Non {%endif %} <br>
 			</p>
 			<div class="text-right">
 			<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>
