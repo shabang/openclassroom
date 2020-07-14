@@ -6,7 +6,9 @@ from .proprietaires import Proprietaire
 class Adoption(models.Model):
     date = models.DateField(verbose_name="Date de l'adoption")
     montant = models.DecimalField(
-        verbose_name="Montant à payer", max_digits=7, decimal_places=2
+        verbose_name="Montant à payer", max_digits=7, decimal_places=2,
+        null=True,
+        blank=True,
     )
     montant_restant = models.DecimalField(
         verbose_name="Montant restant à payer",

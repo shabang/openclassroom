@@ -134,15 +134,17 @@ class Animal(models.Model):
         # A l'enregistrement de l'animal on met à jour sa date de
         # prochaine visite vétérinaire et ses informations de
         # vaccination
-        date_rappel_vaccin = self.date_dernier_vaccin + timedelta(weeks=52)
         today = timezone.now()
         date_visites = (
             VisiteMedicale.objects.filter(animaux=self)
-            .filter(date__gt=today)
-            .aggregate(models.Min("date"))
-            .get("date__min")
+                .filter(date__gt=today)
+                .aggregate(models.Min("date"))
+                .get("date__min")
         )
-        if date_rappel_vaccin is not None:
+
+        if self.date_dernier_vaccin is not None:
+            date_rappel_vaccin = self.date_dernier_vaccin + timedelta(weeks=52)
+
             self.vaccine = OuiNonChoice.OUI.name
             if date_visites is not None:
                 self.date_visite = (

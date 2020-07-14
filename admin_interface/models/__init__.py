@@ -5,6 +5,8 @@ class TypeAnimalChoice(Enum):
     LAPIN = "Lapin"
     CHINCHILLA = "Chinchilla"
     COCHON_DINDE = "Cochon d'inde"
+    HAMSTER = "Cochon d'inde"
+    CHAT = "Chat"
 
 
 class TypeSupplementChoice(Enum):
@@ -30,6 +32,7 @@ class OrigineChoice(Enum):
     ABANDON = "Abandon particulier"
     REFUGE = "Transfert refuge"
     FOURRIERE = "Fourrière"
+    LABO = "Laboratoire"
     AUTRE = "Autre"
 
 
