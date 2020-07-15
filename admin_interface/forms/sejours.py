@@ -48,10 +48,6 @@ class SejourFormBase:
             date_arrivee = cleaned_data.get("date_arrivee")
             date_depart = cleaned_data.get("date_depart")
             # Vérification de la cohérence de la date d'arrivée et de la date de départ
-            if date_arrivee and date_arrivee < timezone.now():
-                msg = "La date d'arrivée ne peut être avant aujourd'hui"
-                self._errors["date_arrivee"] = self.error_class([msg])
-                del cleaned_data["date_arrivee"]
             if date_arrivee and date_depart and date_arrivee > date_depart:
                 msg = "La date de départ ne peuse trouver avant la date d'arrivée"
                 self._errors["date_depart"] = self.error_class([msg])
