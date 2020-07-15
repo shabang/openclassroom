@@ -157,7 +157,7 @@ def calcul_montant_sejour(request):
         # Si on a pas les données pour faire le calcul le montant reste à 0
         return JsonResponse({"montant": montant_sejour})
     else:
-        nb_jours = Decimal(abs((date_depart - date_arrivee).days))
+        nb_jours = Decimal(abs((date_depart - date_arrivee).days)) +1
         nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
         animaux = request.POST.getlist("animaux")
         proprietaire = Proprietaire.objects.get(id=proprietaire_input)
@@ -185,6 +185,7 @@ def calcul_montant_sejour(request):
                         & Q(tarif_special=proprietaire.tarif_special)
                     )
                 montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+
         except TarifJournalier.DoesNotExist:
             return JsonResponse({"montant": montant_sejour})
         # Ensuite, on calcule les suppléments
@@ -192,6 +193,8 @@ def calcul_montant_sejour(request):
         montant_sejour = montant_sejour + (
             supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours
         )
+        print("Montant apres supplément cage : ")
+        print(montant_sejour)
         injection = request.POST["injection"]
         soin = request.POST["soin"]
         vaccination = request.POST["vaccination"]
@@ -222,21 +225,21 @@ def calcul_montant_sejour(request):
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
         elif date_arrivee.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
-            time(18, 0), time(19, 30), heure_arrivee
+            time(17, 59), time(19, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
         elif date_arrivee.weekday() == 6 and not is_time_between(
-            time(15, 0), time(18, 30), heure_arrivee
+            time(14, 59), time(18, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
         if date_depart.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
         elif date_depart.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
-            time(18, 0), time(19, 30), heure_depart
+            time(17, 59), time(19, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
         elif date_depart.weekday() == 6 and not is_time_between(
-            time(15, 0), time(18, 30), heure_depart
+            time(14, 59), time(18, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
 
