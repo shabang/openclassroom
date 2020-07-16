@@ -94,7 +94,7 @@ def search_sejour(request):
         if filter:
 
             interval = parse_date(interval_str)
-            today = timezone.now()
+            today = timezone.now().date()
             today_str = today.strftime("%Y-%m-%d")
 
             if filter_data == "date_debut_sejour":
@@ -144,7 +144,7 @@ def calcul_montant_sejour(request):
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     proprietaire_input = request.POST["proprietaire"]
-
+    calcul = ""
     if not (
         date_arrivee
         and heure_arrivee
@@ -185,6 +185,14 @@ def calcul_montant_sejour(request):
                         & Q(tarif_special=proprietaire.tarif_special)
                     )
                 montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+                calcul += "<br/>"
+                calcul += "Tarif journalier : "
+                calcul += str(tarif_j.montant_jour)
+                calcul += "<br/> Nb jours du séjour : "
+                calcul += str(nb_jours)
+                calcul += "<br/>"
+                calcul += "Montant total après application du tarif journalier : "
+                calcul += str(montant_sejour)
 
         except TarifJournalier.DoesNotExist:
             return JsonResponse({"montant": montant_sejour})
@@ -193,8 +201,9 @@ def calcul_montant_sejour(request):
         montant_sejour = montant_sejour + (
             supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours
         )
-        print("Montant apres supplément cage : ")
-        print(montant_sejour)
+        calcul += "<br/>"
+        calcul += "Montant après supplément cage : "
+        calcul += str(montant_sejour)
         injection = request.POST["injection"]
         soin = request.POST["soin"]
         vaccination = request.POST["vaccination"]
@@ -209,12 +218,18 @@ def calcul_montant_sejour(request):
                 type_supplement=TypeSupplementChoice.MEDICAMENT.name
             )
             montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
+        calcul += "<br/>"
+        calcul += "Montant après supplément soin : "
+        calcul += str(montant_sejour)
         # Supplément vaccination
         if vaccination and vaccination == OuiNonChoice.NON.name:
             supplement_vaccination = ParametreTarifairePension.objects.get(
                 type_supplement=TypeSupplementChoice.VACCINATION.name
             )
             montant_sejour = montant_sejour + supplement_vaccination.montant
+        calcul += "<br/>"
+        calcul += "Montant après supplément vaccination : "
+        calcul += str(montant_sejour)
         # Supplément samedi ou supplément horaire
         supplement_samedi = ParametreTarifairePension.objects.get(
             type_supplement=TypeSupplementChoice.SAMEDI.name
@@ -224,24 +239,35 @@ def calcul_montant_sejour(request):
         )
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
+            calcul += "<br/> Ajout supplément samedi arrivée"
         elif date_arrivee.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
             time(17, 59), time(19, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
+            calcul += "<br/> Ajout supplément horaire arrivée"
         elif date_arrivee.weekday() == 6 and not is_time_between(
             time(14, 59), time(18, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
+            calcul += "<br/> Ajout supplément horaire arrivée"
         if date_depart.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
+            calcul += "<br/> Ajout supplément samedi départ"
         elif date_depart.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
             time(17, 59), time(19, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
+            calcul += "<br/> Ajout supplément horaire départ"
         elif date_depart.weekday() == 6 and not is_time_between(
             time(14, 59), time(18, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
+            calcul += "<br/> Ajout supplément horaire départ"
+        calcul += "<br/>"
+        calcul += "Montant total : "
+        calcul += str(montant_sejour)
+        calcul += "<br/>"
+        calcul += "<br/>"
 
     # Renvoyer vue json
-    return JsonResponse({"montant": montant_sejour})
+    return JsonResponse({"montant": montant_sejour, "calcul": calcul})

@@ -27,37 +27,49 @@ def index(request):
     interval = timezone.now().date() + timedelta(days=7)
     interval_str = interval.strftime("%Y-%m-%d")
     today_str = today.strftime("%Y-%m-%d")
+    day_interval = timezone.now().date() + timedelta(days=1)
+    day_interval_str = day_interval.strftime("%Y-%m-%d")
     # Partie pension
     arrivees_pension = (
-        Sejour.objects.filter(date_arrivee__gt=today)
-        .filter(date_arrivee__lt=interval)
+        Sejour.objects.filter(date_arrivee__gte=today)
+        .filter(date_arrivee__lte=interval)
         .count()
     )
     departs_pension = (
-        Sejour.objects.filter(date_depart__gt=today)
-        .filter(date_depart__lt=interval)
+        Sejour.objects.filter(date_depart__gte=today)
+        .filter(date_depart__lte=interval)
         .count()
     )
+    arrivees_pension_jour = (
+        Sejour.objects.filter(date_arrivee__gte=today)
+            .filter(date_arrivee__lte=day_interval)
+            .count()
+    )
+    departs_pension_jour = (
+        Sejour.objects.filter(date_depart__gte=today)
+            .filter(date_depart__lte=day_interval)
+            .count()
+    )
     presences = (
-        Sejour.objects.filter(date_arrivee__lt=today)
-        .filter(date_depart__gt=today)
+        Sejour.objects.filter(date_arrivee__lte=day_interval)
+        .filter(date_depart__gte=day_interval)
         .count()
     )
     # Partie refuge
     rdv_veterinaire = (
         Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
-        .filter(date_visite__gt=today)
-        .filter(date_visite__lt=interval)
+        .filter(date_visite__gte=today)
+        .filter(date_visite__lte=interval)
         .count()
     )
     recuperations = (
         Animal.objects.filter(emplacement=EmplacementChoice.REFUGE.name)
-        .filter(date_arrivee__gt=today)
-        .filter(date_arrivee__lt=interval)
+        .filter(date_arrivee__gte=today)
+        .filter(date_arrivee__lte=interval)
         .count()
     )
     adoptions = (
-        Adoption.objects.filter(date__gt=today).filter(date__lt=interval).count()
+        Adoption.objects.filter(date__gte=today).filter(date__lte=interval).count()
     )
     #Partie indicateurs paiements
     paiements_adoptions = Adoption.objects.filter(montant_restant__gt=Decimal('0'))
@@ -75,7 +87,7 @@ def index(request):
     #Animaux pension a vacciner
     nb_vaccinations = Animal.objects.filter(
         Q(emplacement=EmplacementChoice.PENSION.name),
-        Q(date_visite__lt=today)
+        Q(date_visite__lte=today)
     ).count()
 
     return render(request, "admin_interface/tableau_bord.html", locals())

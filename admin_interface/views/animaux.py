@@ -106,7 +106,7 @@ def search_animal(request):
         if filter_data:
 
             interval = parse_date(interval_str)
-            today = timezone.now()
+            today = timezone.now().date()
             today_str = today.strftime("%Y-%m-%d")
 
             if filter_data == "date_visite":

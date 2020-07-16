@@ -10,6 +10,8 @@
 {% else %}
 	<h1> Nouveau séjour en pension </h1>
 {% endif %}
+<div id="calcul">
+</div>
 <form method="post" id="sejourForm" data-calcul-montant-url="{% url 'calcul_montant_sejour' %}" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
    {% csrf_token %}
    {{ form.as_p }}
