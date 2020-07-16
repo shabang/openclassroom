@@ -118,12 +118,12 @@ def stats(request):
 
     pensions_calculees = Sejour.objects.filter(date_arrivee__year=date.year).\
                              values('proprietaire__user__last_name','proprietaire__user__first_name'). \
-        annotate(total_pensions=Sum('nb_jours')).order_by('total_pensions')[:5]
+        annotate(total_pensions=Sum('nb_jours')).order_by('-total_pensions')[:5]
     palmares = []
 
     for pension in pensions_calculees:
         palmares.insert(0,DotDict(pension))
-
+    palmares.reverse()
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_adoption':labels_adoption,
