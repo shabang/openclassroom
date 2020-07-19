@@ -1,3 +1,5 @@
+from dal import autocomplete
+
 from django.contrib.admin.widgets import AdminSplitDateTime
 from django.forms import Form, DateField, ModelChoiceField, ModelForm, SplitDateTimeField, SplitDateTimeWidget
 from django.utils import timezone
@@ -76,3 +78,6 @@ class SejourForm(SejourFormBase, ModelForm):
             "montant",
             "montant_restant",
         )
+        widgets = {
+            'proprietaire': autocomplete.ModelSelect2(url='proprietaire_autocomplete')
+        }

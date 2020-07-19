@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "admin_interface",
     "import_export",
+    "dal",
+    "dal_select2",
     "django.contrib.admin",
 ]
 

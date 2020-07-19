@@ -31,6 +31,7 @@
    {% endif %}
    <form method="post" action="" enctype="multipart/form-data">
    {% csrf_token %}
+	{{ form.media }}
    {{ form.as_p }}
    <br/>
    <div class="row">

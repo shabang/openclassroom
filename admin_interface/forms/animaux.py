@@ -1,4 +1,6 @@
+import sys
 
+from dal import autocomplete
 
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms import DateField, Form, CharField, ChoiceField, Select, ModelChoiceField, ModelForm, FileInput
@@ -56,7 +58,7 @@ class AnimalSearchForm(Form):
 class AnimalBaseForm:
 
     def clean(self):
-        cleaned_data = {**super().clean()}
+        cleaned_data = ModelForm.clean(self)
 
         vaccine = cleaned_data.get("vaccine")
         if vaccine == OuiNonChoice.OUI.name:
@@ -73,6 +75,7 @@ class AnimalBaseForm:
 
 
 class AnimalCreateForm(AnimalBaseForm, ModelForm):
+
     class Meta:
         model = Animal
         fields = (
@@ -92,6 +95,9 @@ class AnimalCreateForm(AnimalBaseForm, ModelForm):
             "poids",
             "proprietaire",
         )
+        widgets = {
+            'proprietaire': autocomplete.ModelSelect2(url='proprietaire_autocomplete')
+        }
         date_naissance = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
@@ -102,42 +108,37 @@ class AnimalCreateForm(AnimalBaseForm, ModelForm):
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.fields["proprietaire"].queryset = Proprietaire.objects.all().filter(inactif=False). \
-                order_by("user__last_name")
 
-        # Appelé à la validation du formulaire
-        def clean(self):
-            cleaned_data = {**super().clean()}
-            emplacement = cleaned_data.get("emplacement")
-            # Si l'animal est inscrit en pension, il doit avoir un proprietaire
-            if emplacement == EmplacementChoice.PENSION.name:
-                if not cleaned_data.get("proprietaire"):
-                    msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
-                    self._errors["proprietaire"] = self.error_class([msg])
-                    del cleaned_data["proprietaire"]
-                if cleaned_data.get("origine"):
-                    msg = "L'origine n'est à remplir que pour un animal du refuge."
-                    self._errors["origine"] = self.error_class([msg])
-                    del cleaned_data["origine"]
-            # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
-            # Et il n'a pas de proprietaire
-            elif emplacement == EmplacementChoice.REFUGE.name:
-                if not cleaned_data.get("date_arrivee"):
-                    msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
-                    self._errors["date_arrivee"] = self.error_class([msg])
-                    del cleaned_data["date_arrivee"]
-                if not cleaned_data.get("origine"):
-                    msg = "Veuillez indiquer obligatoirement l'origine de l'animmal."
-                    self._errors["origine"] = self.error_class([msg])
-                    del cleaned_data["origine"]
-                if cleaned_data.get("proprietaire"):
-                    msg = "Si l'animal arrive au refuge, il n'a pas de propriétaire."
-                    self._errors["proprietaire"] = self.error_class([msg])
-                    del cleaned_data["proprietaire"]
-
-            return cleaned_data
+    # Appelé à la validation du formulaire
+    def clean(self):
+        cleaned_data = AnimalBaseForm.clean(self)
+        emplacement = cleaned_data.get("emplacement")
+        # Si l'animal est inscrit en pension, il doit avoir un proprietaire
+        if emplacement == EmplacementChoice.PENSION.name:
+            if not cleaned_data.get("proprietaire"):
+                msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
+                self._errors["proprietaire"] = self.error_class([msg])
+                del cleaned_data["proprietaire"]
+            if cleaned_data.get("origine"):
+                msg = "L'origine n'est à remplir que pour un animal du refuge."
+                self._errors["origine"] = self.error_class([msg])
+                del cleaned_data["origine"]
+        # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
+        # Et il n'a pas de proprietaire
+        elif emplacement == EmplacementChoice.REFUGE.name:
+            if not cleaned_data.get("date_arrivee"):
+                msg = "Veuillez indiquer obligatoirement la date d'arrivée de l'animal au refuge."
+                self._errors["date_arrivee"] = self.error_class([msg])
+                del cleaned_data["date_arrivee"]
+            if not cleaned_data.get("origine"):
+                msg = "Veuillez indiquer obligatoirement l'origine de l'animmal."
+                self._errors["origine"] = self.error_class([msg])
+                del cleaned_data["origine"]
+            if cleaned_data.get("proprietaire"):
+                msg = "Si l'animal arrive au refuge, il n'a pas de propriétaire."
+                self._errors["proprietaire"] = self.error_class([msg])
+                del cleaned_data["proprietaire"]
+        return cleaned_data
 
 
 class AnimalUpdateForm(AnimalBaseForm, ModelForm):
@@ -167,7 +168,7 @@ class AnimalUpdateForm(AnimalBaseForm, ModelForm):
 
     # Appelé à la validation du formulaire
     def clean(self):
-        cleaned_data = ModelForm.clean(self)
+        cleaned_data = AnimalBaseForm.clean(self)
         emplacement = self.instance.emplacement
 
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée

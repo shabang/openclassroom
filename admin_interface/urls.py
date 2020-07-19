@@ -16,6 +16,7 @@ from .views import (
     tarifs,
     visite_medicales,
 )
+from .views.proprietaires import ProprietaireAutocomplete
 
 urlpatterns = [
     path("", home.index, name="accueil"),
@@ -60,6 +61,11 @@ urlpatterns = [
         "proprietaires/<int:pk>/",
         login_required(DetailView.as_view(model=Proprietaire)),
         name="detail_proprietaire",
+    ),
+    path(
+        "proprietaires/autocomplete/",
+        login_required(ProprietaireAutocomplete.as_view()),
+        name="proprietaire_autocomplete",
     ),
     # Séjours
     path("sejours/", sejours.search_sejour, name="sejours"),

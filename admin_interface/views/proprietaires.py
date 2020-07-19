@@ -1,3 +1,4 @@
+from dal import autocomplete
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage
@@ -78,3 +79,16 @@ def search_proprietaire(request):
         # Si on dépasse la limite de pages, on prend la dernière
         proprietaires = paginator.page(paginator.num_pages())
     return render(request, "admin_interface/proprietaire_list.html", locals())
+
+class ProprietaireAutocomplete (autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Proprietaire.objects.none()
+
+        qs = Proprietaire.objects.all()
+
+        if self.q:
+            qs = qs.filter(user__last_name__istartswith=self.q)
+
+        return qs
