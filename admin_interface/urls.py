@@ -85,6 +85,11 @@ urlpatterns = [
         sejours.calcul_montant_sejour,
         name="calcul_montant_sejour",
     ),
+    path(
+        "sejours/annule/<int:sejour_id>/",
+        sejours.annule_sejour,
+        name="annule_sejour",
+    ),
     # Visites médicales
     path("visites/", visite_medicales.search_visite, name="visites"),
     path(

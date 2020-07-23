@@ -117,7 +117,11 @@
        </tr>
        {% for sejour in animal.sejour_set.all %}
        <tr>
-            <td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
+		   {% if sejour.annule %}
+            <td><del><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></del></td>
+		   {% else %}
+		   	<td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
+		   {% endif %}
 	        <td>{{sejour.nb_jours}}</td>
 	        <td>{{sejour.montant}}</td>
 	        <td>{{sejour.montant_restant}}</td>

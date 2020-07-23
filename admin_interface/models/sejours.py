@@ -59,6 +59,8 @@ class Sejour(models.Model):
         verbose_name="Indications sur le séjour (soins divers, points d'attention...)",
         blank=True,
     )
+    annule = models.BooleanField(default=False,
+                                  verbose_name="Séjour annulé")
 
     def __str__(self):
         if self.date_arrivee and self.date_depart:
@@ -68,3 +70,6 @@ class Sejour(models.Model):
     def save(self, *args, **kwargs):
         self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
         return super().save(*args, **kwargs)
+
+    def annulation(self):
+        self.annule = True

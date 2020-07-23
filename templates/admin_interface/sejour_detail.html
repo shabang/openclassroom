@@ -14,6 +14,11 @@
 		</div>
 		<div class="panel-body">
 			<p>
+				{% if sejour.annule %}
+					<div class="alert alert-warning" role="alert">
+  						Ce séjour a été annulé
+					</div>
+				{% endif %}
 				<strong> Propriétaire </strong> : <a href= "{% url 'detail_proprietaire' sejour.proprietaire.id %}">{{sejour.proprietaire}}</a> <br>
 			    <strong> Animaux concernés </strong> : {% for animal in sejour.animaux.all %} <a href= "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a>, {% endfor %} <br>
 				<strong> Dates </strong> : {{sejour}} <br>
@@ -27,9 +32,16 @@
 				<strong> Soins par injection </strong> : {{sejour.get_injection_display}}<br>
 				<strong> Indications sur le séjour (soins divers, points d'attention...) </strong> : {{sejour.commentaire}}<br>
 			</p>
-			<div class="text-right">
-			<a href= "{% url 'modifier_sejour' sejour.id %}" class="btn-search cyan rounded">Modifier</a>
+			{% if not sejour.annule %}
+			<div class="text-center" >
+				<span class="pull-right">
+					<a href= "{% url 'modifier_sejour' sejour.id %}" class="btn-search cyan rounded">Modifier</a>
+				</span>
+				<span class="pull-left">
+					<a href= "{% url 'annule_sejour' sejour.id %}" class="btn-search cyan rounded">Annuler ce séjour</a>
+				</span>
 			</div>
+			{% endif %}
 		</div>
 	</div>
 	</div>

@@ -33,26 +33,31 @@ def index(request):
     arrivees_pension = (
         Sejour.objects.filter(date_arrivee__gte=today)
         .filter(date_arrivee__lte=interval)
+        .filter(annule=False)
         .count()
     )
     departs_pension = (
         Sejour.objects.filter(date_depart__gte=today)
         .filter(date_depart__lte=interval)
+        .filter(annule=False)
         .count()
     )
     arrivees_pension_jour = (
         Sejour.objects.filter(date_arrivee__gte=today)
             .filter(date_arrivee__lte=day_interval)
+            .filter(annule=False)
             .count()
     )
     departs_pension_jour = (
         Sejour.objects.filter(date_depart__gte=today)
             .filter(date_depart__lte=day_interval)
+            .filter(annule=False)
             .count()
     )
     presences = (
         Sejour.objects.filter(date_arrivee__lte=day_interval)
         .filter(date_depart__gte=day_interval)
+        .filter(annule=False)
         .count()
     )
     # Partie refuge
@@ -75,7 +80,7 @@ def index(request):
     paiements_adoptions = Adoption.objects.filter(montant_restant__gt=Decimal('0'))
     nb_paiements_adoptions = paiements_adoptions.count()
     total_paiements_adoptions = paiements_adoptions.aggregate(Sum('montant_restant'))
-    paiements_sejours = Sejour.objects.filter(montant_restant__gt=Decimal('0'))
+    paiements_sejours = Sejour.objects.filter(annule=False).filter(montant_restant__gt=Decimal('0'))
     nb_paiements_sejours = paiements_sejours.count()
     total_paiements_sejours = paiements_sejours.aggregate(Sum('montant_restant'))
     #Animaux refuge a steriliser ou vacciner
@@ -116,7 +121,7 @@ def stats(request):
         data_adoption_past.append(adoptions.filter(date__year=date.year-1).filter(date__month=i).count())
         i += 1
 
-    pensions_calculees = Sejour.objects.filter(date_arrivee__year=date.year).\
+    pensions_calculees = Sejour.objects.filter(date_arrivee__year=date.year).filter(annule=False).\
                              values('proprietaire__user__last_name','proprietaire__user__first_name'). \
         annotate(total_pensions=Sum('nb_jours')).order_by('-total_pensions')[:5]
     palmares = []
@@ -124,6 +129,8 @@ def stats(request):
     for pension in pensions_calculees:
         palmares.insert(0,DotDict(pension))
     palmares.reverse()
+    
+
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_adoption':labels_adoption,

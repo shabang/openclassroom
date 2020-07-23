@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -63,7 +63,7 @@ class UpdateSejour(LoginRequiredMixin, UpdateView):
 @login_required
 def search_sejour(request):
     selected = "sejours"
-    sejours = Sejour.objects.all()
+    sejours = Sejour.objects.all().filter(annule=False)
 
     if request.method == "POST":
         form = SejourSearchForm(request.POST)
@@ -271,3 +271,10 @@ def calcul_montant_sejour(request):
 
     # Renvoyer vue json
     return JsonResponse({"montant": montant_sejour, "calcul": calcul})
+
+@login_required
+def annule_sejour(request, sejour_id):
+    sejour = Sejour.objects.get(id=sejour_id)
+    sejour.annulation()
+    sejour.save()
+    return redirect("detail_sejour", pk=sejour_id)
