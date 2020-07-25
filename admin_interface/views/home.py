@@ -5,7 +5,7 @@ from decimal import Decimal
 import calendar
 import locale
 
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Count
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
@@ -102,6 +102,30 @@ def stats(request):
 
     selected = "statistiques"
 
+    #Partie planning
+    sejours = Sejour.objects.all()
+    date = timezone.now().date()
+    interval = timezone.now().date() + timedelta(days=1)
+
+    labels_planning = []
+    data_planning = []
+    couleurs_planning = []
+
+    i = 1
+    while (i < 8):
+        labels_planning.append(date.strftime("%d/%m"))
+        count = sejours.filter(date_arrivee__lte=interval).filter(date_depart__gte=date)\
+            .filter(annule=False)\
+            .annotate(num_animaux=Count('animaux'))\
+            .aggregate(Sum('num_animaux')).get("num_animaux__sum")
+        count = count if count else 0
+        data_planning.append(count)
+        color_count = count if count < 50 else 50
+        couleurs_planning.append("hsl(" + str(100-2*color_count) + ",100%,50%)")
+        date = date + timedelta(days=1)
+        interval = interval + timedelta(days=1)
+        i+=1
+
     labels_adoption = []
     # Adoptions pour l'année en cours
     data_adoption_current = []
@@ -140,6 +164,10 @@ def stats(request):
         'current':date.year,
         'past': date.year-1,
         'palmares':palmares,
+        'labels_planning':labels_planning,
+        'data_planning':data_planning,
+        'couleurs_planning':couleurs_planning
+
     })
 
 class DotDict( dict):
