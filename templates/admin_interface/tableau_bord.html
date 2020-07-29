@@ -43,6 +43,11 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
+      <canvas id="planning_chart" width="400" height="100" style="border:2px solid blue;"></canvas>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
       <div class="panel panel-default text-center">
         <div class="panel-heading">
           <h5>Indicateurs de suivi</h5>
@@ -62,4 +67,29 @@
     </div>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+var ctx = document.getElementById('planning_chart').getContext('2d');
+var planning_chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ labels_planning|safe }},
+        datasets: [{
+            label: 'Animaux en pension',
+            data: {{ data_planning|safe }},
+            backgroundColor: {{ couleurs_planning|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
 {% endblock %}

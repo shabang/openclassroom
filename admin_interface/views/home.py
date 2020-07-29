@@ -96,6 +96,30 @@ def index(request):
         Q(date_visite__lte=today)
     ).count()
 
+    #Données du planning de la semaine
+    sejours = Sejour.objects.all()
+    date_planning = timezone.now().date()
+    interval_planning = timezone.now().date() + timedelta(days=1)
+
+    labels_planning = []
+    data_planning = []
+    couleurs_planning = []
+
+    i = 1
+    while (i < 8):
+        labels_planning.append(date_planning.strftime("%d/%m"))
+        count = sejours.filter(date_arrivee__lte=interval_planning).filter(date_depart__gte=date_planning) \
+            .filter(annule=False) \
+            .annotate(num_animaux=Count('animaux')) \
+            .aggregate(Sum('num_animaux')).get("num_animaux__sum")
+        count = count if count else 0
+        data_planning.append(count)
+        color_count = count if count < 50 else 50
+        couleurs_planning.append("hsl(" + str(100 - 2 * color_count) + ",100%,50%)")
+        date_planning = date_planning + timedelta(days=1)
+        interval_planning = interval_planning + timedelta(days=1)
+        i += 1
+
     return render(request, "admin_interface/tableau_bord.html", locals())
 
 @login_required
@@ -113,7 +137,7 @@ def stats(request):
     couleurs_planning = []
 
     i = 1
-    while (i < 8):
+    while (i < 40):
         labels_planning.append(date.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=interval).filter(date_depart__gte=date)\
             .filter(annule=False)\
