@@ -56,9 +56,10 @@ def index(request):
     )
     presences = (
         Sejour.objects.filter(date_arrivee__lte=day_interval)
-        .filter(date_depart__gte=day_interval)
+        .filter(date_depart__gte=today)
         .filter(annule=False)
-        .count()
+        .annotate(num_animaux=Count('animaux')) \
+        .aggregate(Sum('num_animaux')).get("num_animaux__sum")
     )
     # Partie refuge
     rdv_veterinaire = (

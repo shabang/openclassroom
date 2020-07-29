@@ -18,6 +18,7 @@ $('#sejourForm').on('change', '*', function(event) {
         var url = $("#sejourForm").data("calcul-montant-url");
         $.post(url,$('#sejourForm').serialize(),function (data){
             $("#id_montant").val(data["montant"]);
+            $("#id_montant_restant").val(data["montant_restant"]);
             $("#calcul").html(data["calcul"]);
         });
     }

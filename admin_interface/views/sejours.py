@@ -108,10 +108,10 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=today)
                 sejours = sejours.filter(date_depart__lte=interval)
             if filter_data == "date_sejour":
-                form.fields["date_fin_min"].initial = interval_str
-                form.fields["date_debut_max"].initial = today_str
-                sejours = sejours.filter(date_depart__gte=interval)
-                sejours = sejours.filter(date_arrivee__lte=today)
+                form.fields["date_fin_min"].initial = today_str
+                form.fields["date_debut_max"].initial = interval_str
+                sejours = sejours.filter(date_depart__gte=today)
+                sejours = sejours.filter(date_arrivee__lte=interval)
             if filter_data == "paiements_sejour":
                 sejours = sejours.filter(montant_restant__gt=Decimal('0'))
     # Pagination : 10 éléments par page
@@ -269,8 +269,12 @@ def calcul_montant_sejour(request):
         calcul += "<br/>"
         calcul += "<br/>"
 
+        montant_restant = montant_sejour/2
+        print (montant_restant)
+        sys.stdout.flush()
+
     # Renvoyer vue json
-    return JsonResponse({"montant": montant_sejour, "calcul": calcul})
+    return JsonResponse({"montant": montant_sejour, "calcul": calcul, "montant_restant": montant_restant})
 
 @login_required
 def annule_sejour(request, sejour_id):
