@@ -1,3 +1,4 @@
+from dal import autocomplete
 from django.forms import ModelForm, DateField, DateInput
 
 from admin_interface.models.adoptions import Adoption
@@ -34,6 +35,9 @@ class AdoptionForm(AdoptionValidator, ModelForm):
         date = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
+        widgets = {
+            'proprietaire': autocomplete.ModelSelect2(url='proprietaire_autocomplete')
+        }
 
 
 class AdoptionFormNoProprietaire(AdoptionValidator, ModelForm):

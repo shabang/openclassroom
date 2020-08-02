@@ -119,10 +119,6 @@ class AnimalCreateForm(AnimalBaseForm, ModelForm):
                 msg = "Pour un animal inscrit en pension, veuillez obligatoirement indiquer un propriétaire"
                 self._errors["proprietaire"] = self.error_class([msg])
                 del cleaned_data["proprietaire"]
-            if cleaned_data.get("origine"):
-                msg = "L'origine n'est à remplir que pour un animal du refuge."
-                self._errors["origine"] = self.error_class([msg])
-                del cleaned_data["origine"]
         # Si l'animal arrive au refuge, on doit indiquer sa date d'arrivée
         # Et il n'a pas de proprietaire
         elif emplacement == EmplacementChoice.REFUGE.name:
@@ -145,6 +141,7 @@ class AnimalUpdateForm(AnimalBaseForm, ModelForm):
     class Meta:
         model = Animal
         fields = (
+            "nom",
             "description",
             "sante",
             "date_naissance",
