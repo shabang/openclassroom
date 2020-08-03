@@ -42,10 +42,11 @@ class Animal(models.Model):
     )
     origine = models.CharField(
         max_length=30,
-        verbose_name="Origine (à remplir uniquement si animal du refuge)",
+        verbose_name="Origine",
         choices=[(tag.name, tag.value) for tag in OrigineChoice],
         blank=True, default="",
     )
+    motif_abandon = models.CharField(verbose_name= "Motif de l'abandon",max_length=2000, blank=True )
     sexe = models.CharField(
         max_length=30,
         verbose_name="Sexe",
@@ -90,6 +91,7 @@ class Animal(models.Model):
     wordpress_image_id = models.CharField(max_length=10, verbose_name="Id de l'image pour l'article wordpress", blank=True)
     wordpress_url = models.URLField(verbose_name = "Lien vers l'article wordpress", blank=True)
     wordpress_id = models.CharField(max_length=10, blank=True ,verbose_name="Identifiant de l'article wordpress")
+    numero = models.CharField(max_length=5, blank=True ,verbose_name="Numéro d'abandon")
 
     def __str__(self):
         return self.nom

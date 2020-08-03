@@ -27,6 +27,8 @@ class Proprietaire(models.Model):
                                        plus gérer ce propriétaire dans l'application) ")
     tarif_special = models.BooleanField(default=False,
                                         verbose_name="Ce propriétaire bénéficie t-il de tarifs préférentiels (anciens tarifs)?")
+    cadeau_recu = models.BooleanField(default=True,
+                                  verbose_name="Cadeau de bienvenu reçu")
 
     def save(self, *args, **kwargs):
         # Au premier enregistrement en base, on définit un login et un mot de passe par défaut

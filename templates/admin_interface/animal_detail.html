@@ -28,6 +28,12 @@
 			{% if animal.is_from_refuge %}
 			<strong> Provenance </strong> : {{animal.get_origine_display}} <br>
 			{% endif %}
+			{% if animal.motif_abandon %}
+			<strong> Motif de l'abandon </strong> : {{animal.motif_abandon}} <br>
+			{% endif %}
+			{% if animal.numero %}
+			<strong> Numéro d'abandon </strong> : {{animal.numero}} <br>
+			{% endif %}
 			<strong> Date de naissance </strong> : {{animal.date_naissance|default:" - "}} <br>
 			<strong> Date de première arrivée </strong> : {{animal.date_arrivee|default:" - "}} <br>
 			<strong> Vacciné </strong> : {{animal.get_vaccin_str}} <br>

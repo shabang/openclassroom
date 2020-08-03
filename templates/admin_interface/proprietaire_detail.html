@@ -13,6 +13,11 @@
 			<h4> Informations </h4>
 		</div>
 		<div class="panel-body">
+			{% if not proprietaire.cadeau_recu %}
+				<div class="alert alert-warning" role="alert">
+					Ce propriétaire n'a pas encore eu de cadeau de bienvenue.
+				</div>
+			{% endif %}
 			<p>
 			    <strong> Nom </strong> : {{proprietaire.user.last_name}} <br>
 				<strong> Prénom </strong> : {{proprietaire.user.first_name}} <br>
@@ -24,6 +29,8 @@
 				<strong> Deuxième téléphone </strong> : {{proprietaire.deuxieme_telephone}} <br>
 				<strong> Ce propriétaire bénéficie des anciens tarifs
 				</strong> : {% if proprietaire.tarif_special %} Oui {% else %} Non {%endif %} <br>
+				<strong> Cadeau de bienvenue reçu
+				</strong> : {% if proprietaire.cadeau_recu %} Oui {% else %} Non {%endif %} <br>
 			</p>
 			<div class="text-right">
 			<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>

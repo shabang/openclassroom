@@ -83,6 +83,8 @@ class AnimalCreateForm(AnimalBaseForm, ModelForm):
             "type_animal",
             "emplacement",
             "origine",
+            "motif_abandon",
+            "numero",
             "sexe",
             "description",
             "sante",
@@ -142,7 +144,12 @@ class AnimalUpdateForm(AnimalBaseForm, ModelForm):
         model = Animal
         fields = (
             "nom",
+            "type_animal",
+            "emplacement",
             "description",
+            "motif_abandon",
+            "numero",
+            "sexe",
             "sante",
             "date_naissance",
             "date_arrivee",
