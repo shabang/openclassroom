@@ -2,7 +2,7 @@ import unittest
 
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
@@ -38,6 +38,7 @@ class AnimalTests(TestCase):
         self.animal_pension = create_animal_pension(self.proprietaire)
         self.animal_refuge = create_animal_refuge()
         self.client = Client()
+        self.client.post('/accounts/login/', {'username': 'dupont.jean', 'password': 'dupont.password'})
 
     def test_username(self):
         #Vérification de la génération du username
@@ -45,7 +46,21 @@ class AnimalTests(TestCase):
 
     def test_animal_list_view(self):
         # Vérification que les deux animaux sont listés dans la liste des animaux
-        self.client.post('/accounts/login/', {'username': 'dupont.jean', 'password': 'dupont.password'})
         response = self.client.get(reverse_lazy('animals'))
         self.assertContains(response, "Lapin refuge")
         self.assertContains(response, "Lapin pension")
+
+    def test_animal_detail_view(self):
+        # Vérification de la vue de détail d'un animal
+        response = self.client.get(reverse('detail_animal', args=[self.animal_pension.id]))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('detail_animal', args=[self.animal_refuge.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_proprietaire_form_view(self):
+        #Vérification de l'accès au formulaire de création d'un animal
+        response = self.client.get(reverse_lazy('creer_animal'))
+        self.assertEqual(response.status_code, 200)
+        #Vérification de l'accès au formulaire de modification d'un animal
+        response = self.client.get(reverse_lazy('modifier_animal', kwargs={"pk": self.animal_refuge.id}))
+        self.assertEqual(response.status_code, 200)

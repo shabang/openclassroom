@@ -62,9 +62,9 @@ def search_animal(request):
         if form.is_valid():
 
             proprietaire_form = form.cleaned_data["proprietaire"]
+            emplacement_form = form.cleaned_data["emplacement"]
             type_animal_form = form.cleaned_data["type_animal"]
             nom_form = form.cleaned_data["nom"]
-            provenance_form = form.cleaned_data["emplacement"]
             date_naissance_min = form.cleaned_data["date_naissance_min"]
             date_naissance_max = form.cleaned_data["date_naissance_max"]
             date_arrivee_min = form.cleaned_data["date_arrivee_min"]
@@ -76,8 +76,8 @@ def search_animal(request):
 
             if proprietaire_form is not None:
                 animals = animals.filter(proprietaire=proprietaire_form)
-            if provenance_form:
-                animals = animals.filter(emplacement=provenance_form)
+            if emplacement_form:
+                animals = animals.filter(emplacement=emplacement_form)
             if type_animal_form:
                 animals = animals.filter(type_animal=type_animal_form)
             if nom_form is not None:

@@ -21,6 +21,11 @@
 			<img src={{animal.photo.url}} height="100" width="100">
 			{% endif %}
 		<p>
+			{% if animal.inactif %}
+			<div class="alert alert-warning" role="alert">
+				Cet animal est désactivé.
+			</div>
+			{% endif %}
 		    <strong> Nom </strong> : {{animal.nom}} <br>
 			<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
 			<strong> Type </strong> : {{animal.get_type_animal_display}} <br>

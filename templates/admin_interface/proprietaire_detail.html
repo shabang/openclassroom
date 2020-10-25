@@ -49,7 +49,11 @@
   </tr>
   {% for animal in proprietaire.animal_set.all %}
   <tr>
+	  {% if animal.inactif %}
+	  <td><del><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></del></td>
+	  {% else %}
     <td><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></td>
+	  {% endif %}
 	<td>{{animal.get_type_animal_display}}</td>
 	{% if animal.adoption %}
 	    <td>Oui</td>

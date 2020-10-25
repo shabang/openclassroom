@@ -159,12 +159,11 @@ def calcul_montant_sejour(request):
     else:
         nb_jours = Decimal(abs((date_depart - date_arrivee).days)) +1
         nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
-        animaux = request.POST.getlist("animaux")
+        animaux = Animal.objects.filter(id__in=request.POST.getlist("animaux")).order_by('-adoption')
         proprietaire = Proprietaire.objects.get(id=proprietaire_input)
         try:
         # On commence par calculer le prix pour chaque animal
-            for i, elt in enumerate(animaux):
-                animal = Animal.objects.get(id=elt)
+            for i, animal in enumerate(animaux):
                 adopte_refuge = (
                     OuiNonChoice.OUI.name
                     if animal.is_adopted_refuge()
@@ -270,8 +269,6 @@ def calcul_montant_sejour(request):
         calcul += "<br/>"
 
         montant_restant = montant_sejour/2
-        print (montant_restant)
-        sys.stdout.flush()
 
     # Renvoyer vue json
     return JsonResponse({"montant": montant_sejour, "calcul": calcul, "montant_restant": montant_restant})
