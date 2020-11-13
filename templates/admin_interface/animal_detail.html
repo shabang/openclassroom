@@ -103,7 +103,7 @@
 
 {% if animal.historiquepoids_set.all.count > 1 %}
 	<h4>Historique de poids</h4>
-	<table id="myTable">
+	<table class="myTable">
         <tr class="header">
 		{% for poids in animal.historiquepoids_set.all %}
 		<th>{{poids.date}}</th>
@@ -119,7 +119,7 @@
 
 {% if animal.is_from_pension %}
     <h4> Liste des séjours à la pension</h4>
-	<table id="myTable">
+	<table class="myTable">
         <tr class="header">
             <th style="width:40%;">Dates</th>
 	        <th style="width:20%;">Jours de présence</th>
@@ -141,7 +141,7 @@
     </table>
 {% else %}
     <h4> Liste des visites vétérinaire</h4>
-	<table id="myTable">
+	<table class="myTable">
         <tr class="header">
             <th style="width:30%;">Date</th>
             <th style="width:30%;">Raison de la visite</th>

@@ -7,7 +7,8 @@
 {% block content %}
 
 <div class="row">
-	<div class="col-sm-12">
+	<div {% if proprietaire.avoir_set.all %} class="col-sm-6"
+		 {% else %} class="col-sm-12" {% endif %}>
 	<div class="panel panel-default">
         <div class="panel-heading text-center">
 			<h4> Informations </h4>
@@ -18,6 +19,7 @@
 					Ce propriétaire n'a pas encore eu de cadeau de bienvenue.
 				</div>
 			{% endif %}
+
 			<p>
 			    <strong> Nom </strong> : {{proprietaire.user.last_name}} <br>
 				<strong> Prénom </strong> : {{proprietaire.user.first_name}} <br>
@@ -32,16 +34,67 @@
 				<strong> Cadeau de bienvenue reçu
 				</strong> : {% if proprietaire.cadeau_recu %} Oui {% else %} Non {%endif %} <br>
 			</p>
-			<div class="text-right">
+			<div class="text-center" >
+			{% if not proprietaire.avoir_set.all %}
+			<span class="pull-left">
+				<a href= "{% url 'creer_avoir' %}?proprietaire={{proprietaire.id}}"
+	   			class="btn-search cyan rounded">Ajouter un avoir</a>
+			</span>
+			{% endif %}
+			<span class="pull-right">
 			<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>
+			</span>
 			</div>
 		</div>
 	</div>
 	</div>
+
+{% if proprietaire.avoir_set.all %}
+	<div class="col-sm-6">
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+			<h4> Avoirs </h4>
+		</div>
+		<div class="panel-body">
+			<table class="table table-sm">
+  				<tr class="header">
+    				<th style="width:20%;">Date d'obtention</th>
+    				<th style="width:20%;">Montant</th>
+					<th style="width:30%;">Commentaire</th>
+					<th style="width:20%;">Date d'utilisation</th>
+  				</tr>
+  {% for avoir in proprietaire.avoir_set.all %}
+	<tr>
+	  	<td>{{avoir.date_obtention}}</td>
+		<td>
+			{% if avoir.date_utilisation %} <del> {% endif %}
+			{{avoir.montant}}
+			{% if avoir.date_utilisation %} </del> {% endif %}
+		</td>
+		<td>{{avoir.commentaire}}</td>
+		{% if avoir.date_utilisation %}
+		<td>{{avoir.date_utilisation}}</td>
+		{% else %}
+		<td>
+		<a href= "{% url 'utiliser_avoir' avoir.id %}" class="btn btn-secondary btn-sm">Utiliser cet avoir</a>
+	  	</td>
+			{% endif %}
+  	</tr>
+	{% endfor %}
+</table>
+
+		<span class="pull-left">
+			<a href= "{% url 'creer_avoir' %}?proprietaire={{proprietaire.id}}"
+	   			class="btn-search cyan rounded">Ajouter un avoir</a>
+		</span>
+	</div>
+	</div>
 </div>
+	</div>
+	{% endif %}
 
 <h3> Liste des animaux </h3>
-<table id="myTable">
+<table class="myTable">
   <tr class="header">
     <th style="width:20%;">Nom</th>
     <th style="width:20%;">Type</th>
@@ -69,7 +122,7 @@
 <hr/>
 
 <h3> Liste des séjours </h3>
-<table id="myTable">
+<table class="myTable">
   <tr class="header">
     <th style="width:40%;">Séjour</th>
     <th style="width:20%;">Animaux concernés</th>

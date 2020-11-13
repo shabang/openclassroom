@@ -67,6 +67,17 @@ urlpatterns = [
         login_required(ProprietaireAutocomplete.as_view()),
         name="proprietaire_autocomplete",
     ),
+    # Avoirs de Proprietaires
+    path(
+        "proprietaires/avoirs/create/",
+        proprietaires.CreateAvoir.as_view(),
+        name="creer_avoir",
+    ),
+path(
+        "proprietaires/avoirs/utilise/<int:avoir_id>/",
+        proprietaires.utiliser_avoir,
+        name="utiliser_avoir",
+    ),
     # Séjours
     path("sejours/", sejours.search_sejour, name="sejours"),
     path("sejours/create", sejours.CreateSejour.as_view(), name="creer_sejour"),

@@ -1,7 +1,9 @@
+
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 
 
@@ -50,3 +52,22 @@ class Proprietaire(models.Model):
 
     def get_adresse_complete(self):
         return f"{self.adresse} \n {self.code_postal} {self.ville}"
+
+class Avoir(models.Model):
+    date_obtention = models.DateField(verbose_name="Date d'obtention",blank=True,
+        null=True)
+    date_utilisation = models.DateField(verbose_name="Date d'utilisation",blank=True,
+        null=True)
+    montant = models.DecimalField(
+        verbose_name="Montant", max_digits=7, decimal_places=2
+    )
+    commentaire = models.CharField(max_length=500, blank=True)
+
+    proprietaire = models.ForeignKey(
+        Proprietaire,
+        verbose_name="Propriétaire concerné",
+        on_delete=models.PROTECT,
+    )
+
+    def utiliser(self):
+        self.date_utilisation = timezone.now().date()

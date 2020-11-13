@@ -1,6 +1,6 @@
 from django.forms import ModelForm, CharField, Form
 
-from admin_interface.models.proprietaires import Proprietaire
+from admin_interface.models.proprietaires import Proprietaire, Avoir
 
 
 class ProprietaireSearchForm(Form):
@@ -12,3 +12,8 @@ class ProprietaireForm(ModelForm):
         model = Proprietaire
         fields = ("adresse","code_postal","ville", "telephone","deuxieme_telephone","inactif"
                   , "tarif_special","cadeau_recu")
+
+class AvoirForm(ModelForm):
+    class Meta:
+        model = Avoir
+        fields = ("date_obtention","montant", "commentaire","proprietaire")

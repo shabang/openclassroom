@@ -1,12 +1,15 @@
 from dal import autocomplete
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 from admin_interface.forms import UserForm
-from admin_interface.forms.proprietaires import ProprietaireForm, ProprietaireSearchForm
-from admin_interface.models.proprietaires import Proprietaire
+from admin_interface.forms.proprietaires import ProprietaireForm, ProprietaireSearchForm, AvoirForm
+from admin_interface.models.proprietaires import Proprietaire, Avoir
 
 
 @login_required
@@ -92,3 +95,33 @@ class ProprietaireAutocomplete (autocomplete.Select2QuerySetView):
             qs = qs.filter(user__last_name__istartswith=self.q)
 
         return qs
+
+class CreateAvoir(LoginRequiredMixin, CreateView):
+    model = Avoir
+    template_name = "admin_interface/avoir_form.html"
+    form_class = AvoirForm
+    id_proprietaire = 0
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['proprietaire_id'] = self.request.GET.get("proprietaire", "")
+        return context
+
+    def get_form(self, form_class=None):
+        form = CreateView.get_form(self, form_class=form_class)
+        self.id_proprietaire = self.request.GET.get("proprietaire", "")
+
+        proprietaire = Proprietaire.objects.get(id=self.id_proprietaire)
+        form.fields["proprietaire"].initial = proprietaire
+
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy("detail_proprietaire", kwargs={"pk": self.id_proprietaire})
+
+@login_required
+def utiliser_avoir(request, avoir_id):
+    avoir = Avoir.objects.get(id=avoir_id)
+    avoir.utiliser()
+    avoir.save()
+    return redirect("detail_proprietaire", pk=avoir.proprietaire.id)

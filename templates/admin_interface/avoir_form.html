@@ -1,0 +1,26 @@
+{% extends "admin_interface/base.html" %}
+
+{% block title %}
+<title>Création d'un avoir</title>
+{% endblock %}
+
+{% block content %}
+<h1> Nouvel avoir </h1>
+
+<form method="post" action=""  >
+   {% csrf_token %}
+	{{ form.media }}
+   {{ form.as_p }}
+   <div class="row">
+
+   	<div class="col-md-6">
+
+        <a href = "{% url 'detail_proprietaire' proprietaire_id %}"  class="btn-search cyan rounded">Annuler</a>
+
+   	</div>
+   	<div class="col-md-6">
+   		<input class="btn-search cyan rounded" type="submit" />
+   	</div>
+   </div>
+</form>
+{% endblock %}

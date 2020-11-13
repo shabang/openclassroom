@@ -6,7 +6,7 @@ from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal, HistoriquePoids
-from admin_interface.models.proprietaires import Proprietaire
+from admin_interface.models.proprietaires import Proprietaire, Avoir
 from admin_interface.models.sejours import Sejour
 from admin_interface.models.tarifs import (
     ParametreTarifairePension,
@@ -86,6 +86,10 @@ class AdoptionAdmin(ImportExportModelAdmin):
 
 @admin.register(TarifJournalier)
 class TarifJournalierAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(Avoir)
+class AvoirAdmin(ImportExportModelAdmin):
     pass
 
 
