@@ -26,6 +26,8 @@ def index(request):
     today = timezone.now().date()
     interval = timezone.now().date() + timedelta(days=7)
     interval_str = interval.strftime("%Y-%m-%d")
+    interval_month = timezone.now().date() + timedelta(days=30)
+    interval_month_str = interval_month.strftime("%Y-%m-%d")
     today_str = today.strftime("%Y-%m-%d")
     day_interval = timezone.now().date() + timedelta(days=1)
     day_interval_str = day_interval.strftime("%Y-%m-%d")
@@ -84,6 +86,11 @@ def index(request):
     paiements_sejours = Sejour.objects.filter(annule=False).filter(montant_restant__gt=Decimal('0'))
     nb_paiements_sejours = paiements_sejours.count()
     total_paiements_sejours = paiements_sejours.aggregate(Sum('montant_restant'))
+    # Partie caution
+    cautions_materiel = Adoption.objects.filter(date_caution_materiel__gte=today).filter \
+        (date_caution_materiel__lte=interval_month).count()
+    cautions_sterilisation = Adoption.objects.filter(date_caution_sterilisation__gte=today).filter \
+        (date_caution_sterilisation__lte=interval_month).count()
     #Animaux refuge a steriliser ou vacciner
     nb_visites_refuge = Animal.objects.filter(
         Q(emplacement=EmplacementChoice.REFUGE.name),

@@ -90,6 +90,16 @@
 		    <strong> Nombre de jours au refuge avant adoption </strong> : {{animal.adoption.nb_jours}}<br>
 			<strong> Montant total </strong> : {{animal.adoption.montant}} €<br>
 			<strong> Montant restant à payer </strong> : {{animal.adoption.montant_restant}} €<br>
+			{% if animal.adoption.montant_caution_sterilisation %}
+			Caution stérilisation de
+			<strong> {{animal.adoption.montant_caution_sterilisation}} </strong>
+			valable jusqu'au <strong> {{animal.adoption.date_caution_sterilisation}} </strong> <br>
+			{% endif %}
+			{% if animal.adoption.montant_caution_materiel %}
+			Caution matériel de
+			<strong> {{animal.adoption.montant_caution_materiel}} </strong>
+			valable jusqu'au <strong> {{animal.adoption.date_caution_materiel}} </strong> <br>
+			{% endif %}
 		</p>
 
 		<div class="text-right">

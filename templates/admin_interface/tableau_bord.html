@@ -63,6 +63,10 @@
             {{nb_vaccinations}} animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</a></p>
           <p><a href= "{% url 'animals' %}?filter=sante_refuge">
             {{nb_visites_refuge}} animaux du refuge à castrer/stériliser ou vacciner</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_month_str}}&filter=date_caution_materiel">
+            {{cautions_materiel}} caution(s) matériel à régulariser dans moins de 30 jours</a></p>
+          <p><a href= "{% url 'animals' %}?interval={{interval_month_str}}&filter=date_caution_sterilisation">
+            {{cautions_sterilisation}} caution(s) stérilisation à régulariser dans moins de 30 jours</a></p>
         </div>
       </div>
     </div>

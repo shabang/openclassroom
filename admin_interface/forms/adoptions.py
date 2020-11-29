@@ -22,7 +22,9 @@ class AdoptionValidator:
 class AdoptionUpdateForm(AdoptionValidator, ModelForm):
     class Meta:
         model = Adoption
-        fields = ("montant", "montant_restant")
+        fields = ("montant", "montant_restant",
+                  "montant_caution_sterilisation", "date_caution_sterilisation",
+                  "montant_caution_materiel", "date_caution_materiel")
         date = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )
@@ -31,7 +33,9 @@ class AdoptionUpdateForm(AdoptionValidator, ModelForm):
 class AdoptionForm(AdoptionValidator, ModelForm):
     class Meta:
         model = Adoption
-        fields = ("date", "proprietaire", "montant", "montant_restant")
+        fields = ("date", "proprietaire", "montant", "montant_restant",
+                  "montant_caution_sterilisation", "date_caution_sterilisation",
+                  "montant_caution_materiel", "date_caution_materiel")
         date = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )

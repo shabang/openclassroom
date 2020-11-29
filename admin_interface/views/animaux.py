@@ -73,14 +73,18 @@ def search_animal(request):
             date_prochaine_visite_max = form.cleaned_data["date_prochaine_visite_max"]
             date_adoption_min = form.cleaned_data["date_adoption_min"]
             date_adoption_max = form.cleaned_data["date_adoption_max"]
+            date_caution_materiel_min = form.cleaned_data["date_caution_materiel_min"]
+            date_caution_materiel_max = form.cleaned_data["date_caution_materiel_max"]
+            date_caution_sterilisation_min = form.cleaned_data["date_caution_sterilisation_min"]
+            date_caution_sterilisation_max = form.cleaned_data["date_caution_sterilisation_max"]
 
-            if proprietaire_form is not None:
+            if proprietaire_form:
                 animals = animals.filter(proprietaire=proprietaire_form)
             if emplacement_form:
                 animals = animals.filter(emplacement=emplacement_form)
             if type_animal_form:
                 animals = animals.filter(type_animal=type_animal_form)
-            if nom_form is not None:
+            if nom_form:
                 animals = animals.filter(nom__icontains=nom_form)
             if date_naissance_min:
                 animals = animals.filter(date_naissance__gte=date_naissance_min)
@@ -98,6 +102,14 @@ def search_animal(request):
                 animals = animals.filter(adoption__date__gte=date_adoption_min)
             if date_adoption_max:
                 animals = animals.filter(adoption__date__lte=date_adoption_max)
+            if (date_caution_materiel_min):
+                animals = animals.filter(adoption__date_caution_materiel__gte=date_caution_materiel_min)
+            if(date_caution_materiel_max):
+                animals = animals.filter(adoption__date_caution_materiel__lte=date_caution_materiel_max)
+            if (date_caution_sterilisation_min):
+                animals = animals.filter(adoption__date_caution_sterilisation__gte=date_caution_sterilisation_min)
+            if(date_caution_sterilisation_max):
+                animals = animals.filter(adoption__date_caution_sterilisation__lte=date_caution_sterilisation_max)
     else:
         form = AnimalSearchForm()
         # Paramètres de l'url pour filtres par défaut
@@ -119,6 +131,16 @@ def search_animal(request):
                 form.fields["date_arrivee_min"].initial = today_str
                 animals = animals.filter(date_arrivee__gte=today)
                 animals = animals.filter(date_arrivee__lte=interval)
+            elif filter_data == "date_caution_materiel":
+                form.fields["date_caution_materiel_max"].initial = interval_str
+                form.fields["date_caution_materiel_min"].initial = today_str
+                animals = animals.filter(adoption__date_caution_materiel__gte=today)
+                animals = animals.filter(adoption__date_caution_materiel__lte=interval)
+            elif filter_data == "date_caution_sterilisation":
+                form.fields["date_caution_sterilisation_max"].initial = interval_str
+                form.fields["date_caution_sterilisation_min"].initial = today_str
+                animals = animals.filter(adoption__date_caution_sterilisation__gte=today)
+                animals = animals.filter(adoption__date_caution_sterilisation__lte=interval)
             elif filter_data == "date_adoption":
                 form.fields["date_adoption_max"].initial = interval_str
                 form.fields["date_adoption_min"].initial = today_str
@@ -144,8 +166,8 @@ def search_animal(request):
                     Q(sterilise=OuiNonChoice.NON.name)
                 )
 
-    # Pagination : 10 éléments par page
-    paginator = Paginator(animals.order_by('-date_mise_a_jour'), 10)
+    # Pagination : 20 éléments par page
+    paginator = Paginator(animals.order_by('-date_mise_a_jour'), 20)
     try:
         page = request.GET.get("page")
         if not page :

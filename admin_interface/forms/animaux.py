@@ -53,6 +53,18 @@ class AnimalSearchForm(Form):
     date_adoption_max = DateField(
         label=" et le ", required=False, widget=DateInput()
     )
+    date_caution_materiel_min = DateField(
+        label="Date d'expiration de la caution materiel entre le", required=False, widget=DateInput()
+    )
+    date_caution_materiel_max = DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
+    date_caution_sterilisation_min = DateField(
+        label="Date d'expiration de la caution stérilisation entre le", required=False, widget=DateInput()
+    )
+    date_caution_sterilisation_max = DateField(
+        label=" et le ", required=False, widget=DateInput()
+    )
 
 
 class AnimalBaseForm:
