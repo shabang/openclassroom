@@ -13,6 +13,7 @@ from admin_interface.models.proprietaires import Proprietaire
 
 class AnimalSearchForm(Form):
     nom = CharField(max_length=100, required=False)
+    nom_adoption = CharField(max_length=100, required=False)
     emplacement = ChoiceField(
         choices=BLANK_CHOICE_DASH
                 + [(tag.name, tag.value) for tag in EmplacementChoice],
@@ -156,6 +157,7 @@ class AnimalUpdateForm(AnimalBaseForm, ModelForm):
         model = Animal
         fields = (
             "nom",
+            "nom_adoption",
             "type_animal",
             "emplacement",
             "description",

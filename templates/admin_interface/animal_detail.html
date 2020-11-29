@@ -27,6 +27,9 @@
 			</div>
 			{% endif %}
 		    <strong> Nom </strong> : {{animal.nom}} <br>
+			{% if animal.nom_adoption %}
+			<strong> Nom d'adoption </strong> : {{animal.nom_adoption}} <br>
+			{% endif %}
 			<strong> Sexe </strong> : {{animal.get_sexe_display}} <br>
 			<strong> Type </strong> : {{animal.get_type_animal_display}} <br>
 			<strong> Emplacement </strong> : {{animal.get_emplacement_display}} <br>

@@ -65,6 +65,7 @@ def search_animal(request):
             emplacement_form = form.cleaned_data["emplacement"]
             type_animal_form = form.cleaned_data["type_animal"]
             nom_form = form.cleaned_data["nom"]
+            nom_adoption_form = form.cleaned_data["nom_adoption"]
             date_naissance_min = form.cleaned_data["date_naissance_min"]
             date_naissance_max = form.cleaned_data["date_naissance_max"]
             date_arrivee_min = form.cleaned_data["date_arrivee_min"]
@@ -86,6 +87,8 @@ def search_animal(request):
                 animals = animals.filter(type_animal=type_animal_form)
             if nom_form:
                 animals = animals.filter(nom__icontains=nom_form)
+            if nom_adoption_form:
+                animals = animals.filter(nom_adoption__icontains=nom_adoption_form)
             if date_naissance_min:
                 animals = animals.filter(date_naissance__gte=date_naissance_min)
             if date_naissance_max:

@@ -57,6 +57,7 @@ def adoption_complete(request, pk):
             # l'animal ne fait plus partie du refuge
             animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = proprietaire
+            animal.nom_adoption = animal.nom
             #Supression de l'article wordpress s'il y en a un
             delete_wordpress_data(animal)
             animal.save()
@@ -89,6 +90,7 @@ def adoption_allegee(request, pk):
             new_adoption.save()
             animal.emplacement = EmplacementChoice.PENSION.name
             animal.proprietaire = new_adoption.proprietaire
+            animal.nom_adoption = animal.nom
             # Supression de l'article wordpress s'il y en a un
             delete_wordpress_data(animal)
             animal.save()

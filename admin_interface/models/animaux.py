@@ -18,6 +18,7 @@ from .visite_medicales import VisiteMedicale
 
 class Animal(models.Model):
     nom = models.CharField(max_length=100)
+    nom_adoption = models.CharField(max_length=100, blank=True)
     date_naissance = models.DateField(
         verbose_name="Date de naissance", null=True, blank=True
     )
