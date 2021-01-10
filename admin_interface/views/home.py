@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 from django.utils import timezone
 
+from admin_interface.forms.sejours import SejourStatsForm
 from admin_interface.models import EmplacementChoice, OuiNonChoice
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
@@ -113,7 +114,7 @@ def index(request):
     couleurs_planning = []
 
     i = 1
-    while (i < 8):
+    while (i < 20):
         labels_planning.append(date_planning.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=interval_planning).filter(date_depart__gte=date_planning) \
             .filter(annule=False) \
@@ -134,10 +135,18 @@ def stats(request):
 
     selected = "statistiques"
 
+    date = timezone.now().date()
+
+    if request.method == "POST":
+        form = SejourStatsForm(request.POST)
+        if form.is_valid():
+            date = form.cleaned_data["date_debut"]
+    else:
+        form = SejourStatsForm()
+
     #Partie planning
     sejours = Sejour.objects.all()
-    date = timezone.now().date()
-    interval = timezone.now().date() + timedelta(days=1)
+    interval = date + timedelta(days=1)
 
     labels_planning = []
     data_planning = []
@@ -195,6 +204,7 @@ def stats(request):
         'selected':selected,
         'current':date.year,
         'past': date.year-1,
+        'form': form,
         'palmares':palmares,
         'labels_planning':labels_planning,
         'data_planning':data_planning,

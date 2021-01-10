@@ -47,5 +47,7 @@ class AdoptionForm(AdoptionValidator, ModelForm):
 class AdoptionFormNoProprietaire(AdoptionValidator, ModelForm):
     class Meta:
         model = Adoption
-        fields = ("date", "montant", "montant_restant")
+        fields = ("date", "montant", "montant_restant",
+                  "montant_caution_sterilisation", "date_caution_sterilisation",
+                  "montant_caution_materiel", "date_caution_materiel")
 

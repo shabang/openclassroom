@@ -81,3 +81,8 @@ class SejourForm(SejourFormBase, ModelForm):
         widgets = {
             'proprietaire': autocomplete.ModelSelect2(url='proprietaire_autocomplete')
         }
+
+class SejourStatsForm(Form):
+    date_debut = DateField(
+        label="Affichage des séjours à partir du", required=False, widget=DateInput()
+    )
