@@ -25,6 +25,13 @@ class Sejour(models.Model):
         blank=True,
         null=True,
     )
+    arrhes = models.DecimalField(
+        verbose_name="Montant arrhes",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
     montant_restant = models.DecimalField(
         verbose_name="Montant restant à payer",
         max_digits=7,

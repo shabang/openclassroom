@@ -24,6 +24,7 @@
 				<strong> Dates </strong> : {{sejour}} <br>
 				<strong> Nombre de jours de présence </strong> : {{sejour.nb_jours}} <br>
 				<strong> Montant total </strong> : {{sejour.montant|default:" - "}} € <br>
+				<strong> Montant arrhes </strong> : {{sejour.arrhes|default:" - "}} € <br>
 				<strong> Montant restant à payer </strong> : {{sejour.montant_restant|default:" - "}} €<br>
 				<strong> Nombre de cages fournies par le proriétaire </strong> : {{sejour.nb_cages_fournies}}<br>
 				<strong> Nombre de cage à fournir par le refuge </strong> : {{sejour.nb_cages_a_fournir}}<br>
@@ -37,6 +38,11 @@
 				<span class="pull-right">
 					<a href= "{% url 'modifier_sejour' sejour.id %}" class="btn-search cyan rounded">Modifier</a>
 				</span>
+				{% if sejour.montant_restant %}
+				<span>
+					<a href= "{% url 'payer_sejour' sejour.id %}" class="btn-search cyan rounded">Séjour payé intégralement</a>
+				</span>
+				{% endif %}
 				<span class="pull-left">
 					<a href= "{% url 'annule_sejour' sejour.id %}" class="btn-search cyan rounded">Annuler ce séjour</a>
 				</span>

@@ -101,6 +101,11 @@ path(
         sejours.annule_sejour,
         name="annule_sejour",
     ),
+    path(
+        "sejours/paye/<int:sejour_id>/",
+        sejours.paye_sejour,
+        name="payer_sejour",
+    ),
     # Visites médicales
     path("visites/", visite_medicales.search_visite, name="visites"),
     path(

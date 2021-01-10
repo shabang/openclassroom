@@ -13,9 +13,9 @@
 <div id="calcul">
 </div>
 <form method="post" id="sejourForm" data-calcul-montant-url="{% url 'calcul_montant_sejour' %}" data-animals-url="{% url 'ajax_load_animals' %}" novalidate>
-   {% csrf_token %}
+	{% csrf_token %}
 	{{ form.media }}
-   {{ form.as_p }}
+	{{ form.as_p }}
    <div class="row">
 
    	<div class="col-md-6">

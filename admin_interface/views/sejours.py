@@ -144,6 +144,7 @@ def calcul_montant_sejour(request):
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     proprietaire_input = request.POST["proprietaire"]
+    arrhes = Decimal(request.POST["arrhes"])
     calcul = ""
     if not (
         date_arrivee
@@ -192,6 +193,7 @@ def calcul_montant_sejour(request):
                 calcul += "<br/>"
                 calcul += "Montant total après application du tarif journalier : "
                 calcul += str(montant_sejour)
+                calcul += "<br/>"
 
         except TarifJournalier.DoesNotExist:
             return JsonResponse({"montant": montant_sejour})
@@ -263,12 +265,14 @@ def calcul_montant_sejour(request):
             montant_sejour = montant_sejour + supplement_horaire.montant
             calcul += "<br/> Ajout supplément horaire départ"
         calcul += "<br/>"
+
         calcul += "Montant total : "
         calcul += str(montant_sejour)
         calcul += "<br/>"
         calcul += "<br/>"
 
-        montant_restant = montant_sejour/2
+        if (arrhes):
+            montant_restant = montant_sejour - arrhes
 
     # Renvoyer vue json
     return JsonResponse({"montant": montant_sejour, "calcul": calcul, "montant_restant": montant_restant})
@@ -277,5 +281,12 @@ def calcul_montant_sejour(request):
 def annule_sejour(request, sejour_id):
     sejour = Sejour.objects.get(id=sejour_id)
     sejour.annulation()
+    sejour.save()
+    return redirect("detail_sejour", pk=sejour_id)
+
+@login_required
+def paye_sejour(request, sejour_id):
+    sejour = Sejour.objects.get(id=sejour_id)
+    sejour.montant_restant = 0;
     sejour.save()
     return redirect("detail_sejour", pk=sejour_id)

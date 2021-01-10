@@ -76,6 +76,7 @@ class SejourForm(SejourFormBase, ModelForm):
             "injection",
             "commentaire",
             "montant",
+            "arrhes",
             "montant_restant",
         )
         widgets = {
