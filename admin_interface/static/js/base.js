@@ -13,7 +13,7 @@ $("#id_proprietaire").change(function () {
 });
 
 $('#sejourForm').on('change', '*', function(event) {
-    var champs = ['commentaire','montant','montant_restant','proprietaire','arrhes'];
+    var champs = ['commentaire','montant','montant_restant','proprietaire'];
     if (champs.indexOf(event.target.name)==-1){
         var url = $("#sejourForm").data("calcul-montant-url");
         $.post(url,$('#sejourForm').serialize(),function (data){

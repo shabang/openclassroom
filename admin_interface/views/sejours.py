@@ -144,7 +144,7 @@ def calcul_montant_sejour(request):
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     proprietaire_input = request.POST["proprietaire"]
-    arrhes = Decimal(request.POST["arrhes"])
+    arrhes_str = request.POST["arrhes"]
     calcul = ""
     if not (
         date_arrivee
@@ -270,9 +270,10 @@ def calcul_montant_sejour(request):
         calcul += str(montant_sejour)
         calcul += "<br/>"
         calcul += "<br/>"
-
-        if (arrhes):
-            montant_restant = montant_sejour - arrhes
+        montant_restant = montant_sejour
+        if (arrhes_str):
+            arrhes = Decimal(arrhes_str)
+            montant_restant = montant_restant - arrhes
 
     # Renvoyer vue json
     return JsonResponse({"montant": montant_sejour, "calcul": calcul, "montant_restant": montant_restant})
