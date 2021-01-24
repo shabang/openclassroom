@@ -1,5 +1,5 @@
 {% extends "admin_interface/base.html" %}
-
+{% load tag %}
 {% block title %}
 <title>Liste des animaux</title>
 {% endblock %}
@@ -129,7 +129,7 @@
 
 <div class="pagination">
    {% if animal_list.has_previous %}
-       <a href="{% url 'animals'%}?page={{ animal_list.previous_page_number}}">Précédente</a> -
+       <a href="?{% param_replace page=animal_list.previous_page_number%}">Précédente</a> -
    {% endif %}
 
    <span class="current">
@@ -137,7 +137,7 @@
    </span>
 
    {% if animal_list.has_next %}
-       - <a href="{% url 'animals'%}?page={{ animal_list.next_page_number}}">Suivante</a>
+       - <a href="?{% param_replace page=animal_list.next_page_number %}">Suivante</a>
    {% endif %}
 </div>
 
