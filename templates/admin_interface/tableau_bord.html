@@ -80,7 +80,7 @@ var planning_chart = new Chart(ctx, {
     data: {
         labels: {{ labels_planning|safe }},
         datasets: [{
-            label: 'Animaux en pension',
+            label: 'Cages pour pension',
             data: {{ data_planning|safe }},
             backgroundColor: {{ couleurs_planning|safe }},
             borderWidth: 1

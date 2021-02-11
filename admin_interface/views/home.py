@@ -5,7 +5,7 @@ from decimal import Decimal
 import calendar
 import locale
 
-from django.db.models import Sum, Q, Count
+from django.db.models import Sum, Q, Count, F
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
@@ -118,8 +118,7 @@ def index(request):
         labels_planning.append(date_planning.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=interval_planning).filter(date_depart__gte=date_planning) \
             .filter(annule=False) \
-            .annotate(num_animaux=Count('animaux')) \
-            .aggregate(Sum('num_animaux')).get("num_animaux__sum")
+            .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
         color_count = count if count < 50 else 50
@@ -157,8 +156,7 @@ def stats(request):
         labels_planning.append(date.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=interval).filter(date_depart__gte=date)\
             .filter(annule=False)\
-            .annotate(num_animaux=Count('animaux'))\
-            .aggregate(Sum('num_animaux')).get("num_animaux__sum")
+            .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
         color_count = count if count < 50 else 50
