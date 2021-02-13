@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
@@ -94,6 +94,8 @@ def search_sejour(request):
         if filter:
 
             interval = parse_date(interval_str)
+            interval_minus_one = interval - timedelta(days=1)
+            interval_minus_one_str = interval_minus_one.strftime("%Y-%m-%d")
             today = timezone.now().date()
             today_str = today.strftime("%Y-%m-%d")
 
@@ -108,9 +110,9 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=today)
                 sejours = sejours.filter(date_depart__lte=interval)
             if filter_data == "date_sejour":
-                form.fields["date_fin_min"].initial = today_str
+                form.fields["date_fin_min"].initial = interval_minus_one_str
                 form.fields["date_debut_max"].initial = interval_str
-                sejours = sejours.filter(date_depart__gte=today)
+                sejours = sejours.filter(date_depart__gte=interval_minus_one)
                 sejours = sejours.filter(date_arrivee__lte=interval)
             if filter_data == "paiements_sejour":
                 sejours = sejours.filter(montant_restant__gt=Decimal('0'))

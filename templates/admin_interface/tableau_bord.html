@@ -74,7 +74,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-var ctx = document.getElementById('planning_chart').getContext('2d');
+var canvasP = document.getElementById('planning_chart')
+var ctx = canvasP.getContext('2d');
 var planning_chart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -96,5 +97,12 @@ var planning_chart = new Chart(ctx, {
         }
     }
 });
+
+canvasP.onclick = function(e) {
+    var slice = planning_chart.getElementAtEvent(e);
+    if (!slice.length) return; // return if not clicked on slice
+    urls = "{{urls_string}}".split(',');
+    window.open(urls[slice[0]._index],"_self")
+}
 </script>
 {% endblock %}

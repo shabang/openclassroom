@@ -9,6 +9,7 @@ from django.db.models import Sum, Q, Count, F
 
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
+from django.urls import reverse
 from django.utils import timezone
 
 from admin_interface.forms.sejours import SejourStatsForm
@@ -112,9 +113,11 @@ def index(request):
     labels_planning = []
     data_planning = []
     couleurs_planning = []
+    urls = []
 
     i = 1
     while (i < 20):
+        urls.append(reverse('sejours') + "?interval="+date_planning.strftime("%Y-%m-%d")+"&filter=date_sejour")
         labels_planning.append(date_planning.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=interval_planning).filter(date_depart__gte=date_planning) \
             .filter(annule=False) \
@@ -126,7 +129,7 @@ def index(request):
         date_planning = date_planning + timedelta(days=1)
         interval_planning = interval_planning + timedelta(days=1)
         i += 1
-
+    urls_string = ','.join(urls)
     return render(request, "admin_interface/tableau_bord.html", locals())
 
 @login_required
@@ -150,10 +153,12 @@ def stats(request):
     labels_planning = []
     data_planning = []
     couleurs_planning = []
+    urls = []
 
     i = 1
     while (i < 40):
         labels_planning.append(date.strftime("%d/%m"))
+        urls.append(reverse('sejours') + "?interval="+date.strftime("%Y-%m-%d")+"&filter=date_sejour")
         count = sejours.filter(date_arrivee__lte=interval).filter(date_depart__gte=date)\
             .filter(annule=False)\
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
@@ -192,8 +197,8 @@ def stats(request):
     for pension in pensions_calculees:
         palmares.insert(0,DotDict(pension))
     palmares.reverse()
-    
 
+    urls_string = ','.join(urls)
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_adoption':labels_adoption,
@@ -201,6 +206,7 @@ def stats(request):
         'data_adoption_past': data_adoption_past,
         'selected':selected,
         'current':date.year,
+        'urls_string': urls_string,
         'past': date.year-1,
         'form': form,
         'palmares':palmares,

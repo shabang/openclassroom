@@ -66,7 +66,8 @@ new Chart(document.getElementById("adoption-line-chart"), {
     }
   }
 });
-var ctx = document.getElementById('myChart').getContext('2d');
+var canvasP = document.getElementById('myChart')
+var ctx = canvasP.getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -88,5 +89,12 @@ var myChart = new Chart(ctx, {
         }
     }
 });
+
+canvasP.onclick = function(e) {
+    var slice = myChart.getElementAtEvent(e);
+    if (!slice.length) return; // return if not clicked on slice
+    urls = "{{urls_string}}".split(',');
+    window.open(urls[slice[0]._index],"_self")
+}
 </script>
 {% endblock %}
