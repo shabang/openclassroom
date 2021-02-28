@@ -110,9 +110,9 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__gte=today)
                 sejours = sejours.filter(date_depart__lte=interval)
             if filter_data == "date_sejour":
-                form.fields["date_fin_min"].initial = interval_minus_one_str
+                form.fields["date_fin_min"].initial = interval_str
                 form.fields["date_debut_max"].initial = interval_str
-                sejours = sejours.filter(date_depart__gte=interval_minus_one)
+                sejours = sejours.filter(date_depart__gte=interval_str)
                 sejours = sejours.filter(date_arrivee__lte=interval)
             if filter_data == "paiements_sejour":
                 sejours = sejours.filter(montant_restant__gt=Decimal('0'))
