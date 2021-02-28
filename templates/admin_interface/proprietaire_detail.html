@@ -9,45 +9,58 @@
 <div class="row">
 	<div {% if proprietaire.avoir_set.all %} class="col-sm-6"
 		 {% else %} class="col-sm-12" {% endif %}>
-	<div class="panel panel-default">
-        <div class="panel-heading text-center">
-			<h4> Informations </h4>
-		</div>
-		<div class="panel-body">
-			{% if not proprietaire.cadeau_recu %}
-				<div class="alert alert-warning" role="alert">
-					Ce propriétaire n'a pas encore eu de cadeau de bienvenue.
+		<div class="panel panel-default">
+        	<div class="panel-heading text-center">
+				<h4> Informations </h4>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-8">
+						{% if not proprietaire.cadeau_recu %}
+						<div class="alert alert-warning" role="alert">
+							Ce propriétaire n'a pas encore eu de cadeau de bienvenue.
+						</div>
+						{% endif %}
+						<p>
+							<strong> Nom </strong> : {{proprietaire.user.last_name}} <br>
+							<strong> Prénom </strong> : {{proprietaire.user.first_name}} <br>
+							<strong> Adresse mail </strong> : {{proprietaire.user.email}} <br>
+							<strong> Adresse </strong> : {{proprietaire.adresse}} <br>
+							<strong> Code Postal </strong> : {{proprietaire.code_postal}} <br>
+							<strong> Ville </strong> : {{proprietaire.ville}} <br>
+							<strong> Téléphone </strong> : {{proprietaire.telephone}} <br>
+							<strong> Deuxième téléphone </strong> : {{proprietaire.deuxieme_telephone}} <br>
+							<strong> Ce propriétaire bénéficie des anciens tarifs
+							</strong> : {% if proprietaire.tarif_special %} Oui {% else %} Non {%endif %} <br>
+							<strong> Cadeau de bienvenue reçu
+							</strong> : {% if proprietaire.cadeau_recu %} Oui {% else %} Non {%endif %} <br>
+						</p>
+						<div class="text-center" >
+							{% if not proprietaire.avoir_set.all %}
+							<span class="pull-left">
+								<a href= "{% url 'creer_avoir' %}?proprietaire={{proprietaire.id}}"
+								   class="btn-search cyan rounded">Ajouter un avoir</a>
+							</span>
+							{% endif %}
+						</div>
+					</div>
+					{% if proprietaire.commentaire %}
+					<div class="col-sm-4">
+						<div class="post-it">
+							<div class="inner-text">
+								{{proprietaire.commentaire}}
+							</div>
+						</div>
+					</div>
+					{% endif %}
 				</div>
-			{% endif %}
-
-			<p>
-			    <strong> Nom </strong> : {{proprietaire.user.last_name}} <br>
-				<strong> Prénom </strong> : {{proprietaire.user.first_name}} <br>
-				<strong> Adresse mail </strong> : {{proprietaire.user.email}} <br>
-				<strong> Adresse </strong> : {{proprietaire.adresse}} <br>
-				<strong> Code Postal </strong> : {{proprietaire.code_postal}} <br>
-				<strong> Ville </strong> : {{proprietaire.ville}} <br>
-				<strong> Téléphone </strong> : {{proprietaire.telephone}} <br>
-				<strong> Deuxième téléphone </strong> : {{proprietaire.deuxieme_telephone}} <br>
-				<strong> Ce propriétaire bénéficie des anciens tarifs
-				</strong> : {% if proprietaire.tarif_special %} Oui {% else %} Non {%endif %} <br>
-				<strong> Cadeau de bienvenue reçu
-				</strong> : {% if proprietaire.cadeau_recu %} Oui {% else %} Non {%endif %} <br>
-			</p>
-			<div class="text-center" >
-			{% if not proprietaire.avoir_set.all %}
-			<span class="pull-left">
-				<a href= "{% url 'creer_avoir' %}?proprietaire={{proprietaire.id}}"
-	   			class="btn-search cyan rounded">Ajouter un avoir</a>
-			</span>
-			{% endif %}
-			<span class="pull-right">
-			<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>
-			</span>
+				<span class="pull-right">
+					<a href= "{% url 'modifier_proprietaire' proprietaire.id %}" class="btn-search cyan rounded">Modifier</a>
+				</span>
 			</div>
 		</div>
 	</div>
-	</div>
+
 
 {% if proprietaire.avoir_set.all %}
 	<div class="col-sm-6">

@@ -244,3 +244,20 @@ ul.errorlist {
 .login-main-text h2{
     font-weight: 300;
 }
+
+.post-it {
+padding: 5px;
+background-color: #ffffa5;
+box-shadow: 2px 4px 6px #444;
+-moz-box-shadow: 2px 4px 6px #444;
+-webkit-box-shadow: 2px 4px 6px #444;
+transform: rotate(2deg);
+-moz-transform: rotate(2deg);
+-webkit-transform: rotate(2deg);
+-o-transform: rotate(2deg);
+-ms-transform: rotate(2deg);
+border-bottom-right-radius: 60px 10px;
+}
+
+.post-it .inner-text {
+margin: 5px }

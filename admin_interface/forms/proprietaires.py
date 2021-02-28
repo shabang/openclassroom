@@ -11,7 +11,7 @@ class ProprietaireForm(ModelForm):
     class Meta:
         model = Proprietaire
         fields = ("adresse","code_postal","ville", "telephone","deuxieme_telephone","inactif"
-                  , "tarif_special","cadeau_recu")
+                  , "tarif_special","cadeau_recu", "commentaire")
 
 class AvoirForm(ModelForm):
     class Meta:

@@ -31,6 +31,7 @@ class Proprietaire(models.Model):
                                         verbose_name="Ce propriétaire bénéficie t-il de tarifs préférentiels (anciens tarifs)?")
     cadeau_recu = models.BooleanField(default=True,
                                   verbose_name="Cadeau de bienvenu reçu")
+    commentaire = models.CharField(max_length=500, blank=True)
 
     def save(self, *args, **kwargs):
         # Au premier enregistrement en base, on définit un login et un mot de passe par défaut
