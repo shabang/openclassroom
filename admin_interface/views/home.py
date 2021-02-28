@@ -124,8 +124,8 @@ def index(request):
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
-        color_count = count if count < 50 else 50
-        couleurs_planning.append("hsl(" + str(100 - 2 * color_count) + ",70%,50%)")
+        color_count = count if count < 33 else 33
+        couleurs_planning.append("hsl(" + str(100 - 3 * color_count) + ",70%,50%)")
         date_planning = date_planning + timedelta(days=1)
         interval_planning = interval_planning + timedelta(days=1)
         i += 1
@@ -164,8 +164,8 @@ def stats(request):
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
-        color_count = count if count < 50 else 50
-        couleurs_planning.append("hsl(" + str(100-2*color_count) + ",70%,50%)")
+        color_count = count if count < 33 else 33
+        couleurs_planning.append("hsl(" + str(100-3*color_count) + ",70%,50%)")
         date = date + timedelta(days=1)
         interval = interval + timedelta(days=1)
         i+=1
