@@ -91,7 +91,7 @@ def search_sejour(request):
         # Paramètres de l'url pour filtres par défaut
         interval_str = request.GET.get("interval", "")
         filter_data = request.GET.get("filter", "")
-        if filter:
+        if filter_data:
 
             interval = parse_date(interval_str)
             interval_minus_one = interval - timedelta(days=1)
