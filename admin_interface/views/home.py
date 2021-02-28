@@ -119,7 +119,7 @@ def index(request):
     while (i < 20):
         urls.append(reverse('sejours') + "?interval="+date_planning.strftime("%Y-%m-%d")+"&filter=date_sejour")
         labels_planning.append(date_planning.strftime("%d/%m"))
-        count = sejours.filter(date_arrivee__lte=interval_planning).filter(date_depart__gte=date_planning) \
+        count = sejours.filter(date_arrivee__lte=date_planning).filter(date_depart__gte=date_planning) \
             .filter(annule=False) \
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
@@ -159,7 +159,7 @@ def stats(request):
     while (i < 40):
         labels_planning.append(date.strftime("%d/%m"))
         urls.append(reverse('sejours') + "?interval="+date.strftime("%Y-%m-%d")+"&filter=date_sejour")
-        count = sejours.filter(date_arrivee__lte=interval).filter(date_depart__gte=date)\
+        count = sejours.filter(date_arrivee__lte=date).filter(date_depart__gte=date)\
             .filter(annule=False)\
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
