@@ -125,7 +125,7 @@ def index(request):
         count = count if count else 0
         data_planning.append(count)
         color_count = count if count < 50 else 50
-        couleurs_planning.append("hsl(" + str(100 - 2 * color_count) + ",100%,50%)")
+        couleurs_planning.append("hsl(" + str(100 - 2 * color_count) + ",70%,50%)")
         date_planning = date_planning + timedelta(days=1)
         interval_planning = interval_planning + timedelta(days=1)
         i += 1
@@ -165,7 +165,7 @@ def stats(request):
         count = count if count else 0
         data_planning.append(count)
         color_count = count if count < 50 else 50
-        couleurs_planning.append("hsl(" + str(100-2*color_count) + ",100%,50%)")
+        couleurs_planning.append("hsl(" + str(100-2*color_count) + ",70%,50%)")
         date = date + timedelta(days=1)
         interval = interval + timedelta(days=1)
         i+=1
