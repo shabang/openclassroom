@@ -48,14 +48,16 @@
 
 <table class="myTable">
   <tr class="header">
-    <th style="width:25%;">Dates</th>
-	<th style="width:20%;">Jours de présence</th>
-	<th style="width:20%;">Propriétaire</th>
-	<th style="width:20%;">Animaux concernés</th>
-	<th style="width:15%;">Montant restant</th>
+	  <th style="width:25%;">Dates</th>
+	  <th style="width:15%;">Jours de présence</th>
+	  <th style="width:20%;">Propriétaire</th>
+	  <th style="width:15%;">Animaux concernés</th>
+	  <th style="width:10%;">Cages refuge</th>
+	  <th style="width:15%;">Montant restant</th>
   </tr>
   {% for sejour in sejours %}
   <tr>
+
     <td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
 	<td>{{sejour.nb_jours}}</td>
 	<td>
@@ -64,6 +66,7 @@
 	{% endif %}
 	</td>
 	<td>{% for animal in sejour.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
+	<td>{{sejour.nb_cages_a_fournir}}</td>
 	<td>{{sejour.montant_restant|default:" - "}}</td>
   </tr>
   {% endfor %}
