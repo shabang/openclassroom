@@ -116,6 +116,8 @@ def search_sejour(request):
                 sejours = sejours.filter(date_arrivee__lte=interval)
             if filter_data == "paiements_sejour":
                 sejours = sejours.filter(montant_restant__gt=Decimal('0'))
+    #loading des objets liés pour améliorer la perf
+    sejours = sejours.select_related('proprietaire').prefetch_related('animaux')
     # Pagination : 10 éléments par page
     paginator = Paginator(sejours.order_by('-date_mise_a_jour'), 10)
     try:
