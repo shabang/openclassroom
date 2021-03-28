@@ -21,8 +21,8 @@ class Proprietaire(models.Model):
     telephone_regex = RegexValidator(
         regex="[0-9]{10}", message="Veuillez entrer un numéro de téléphone valide."
     )
-    telephone = models.CharField(validators=[telephone_regex], max_length=10)
-    deuxieme_telephone = models.CharField(validators=[telephone_regex], max_length=10,blank=True)
+    telephone = models.CharField(validators=[telephone_regex], max_length=14)
+    deuxieme_telephone = models.CharField(validators=[telephone_regex], max_length=14,blank=True)
     date_inscription = models.DateField(auto_now_add=True)
     inactif = models.BooleanField(default=False,
                                   verbose_name="Desactivé (Ne cocher que si vous ne souhaitez\

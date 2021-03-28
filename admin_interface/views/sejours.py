@@ -74,6 +74,7 @@ def search_sejour(request):
             date_fin_min_form = form.cleaned_data["date_fin_min"]
             date_fin_max_form = form.cleaned_data["date_fin_max"]
             proprietaire_form = form.cleaned_data["proprietaire"]
+            cohabitation_form = form.cleaned_data["cohabitation"]
 
             if date_debut_min_form:
                 sejours = sejours.filter(date_arrivee__gte=date_debut_min_form)
@@ -85,13 +86,15 @@ def search_sejour(request):
                 sejours = sejours.filter(date_depart__lte=date_fin_max_form)
             if proprietaire_form is not None:
                 sejours = sejours.filter(proprietaire=proprietaire_form)
+            if cohabitation_form:
+                sejours = sejours.filter(cohabitation=cohabitation_form)
     else:
         form = SejourSearchForm()
 
         # Paramètres de l'url pour filtres par défaut
         interval_str = request.GET.get("interval", "")
         filter_data = request.GET.get("filter", "")
-        if filter_data:
+        if (filter_data and interval_str):
 
             interval = parse_date(interval_str)
             interval_minus_one = interval - timedelta(days=1)
@@ -114,8 +117,8 @@ def search_sejour(request):
                 form.fields["date_debut_max"].initial = interval_str
                 sejours = sejours.filter(date_depart__gte=interval)
                 sejours = sejours.filter(date_arrivee__lte=interval)
-            if filter_data == "paiements_sejour":
-                sejours = sejours.filter(montant_restant__gt=Decimal('0'))
+        if (filter_data and filter_data == "paiements_sejour"):
+            sejours = sejours.filter(montant_restant__gt=Decimal('0'))
     #loading des objets liés pour améliorer la perf
     sejours = sejours.select_related('proprietaire').prefetch_related('animaux')
     # Pagination : 10 éléments par page
@@ -143,8 +146,9 @@ def calcul_montant_sejour(request):
         date_depart = datetime.strptime(request.POST["date_depart_0"], "%d/%m/%Y")
         heure_depart = datetime.strptime(request.POST["date_depart_1"], "%H:%M").time()
     except ValueError:
-        # Si les champs sont mal remplis, on arrpete le calcul
+        # Si les champs sont mal remplis, on arrete le calcul
         return JsonResponse({"montant": montant_sejour})
+
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     proprietaire_input = request.POST["proprietaire"]
@@ -166,75 +170,89 @@ def calcul_montant_sejour(request):
         nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
         animaux = Animal.objects.filter(id__in=request.POST.getlist("animaux")).order_by('-adoption')
         proprietaire = Proprietaire.objects.get(id=proprietaire_input)
-        try:
-        # On commence par calculer le prix pour chaque animal
-            for i, animal in enumerate(animaux):
-                adopte_refuge = (
-                    OuiNonChoice.OUI.name
-                    if animal.is_adopted_refuge()
-                    else OuiNonChoice.NON.name
+        cohabitation = request.POST["cohabitation"]
+        if cohabitation and cohabitation == OuiNonChoice.OUI.name:
+            animaux = Animal.objects.filter(id__in=request.POST.getlist("animaux"))
+            if animaux.count() > 1:
+                tarif_j = ParametreTarifairePension.objects.get(
+                    type_supplement=TypeSupplementChoice.COHABITATION_FORCEE.name
                 )
-                if i < nb_cages:
-                    tarif_j = TarifJournalier.objects.get(
-                        Q(type_animal=animal.type_animal)
-                        & Q(supplementaire=OuiNonChoice.NON.name)
-                        & Q(adopte_refuge=adopte_refuge)
-                        & Q(tarif_special=proprietaire.tarif_special)
-                    )
-                else:
-                    tarif_j = TarifJournalier.objects.get(
-                        Q(type_animal=animal.type_animal)
-                        & Q(supplementaire=OuiNonChoice.OUI.name)
-                        & Q(adopte_refuge=adopte_refuge)
-                        & Q(tarif_special=proprietaire.tarif_special)
-                    )
-                montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
-                calcul += "<br/>"
-                calcul += "Tarif journalier : "
-                calcul += str(tarif_j.montant_jour)
-                calcul += "<br/> Nb jours du séjour : "
-                calcul += str(nb_jours)
-                calcul += "<br/>"
-                calcul += "Montant total après application du tarif journalier : "
-                calcul += str(montant_sejour)
-                calcul += "<br/>"
+            else:
+                tarif_j = ParametreTarifairePension.objects.get(
+                    type_supplement=TypeSupplementChoice.COHABITATION_LIBRE.name
+                )
 
-        except TarifJournalier.DoesNotExist:
-            return JsonResponse({"montant": montant_sejour})
-        # Ensuite, on calcule les suppléments
-        supplement_cage = ParametreTarifairePension.objects.get(type_supplement="CAGE")
-        montant_sejour = montant_sejour + (
-            supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours
-        )
-        calcul += "<br/>"
-        calcul += "Montant après supplément cage : "
-        calcul += str(montant_sejour)
-        injection = request.POST["injection"]
-        soin = request.POST["soin"]
-        vaccination = request.POST["vaccination"]
-        # Supplément soin par voie orale ou par injection
-        if injection and injection == OuiNonChoice.OUI.name:
-            supplement_injection = ParametreTarifairePension.objects.get(
-                type_supplement=TypeSupplementChoice.INJECTION.name
+            montant_sejour = montant_sejour + (tarif_j.montant * nb_jours)
+        else:
+            try:
+            # On commence par calculer le prix pour chaque animal
+                for i, animal in enumerate(animaux):
+                    adopte_refuge = (
+                        OuiNonChoice.OUI.name
+                        if animal.is_adopted_refuge()
+                        else OuiNonChoice.NON.name
+                    )
+                    if i < nb_cages:
+                        tarif_j = TarifJournalier.objects.get(
+                            Q(type_animal=animal.type_animal)
+                            & Q(supplementaire=OuiNonChoice.NON.name)
+                            & Q(adopte_refuge=adopte_refuge)
+                            & Q(tarif_special=proprietaire.tarif_special)
+                        )
+                    else:
+                        tarif_j = TarifJournalier.objects.get(
+                            Q(type_animal=animal.type_animal)
+                            & Q(supplementaire=OuiNonChoice.OUI.name)
+                            & Q(adopte_refuge=adopte_refuge)
+                            & Q(tarif_special=proprietaire.tarif_special)
+                        )
+                    montant_sejour = montant_sejour + (tarif_j.montant_jour * nb_jours)
+                    calcul += "<br/>"
+                    calcul += "Tarif journalier : "
+                    calcul += str(tarif_j.montant_jour)
+                    calcul += "<br/> Nb jours du séjour : "
+                    calcul += str(nb_jours)
+                    calcul += "<br/>"
+                    calcul += "Montant total après application du tarif journalier : "
+                    calcul += str(montant_sejour)
+                    calcul += "<br/>"
+
+            except TarifJournalier.DoesNotExist:
+                return JsonResponse({"montant": montant_sejour})
+            # Ensuite, on calcule les suppléments
+            supplement_cage = ParametreTarifairePension.objects.get(type_supplement="CAGE")
+            montant_sejour = montant_sejour + (
+                supplement_cage.montant * Decimal(nb_cages_a_fournir) * nb_jours
             )
-            montant_sejour = montant_sejour + (supplement_injection.montant * nb_jours)
-        elif soin and soin == OuiNonChoice.OUI.name:
-            supplement_soin = ParametreTarifairePension.objects.get(
-                type_supplement=TypeSupplementChoice.MEDICAMENT.name
-            )
-            montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
-        calcul += "<br/>"
-        calcul += "Montant après supplément soin : "
-        calcul += str(montant_sejour)
-        # Supplément vaccination
-        if vaccination and vaccination == OuiNonChoice.NON.name:
-            supplement_vaccination = ParametreTarifairePension.objects.get(
-                type_supplement=TypeSupplementChoice.VACCINATION.name
-            )
-            montant_sejour = montant_sejour + supplement_vaccination.montant
-        calcul += "<br/>"
-        calcul += "Montant après supplément vaccination : "
-        calcul += str(montant_sejour)
+            calcul += "<br/>"
+            calcul += "Montant après supplément cage : "
+            calcul += str(montant_sejour)
+            injection = request.POST["injection"]
+            soin = request.POST["soin"]
+            vaccination = request.POST["vaccination"]
+            # Supplément soin par voie orale ou par injection
+            if injection and injection == OuiNonChoice.OUI.name:
+                supplement_injection = ParametreTarifairePension.objects.get(
+                    type_supplement=TypeSupplementChoice.INJECTION.name
+                )
+                montant_sejour = montant_sejour + (supplement_injection.montant * nb_jours)
+            elif soin and soin == OuiNonChoice.OUI.name:
+                supplement_soin = ParametreTarifairePension.objects.get(
+                    type_supplement=TypeSupplementChoice.MEDICAMENT.name
+                )
+                montant_sejour = montant_sejour + (supplement_soin.montant * nb_jours)
+            calcul += "<br/>"
+            calcul += "Montant après supplément soin : "
+            calcul += str(montant_sejour)
+            # Supplément vaccination
+            if vaccination and vaccination == OuiNonChoice.NON.name:
+                supplement_vaccination = ParametreTarifairePension.objects.get(
+                    type_supplement=TypeSupplementChoice.VACCINATION.name
+                )
+                montant_sejour = montant_sejour + supplement_vaccination.montant
+            calcul += "<br/>"
+            calcul += "Montant après supplément vaccination : "
+            calcul += str(montant_sejour)
         # Supplément samedi ou supplément horaire
         supplement_samedi = ParametreTarifairePension.objects.get(
             type_supplement=TypeSupplementChoice.SAMEDI.name

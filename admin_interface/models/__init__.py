@@ -16,6 +16,8 @@ class TypeSupplementChoice(Enum):
     HORAIRE = "Majoration horaire"
     SAMEDI = "Majoration récupération le samedi"
     CAGE = "Supplément cage non fournie"
+    COHABITATION_LIBRE = "Cohabitation Libre"
+    COHABITATION_FORCEE = "Cohabitation Forcée"
 
 
 class SexeChoice(Enum):

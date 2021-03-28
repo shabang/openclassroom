@@ -21,6 +21,7 @@
 				{% endif %}
 				<strong> Propriétaire </strong> : <a href= "{% url 'detail_proprietaire' sejour.proprietaire.id %}">{{sejour.proprietaire}}</a> <br>
 			    <strong> Animaux concernés </strong> : {% for animal in sejour.animaux.all %} <a href= "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a>, {% endfor %} <br>
+				<strong> Séjour pour cohabitation </strong> : {{sejour.get_cohabitation_display}} <br>
 				<strong> Dates </strong> : {{sejour}} <br>
 				<strong> Nombre de jours de présence </strong> : {{sejour.nb_jours}} <br>
 				<strong> Montant total </strong> : {{sejour.montant|default:" - "}} € <br>

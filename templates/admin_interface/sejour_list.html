@@ -35,6 +35,11 @@
 		    		{{ form.proprietaire.label_tag }} {{ form.proprietaire }}
 		    	</div>
 		    </div>
+			<div class="row">
+		    	<div class="col-md-12">
+		    		{{ form.cohabitation.label_tag }} {{ form.cohabitation }}
+		    	</div>
+		    </div>
         	<div class="text-right">
 		    <button class="btn-search cyan rounded" type="submit"> <i class="fa fa-search" aria-hidden="true"></i> Rechercher</button>
 		</div>
@@ -49,18 +54,19 @@
 <table class="myTable">
   <tr class="header">
 	  <th style="width:25%;">Dates</th>
-	  <th style="width:15%;">Jours de présence</th>
-	  <th style="width:20%;">Propriétaire</th>
+	  <th style="width:10%;">Cohabitation</th>
+	  <th style="width:10%;">Jours de présence</th>
+	  <th style="width:15%;">Propriétaire</th>
 	  <th style="width:15%;">Animaux concernés</th>
 	  <th style="width:10%;">Cages refuge</th>
 	  <th style="width:15%;">Montant restant</th>
   </tr>
   {% for sejour in sejours %}
   <tr>
-
-    <td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
-	<td>{{sejour.nb_jours}}</td>
-	<td>
+	  <td><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></td>
+	  <td>{{sejour.get_cohabitation_display}}</td>
+	  <td>{{sejour.nb_jours}}</td>
+	  <td>
 	{% if sejour.proprietaire %}
 	<a href = "{% url 'detail_proprietaire' sejour.proprietaire.id %}">{{sejour.proprietaire}}</a>
 	{% endif %}

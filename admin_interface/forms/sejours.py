@@ -1,10 +1,13 @@
 from dal import autocomplete
 
 from django.contrib.admin.widgets import AdminSplitDateTime
-from django.forms import Form, DateField, ModelChoiceField, ModelForm, SplitDateTimeField, SplitDateTimeWidget
+from django.db.models import BLANK_CHOICE_DASH
+from django.forms import Form, DateField, ModelChoiceField, ModelForm, SplitDateTimeField, SplitDateTimeWidget, \
+    ChoiceField, Select
 from django.utils import timezone
 
 from admin_interface.forms import DateInput
+from admin_interface.models import OuiNonChoice
 from admin_interface.models.animaux import Animal
 from admin_interface.models.proprietaires import Proprietaire
 from admin_interface.models.sejours import Sejour
@@ -23,6 +26,11 @@ class SejourSearchForm(Form):
     date_fin_max = DateField(label=" et le ", required=False, widget=DateInput())
     proprietaire = ModelChoiceField(
         queryset=Proprietaire.objects.all().filter(inactif=False), required=False
+    )
+    cohabitation = ChoiceField(
+        choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in OuiNonChoice],
+        widget=Select(),
+        required=False,
     )
 
 
@@ -65,6 +73,7 @@ class SejourForm(SejourFormBase, ModelForm):
     class Meta:
         model = Sejour
         fields = (
+            "cohabitation",
             "date_arrivee",
             "date_depart",
             "proprietaire",

@@ -11,6 +11,12 @@ class Sejour(models.Model):
     )
     date_arrivee = models.DateTimeField(verbose_name="Date d'arrivée")
     date_depart = models.DateTimeField(verbose_name="Date de départ")
+    cohabitation = models.CharField(
+        max_length=3,
+        verbose_name="Séjour pour cohabitation",
+        choices=[(tag.name, tag.value) for tag in OuiNonChoice],
+        default=OuiNonChoice.NON.name,
+    )
     nb_cages_fournies = models.IntegerField(
         verbose_name="Nombre de cages fournies par le propriétaire ", default=1
     )
