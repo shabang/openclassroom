@@ -133,6 +133,15 @@ class Animal(models.Model):
         else:
             return self.get_sterilise_display()
 
+    def get_wordpress_str(self):
+
+        if self.emplacement == "REFUGE":
+            if (self.wordpress_id):
+                return "Oui"
+            return "Non"
+        return ""
+
+
     def save(self,*args, **kwargs):
         # A l'enregistrement de l'animal on met à jour sa date de
         # prochaine visite vétérinaire et ses informations de
