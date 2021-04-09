@@ -86,7 +86,7 @@ class AdoptionAdmin(ImportExportModelAdmin):
 
 @admin.register(TarifJournalier)
 class TarifJournalierAdmin(ImportExportModelAdmin):
-    pass
+    list_display = ('type_animal', 'adopte_refuge', 'supplementaire', 'montant_jour', 'tarif_special')
 
 @admin.register(Avoir)
 class AvoirAdmin(ImportExportModelAdmin):
