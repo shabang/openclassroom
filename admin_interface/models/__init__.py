@@ -23,6 +23,7 @@ class TypeSupplementChoice(Enum):
 class SexeChoice(Enum):
     F = "Féminin"
     M = "Masculin"
+    NI = "Non identifié"
 
 
 class EmplacementChoice(Enum):
