@@ -24,7 +24,7 @@ class AdoptionUpdateForm(AdoptionValidator, ModelForm):
         model = Adoption
         fields = ("montant", "montant_restant",
                   "montant_caution_sterilisation", "date_caution_sterilisation",
-                  "montant_caution_materiel", "date_caution_materiel")
+                  "montant_caution_materiel", "date_caution_materiel","date_rappel_caution")
         date = DateField(
             widget=DateInput(format="%d/%m/%Y"), input_formats=("%d/%m/%Y",)
         )

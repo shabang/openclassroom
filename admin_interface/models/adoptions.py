@@ -42,6 +42,10 @@ class Adoption(models.Model):
                                              null=True,
                                              blank=True,
                                              )
+    date_rappel_caution = models.DateField(verbose_name="Date d'envoi du rappel caution",
+                                             null=True,
+                                             blank=True,
+                                             )
 
     def __str__(self):
         return "Adoption de " + self.animal.nom + " le " + str(self.date)
