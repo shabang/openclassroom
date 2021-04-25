@@ -20,6 +20,9 @@ class UserForm(ModelForm):
         model = User
         fields = ("first_name", "last_name", "email")
 
+    def clean_last_name(self):
+        return self.cleaned_data['last_name'].upper()
+
     def clean(self):
         cleaned_data = ModelForm.clean(self)
         if not self.instance.id:

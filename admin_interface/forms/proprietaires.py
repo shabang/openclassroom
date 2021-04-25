@@ -13,6 +13,9 @@ class ProprietaireForm(ModelForm):
         fields = ("adresse","code_postal","ville", "telephone","deuxieme_telephone","inactif"
                   , "tarif_special","cadeau_recu", "commentaire")
 
+    def clean_ville(self):
+        return self.cleaned_data['ville'].upper()
+
 class AvoirForm(ModelForm):
     class Meta:
         model = Avoir
