@@ -113,7 +113,7 @@
   <tr>
     <td><a href = "{% url 'detail_animal' animal.id %}">{{animal.nom}}</a></td>
 	  <td>{{animal.nom_adoption}}</td>
-	  <td>{{animal.adoption.date_rappel_caution}}</td>
+	  <td>{{animal.adoption.date_rappel_caution|default:""}}</td>
     <td>{{animal.get_type_animal_display}}</td>
 	<td>{{animal.get_wordpress_str}}</td>
 	<td>{{animal.get_emplacement_display}}</td>

@@ -69,5 +69,6 @@ class Adoption(models.Model):
         if ( not self.date_caution_materiel
                 or self.date_caution_materiel>self.date_caution_sterilisation) :
             return self.date_caution_sterilisation
-
-        return self.date_caution_materiel
+        if (not self.date_caution_materiel):
+            return self.date_caution_materiel
+        return ""

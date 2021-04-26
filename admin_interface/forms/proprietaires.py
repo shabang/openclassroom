@@ -5,6 +5,9 @@ from admin_interface.models.proprietaires import Proprietaire, Avoir
 
 class ProprietaireSearchForm(Form):
     nom = CharField(max_length=100, required=False)
+    prenom = CharField(max_length=100, required=False)
+    ville = CharField(max_length=100, required=False)
+    telephone = CharField(max_length=100, required=False)
 
 
 class ProprietaireForm(ModelForm):

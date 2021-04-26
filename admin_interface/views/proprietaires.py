@@ -67,8 +67,18 @@ def search_proprietaire(request):
         if form.is_valid():
 
             nom_form = form.cleaned_data["nom"]
+            prenom_form = form.cleaned_data["prenom"]
+            ville_form = form.cleaned_data["ville"]
+            telephone_form = form.cleaned_data["telephone"]
+
             if nom_form is not None:
                 proprietaire_list = proprietaire_list.filter(user__last_name__icontains=nom_form)
+            if prenom_form is not None:
+                proprietaire_list = proprietaire_list.filter(user__first_name__icontains=prenom_form)
+            if ville_form is not None:
+                proprietaire_list = proprietaire_list.filter(ville__icontains=ville_form)
+            if telephone_form is not None:
+                proprietaire_list = proprietaire_list.filter(telephone__icontains=telephone_form)
     else:
         form = ProprietaireSearchForm()
     # Pagination : 10 éléments par page
