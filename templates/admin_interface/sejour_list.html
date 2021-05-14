@@ -1,5 +1,5 @@
 {% extends "admin_interface/base.html" %}
-
+{% load tag %}
 {% block title %}
 <title>Liste des séjours</title>
 {% endblock %}
@@ -80,7 +80,7 @@
 
 <div class="pagination">
    {% if sejours.has_previous %}
-       <a href="{% url 'sejours'%}?page={{ sejours.previous_page_number}}">Précédente</a> -
+       <a href="?{% param_replace page=sejours.previous_page_number%}">Précédente</a> -
    {% endif %}
 
    <span class="current">
@@ -88,7 +88,7 @@
    </span>
 
    {% if sejours.has_next %}
-		<a href="{% url 'sejours'%}?page={{ sejours.next_page_number}}">Suivante</a>
+		<a href="?{% param_replace page=sejours.next_page_number %}">Suivante</a>
    {% endif %}
 </div>
 
