@@ -11,18 +11,22 @@
         <canvas id="adoption-line-chart" ></canvas>
     </div>
     <div class="col-sm-6">
-        <div class="panel panel-default text-center">
-            <div class="panel-heading">
-                <h5>Palmarès {{current}} de la pension</h5>
-            </div>
-            <div class="panel-body">
-                {% for ligne in palmares %}
-                <p>
-                    {{ligne.proprietaire__user__first_name}} {{ligne.proprietaire__user__last_name}} :
-                    {{ligne.total_pensions}} jours de pension cumulés
-                </p>
-                {% endfor %}
-            </div>
+        <canvas id="sejour-line-chart" ></canvas>
+
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h5>Palmarès {{current}} de la pension</h5>
+        </div>
+        <div class="panel-body">
+            {% for ligne in palmares %}
+            <p>
+                {{ligne.proprietaire__user__first_name}} {{ligne.proprietaire__user__last_name}} :
+                {{ligne.total_pensions}} jours de pension cumulés
+            </p>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -44,7 +48,7 @@
 new Chart(document.getElementById("adoption-line-chart"), {
   type: 'line',
   data: {
-    labels: {{ labels_adoption|safe }},
+    labels: {{ labels_mois|safe }},
     datasets: [{
         data: {{ data_adoption_current|safe }},
         label: "Adoptions {{current}}",
@@ -66,6 +70,34 @@ new Chart(document.getElementById("adoption-line-chart"), {
     }
   }
 });
+
+new Chart(document.getElementById("sejour-line-chart"), {
+  type: 'line',
+  data: {
+    labels: {{ labels_mois|safe }},
+    datasets: [{
+        data: {{ data_pension_current|safe }},
+        label: "Jours de séjour {{current}}",
+        borderColor: "#3e95cd",
+        fill: false
+      },
+      {
+        data: {{ data_pension_past|safe }},
+        label: "Jours de séjour {{past}}",
+        borderColor: "#9b3ecd",
+        fill: false
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Séjours'
+    }
+  }
+});
+
+
 var canvasP = document.getElementById('myChart')
 var ctx = canvasP.getContext('2d');
 var myChart = new Chart(ctx, {

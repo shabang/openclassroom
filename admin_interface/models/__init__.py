@@ -5,7 +5,7 @@ class TypeAnimalChoice(Enum):
     LAPIN = "Lapin"
     CHINCHILLA = "Chinchilla"
     COCHON_DINDE = "Cochon d'inde"
-    HAMSTER = "Cochon d'inde"
+    HAMSTER = "Hamster"
     CHAT = "Chat"
 
 

@@ -170,7 +170,7 @@ def stats(request):
         interval = interval + timedelta(days=1)
         i+=1
 
-    labels_adoption = []
+    labels_mois = []
     # Adoptions pour l'année en cours
     data_adoption_current = []
     # Adoptions pour l'année précédente
@@ -184,7 +184,7 @@ def stats(request):
 
     i = 1
     while (i < 13):
-        labels_adoption.append("\n Mois " + calendar.month_name[i])
+        labels_mois.append("\n Mois " + calendar.month_name[i])
         data_adoption_current.append(adoptions.filter(date__year=date.year).filter(date__month=i).count())
         data_adoption_past.append(adoptions.filter(date__year=date.year-1).filter(date__month=i).count())
         i += 1
@@ -198,12 +198,35 @@ def stats(request):
         palmares.insert(0,DotDict(pension))
     palmares.reverse()
 
+    # Parties historique pensions
+
+    # Adoptions pour l'année en cours
+    data_pension_current = []
+    # Adoptions pour l'année précédente
+    data_pension_past = []
+
+    sejours = Sejour.objects.all()
+
+    i = 1
+    while (i < 13):
+        value_current = sejours.filter(date_arrivee__year=date.year).filter(date_arrivee__month=i).aggregate(Sum('nb_jours'))['nb_jours__sum']
+        value_past = sejours.filter(date_arrivee__year=date.year - 1).filter(date_arrivee__month=i).aggregate(Sum('nb_jours'))['nb_jours__sum']
+        if not value_current:
+            value_current = 0
+        if not value_past:
+            value_past = 0
+        data_pension_current.append(value_current)
+        data_pension_past.append(value_past)
+        i += 1
+
     urls_string = ','.join(urls)
 
     return render(request, "admin_interface/statistiques.html", {
-        'labels_adoption':labels_adoption,
+        'labels_mois':labels_mois,
         'data_adoption_current':data_adoption_current,
         'data_adoption_past': data_adoption_past,
+        'data_pension_current': data_pension_current,
+        'data_pension_past': data_pension_past,
         'selected':selected,
         'current':date.year,
         'urls_string': urls_string,

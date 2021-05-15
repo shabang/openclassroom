@@ -13,15 +13,15 @@
           <h5>Pension</h5>
         </div>
         <div class="panel-body">
-          <p><a href= "{% url 'sejours' %}?interval={{interval_str}}&filter=date_debut_sejour"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s) cette semaine</a></p>
-          <p><a href= "{% url 'sejours' %}?interval={{interval_str}}&filter=date_fin_sejour"><strong>{{departs_pension}}</strong> départ(s) prévu(s) cette semaine</a></p>
+          <p><a href= "{% url 'sejours' %}?date_debut_max={{interval_str}}&date_debut_min={{today_str}}"><strong>{{arrivees_pension}}</strong> arrivée(s) prévue(s) cette semaine</a></p>
+          <p><a href= "{% url 'sejours' %}?date_fin_max={{interval_str}}&date_fin_min={{today_str}}"><strong>{{departs_pension}}</strong> départ(s) prévu(s) cette semaine</a></p>
           <hr/>
-          <p><a href= "{% url 'sejours' %}?interval={{day_interval_str}}&filter=date_debut_sejour"><strong>{{arrivees_pension_jour}}</strong> arrivée(s) prévue(s) aujourd'hui</a></p>
-          <p><a href= "{% url 'sejours' %}?interval={{day_interval_str}}&filter=date_fin_sejour"><strong>{{departs_pension_jour}}</strong> départ(s) prévu(s) aujourd'hui</a></p>
-          <p><a href= "{% url 'sejours' %}?interval={{day_interval_str}}&filter=date_sejour"><strong>{{presences}}</strong> animaux accueillis en pension aujourd'hui</a></p>
+          <p><a href= "{% url 'sejours' %}?date_debut_max={{day_interval_str}}&date_debut_min={{today_str}}"><strong>{{arrivees_pension_jour}}</strong> arrivée(s) prévue(s) aujourd'hui</a></p>
+          <p><a href= "{% url 'sejours' %}?date_fin_max={{day_interval_str}}}&date_fin_min={{today_str}}"><strong>{{departs_pension_jour}}</strong> départ(s) prévu(s) aujourd'hui</a></p>
+          <p><a href= "{% url 'sejours' %}?date_fin_min={{day_interval_str}}&date_debut_max={{day_interval_str}}"><strong>{{presences}}</strong> animaux accueillis en pension aujourd'hui</a></p>
         </div>
         <div class="panel-footer">
-          <a href= "{% url 'animals' %}?filter=pension" class="btn-search cyan rounded">Liste des animaux de la pension</a>
+          <a href= "{% url 'animals' %}?emplacement=PENSION" class="btn-search cyan rounded">Liste des animaux de la pension</a>
         </div>
       </div>
     </div>
@@ -31,12 +31,12 @@
           <h5>Refuge - Semaine glissante</h5>
         </div>
         <div class="panel-body">
-          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_visite"><strong>{{rdv_veterinaire}}</strong> rendez-vous vétérinaire prévu(s)</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_arrivee"><strong>{{recuperations}}</strong> animaux à récupérer</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{interval_str}}&filter=date_adoption"><strong>{{adoptions}}</strong> adoption(s) en cours</a></p>
+          <p><a href= "{% url 'animals' %}?date_prochaine_visite_max={{interval_str}}&date_prochaine_visite_min={{today_str}}"><strong>{{rdv_veterinaire}}</strong> rendez-vous vétérinaire prévu(s)</a></p>
+          <p><a href= "{% url 'animals' %}?date_arrivee_max={{interval_str}}&date_arrivee_min={{today_str}}"><strong>{{recuperations}}</strong> animaux à récupérer</a></p>
+          <p><a href= "{% url 'animals' %}?date_adoption_max={{interval_str}}&date_adoption_min={{today_str}}"><strong>{{adoptions}}</strong> adoption(s) en cours</a></p>
         </div>
         <div class="panel-footer">
-          <a href= "{% url 'animals' %}?filter=refuge" class="btn-search cyan rounded">Liste des animaux du refuge</a>
+          <a href= "{% url 'animals' %}?emplacement=REFUGE" class="btn-search cyan rounded">Liste des animaux du refuge</a>
         </div>
       </div>
     </div>
@@ -63,9 +63,9 @@
             {{nb_vaccinations}} animaux de la pension à mettre à jour car la date limite de rappel de vaccin est dépassée</a></p>
           <p><a href= "{% url 'animals' %}?filter=sante_refuge">
             {{nb_visites_refuge}} animaux du refuge à castrer/stériliser ou vacciner</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{interval_month_str}}&filter=date_caution_materiel">
+          <p><a href= "{% url 'animals' %}?date_caution_materiel_max={{interval_month_str}}&date_caution_materiel_min={{today_str}}">
             {{cautions_materiel}} caution(s) matériel à régulariser dans moins de 30 jours</a></p>
-          <p><a href= "{% url 'animals' %}?interval={{interval_month_str}}&filter=date_caution_sterilisation">
+          <p><a href= "{% url 'animals' %}?date_caution_sterilisation_max={{interval_month_str}}&date_caution_sterilisation_min={{today_str}}">
             {{cautions_sterilisation}} caution(s) stérilisation à régulariser dans moins de 30 jours</a></p>
         </div>
       </div>

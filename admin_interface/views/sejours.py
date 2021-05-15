@@ -8,7 +8,7 @@ from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.generic import CreateView, UpdateView
@@ -68,57 +68,39 @@ def search_sejour(request):
     if request.method == "POST":
         form = SejourSearchForm(request.POST)
         if form.is_valid():
-
-            date_debut_min_form = form.cleaned_data["date_debut_min"]
-            date_debut_max_form = form.cleaned_data["date_debut_max"]
-            date_fin_min_form = form.cleaned_data["date_fin_min"]
-            date_fin_max_form = form.cleaned_data["date_fin_max"]
-            proprietaire_form = form.cleaned_data["proprietaire"]
-            cohabitation_form = form.cleaned_data["cohabitation"]
-
-            if date_debut_min_form:
-                sejours = sejours.filter(date_arrivee__gte=date_debut_min_form)
-            if date_debut_max_form:
-                sejours = sejours.filter(date_arrivee__lte=date_debut_max_form)
-            if date_fin_min_form:
-                sejours = sejours.filter(date_depart__gte=date_fin_min_form)
-            if date_fin_max_form:
-                sejours = sejours.filter(date_depart__lte=date_fin_max_form)
-            if proprietaire_form is not None:
-                sejours = sejours.filter(proprietaire=proprietaire_form)
-            if cohabitation_form:
-                sejours = sejours.filter(cohabitation=cohabitation_form)
+            base_url = reverse('sejours')
+            query_string = form.data.urlencode()
+            url = '{}?{}'.format(base_url, query_string)
+            return redirect(url)
     else:
         form = SejourSearchForm()
 
-        # Paramètres de l'url pour filtres par défaut
-        interval_str = request.GET.get("interval", "")
-        filter_data = request.GET.get("filter", "")
-        if (filter_data and interval_str):
+        date_debut_min_form = request.GET.get("date_debut_min", "")
+        date_debut_max_form = request.GET.get("date_debut_max", "")
+        date_fin_min_form = request.GET.get("date_fin_min", "")
+        date_fin_max_form = request.GET.get("date_fin_max", "")
+        proprietaire_form = request.GET.get("proprietaire", "")
+        cohabitation_form = request.GET.get("cohabitation", "")
 
-            interval = parse_date(interval_str)
-            interval_minus_one = interval - timedelta(days=1)
-            interval_minus_one_str = interval_minus_one.strftime("%Y-%m-%d")
-            today = timezone.now().date()
-            today_str = today.strftime("%Y-%m-%d")
+        if date_debut_min_form:
+            sejours = sejours.filter(date_arrivee__gte=parse_date(date_debut_min_form))
+            form.fields["date_debut_min"].initial = date_debut_min_form
+        if date_debut_max_form:
+            sejours = sejours.filter(date_arrivee__lte=parse_date(date_debut_max_form))
+            form.fields["date_debut_max"].initial = date_debut_max_form
+        if date_fin_min_form:
+            sejours = sejours.filter(date_depart__gte=parse_date(date_fin_min_form))
+            form.fields["date_fin_min"].initial = date_fin_min_form
+        if date_fin_max_form:
+            sejours = sejours.filter(date_depart__lte=parse_date(date_fin_max_form))
+            form.fields["date_fin_max"].initial = date_fin_max_form
+        if proprietaire_form:
+            sejours = sejours.filter(proprietaire=proprietaire_form)
+            form.fields["proprietaire"].initial = proprietaire_form
+        if cohabitation_form:
+            sejours = sejours.filter(cohabitation=cohabitation_form)
+            form.fields["cohabitation"].initial = cohabitation_form
 
-            if filter_data == "date_debut_sejour":
-                form.fields["date_debut_max"].initial = interval_str
-                form.fields["date_debut_min"].initial = today_str
-                sejours = sejours.filter(date_arrivee__gte=today)
-                sejours = sejours.filter(date_arrivee__lte=interval)
-            if filter_data == "date_fin_sejour":
-                form.fields["date_fin_max"].initial = interval_str
-                form.fields["date_fin_min"].initial = today_str
-                sejours = sejours.filter(date_depart__gte=today)
-                sejours = sejours.filter(date_depart__lte=interval)
-            if filter_data == "date_sejour":
-                form.fields["date_fin_min"].initial = interval_str
-                form.fields["date_debut_max"].initial = interval_str
-                sejours = sejours.filter(date_depart__gte=interval)
-                sejours = sejours.filter(date_arrivee__lte=interval)
-        if (filter_data and filter_data == "paiements_sejour"):
-            sejours = sejours.filter(montant_restant__gt=Decimal('0'))
     #loading des objets liés pour améliorer la perf
     sejours = sejours.select_related('proprietaire').prefetch_related('animaux')
     # Pagination : 10 éléments par page

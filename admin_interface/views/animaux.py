@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.generic import CreateView, UpdateView, FormView
@@ -60,102 +60,90 @@ def search_animal(request):
     if request.method == "POST":
         form = AnimalSearchForm(request.POST)
         if form.is_valid():
+            base_url = reverse('animals')
+            query_string = form.data.urlencode()
+            url = '{}?{}'.format(base_url, query_string)
+            return redirect(url)
 
-            proprietaire_form = form.cleaned_data["proprietaire"]
-            emplacement_form = form.cleaned_data["emplacement"]
-            type_animal_form = form.cleaned_data["type_animal"]
-            nom_form = form.cleaned_data["nom"]
-            nom_adoption_form = form.cleaned_data["nom_adoption"]
-            date_naissance_min = form.cleaned_data["date_naissance_min"]
-            date_naissance_max = form.cleaned_data["date_naissance_max"]
-            date_arrivee_min = form.cleaned_data["date_arrivee_min"]
-            date_arrivee_max = form.cleaned_data["date_arrivee_max"]
-            date_prochaine_visite_min = form.cleaned_data["date_prochaine_visite_min"]
-            date_prochaine_visite_max = form.cleaned_data["date_prochaine_visite_max"]
-            date_adoption_min = form.cleaned_data["date_adoption_min"]
-            date_adoption_max = form.cleaned_data["date_adoption_max"]
-            date_caution_materiel_min = form.cleaned_data["date_caution_materiel_min"]
-            date_caution_materiel_max = form.cleaned_data["date_caution_materiel_max"]
-            date_caution_sterilisation_min = form.cleaned_data["date_caution_sterilisation_min"]
-            date_caution_sterilisation_max = form.cleaned_data["date_caution_sterilisation_max"]
-
-            if proprietaire_form:
-                animals = animals.filter(proprietaire=proprietaire_form)
-            if emplacement_form:
-                animals = animals.filter(emplacement=emplacement_form)
-            if type_animal_form:
-                animals = animals.filter(type_animal=type_animal_form)
-            if nom_form:
-                animals = animals.filter(nom__icontains=nom_form)
-            if nom_adoption_form:
-                animals = animals.filter(nom_adoption__icontains=nom_adoption_form)
-            if date_naissance_min:
-                animals = animals.filter(date_naissance__gte=date_naissance_min)
-            if date_naissance_max:
-                animals = animals.filter(date_naissance__lte=date_naissance_max)
-            if date_arrivee_min:
-                animals = animals.filter(date_arrivee__gte=date_arrivee_min)
-            if date_arrivee_max:
-                animals = animals.filter(date_arrivee__lte=date_arrivee_max)
-            if date_prochaine_visite_min:
-                animals = animals.filter(date_visite__gte=date_prochaine_visite_min)
-            if date_prochaine_visite_max:
-                animals = animals.filter(date_visite__lte=date_prochaine_visite_max)
-            if date_adoption_min:
-                animals = animals.filter(adoption__date__gte=date_adoption_min)
-            if date_adoption_max:
-                animals = animals.filter(adoption__date__lte=date_adoption_max)
-            if (date_caution_materiel_min):
-                animals = animals.filter(adoption__date_caution_materiel__gte=date_caution_materiel_min)
-            if(date_caution_materiel_max):
-                animals = animals.filter(adoption__date_caution_materiel__lte=date_caution_materiel_max)
-            if (date_caution_sterilisation_min):
-                animals = animals.filter(adoption__date_caution_sterilisation__gte=date_caution_sterilisation_min)
-            if(date_caution_sterilisation_max):
-                animals = animals.filter(adoption__date_caution_sterilisation__lte=date_caution_sterilisation_max)
     else:
         form = AnimalSearchForm()
+
+        proprietaire_form = request.GET.get("proprietaire", "")
+        emplacement_form = request.GET.get("emplacement", "")
+        type_animal_form = request.GET.get("type_animal", "")
+        nom_form = request.GET.get("nom", "")
+        nom_adoption_form = request.GET.get("nom_adoption", "")
+        date_naissance_min = request.GET.get("date_naissance_min", "")
+        date_naissance_max = request.GET.get("date_naissance_max", "")
+        date_arrivee_min = request.GET.get("date_arrivee_min", "")
+        date_arrivee_max = request.GET.get("date_arrivee_max", "")
+        date_prochaine_visite_min = request.GET.get("date_prochaine_visite_min", "")
+        date_prochaine_visite_max = request.GET.get("date_prochaine_visite_max", "")
+        date_adoption_min = request.GET.get("date_adoption_min", "")
+        date_adoption_max = request.GET.get("date_adoption_max", "")
+        date_caution_materiel_min = request.GET.get("date_caution_materiel_min", "")
+        date_caution_materiel_max = request.GET.get("date_caution_materiel_max", "")
+        date_caution_sterilisation_min = request.GET.get("date_caution_sterilisation_min", "")
+        date_caution_sterilisation_max = request.GET.get("date_caution_sterilisation_max", "")
+
+        if proprietaire_form:
+            animals = animals.filter(proprietaire=proprietaire_form)
+            form.fields["proprietaire"].initial = proprietaire_form
+        if emplacement_form:
+            animals = animals.filter(emplacement=emplacement_form)
+            form.fields["emplacement"].initial = emplacement_form
+        if type_animal_form:
+            animals = animals.filter(type_animal=type_animal_form)
+            form.fields["type_animal"].initial = type_animal_form
+        if nom_form:
+            animals = animals.filter(nom__icontains=nom_form)
+            form.fields["nom"].initial = nom_form
+        if nom_adoption_form:
+            animals = animals.filter(nom_adoption__icontains=nom_adoption_form)
+            form.fields["nom_adoption"].initial = nom_adoption_form
+        if date_naissance_min:
+            animals = animals.filter(date_naissance__gte=parse_date(date_naissance_min))
+            form.fields["date_naissance_min"].initial = date_naissance_min
+        if date_naissance_max:
+            animals = animals.filter(date_naissance__lte=parse_date(date_naissance_max))
+            form.fields["date_naissance_max"].initial = date_naissance_max
+        if date_arrivee_min:
+            animals = animals.filter(date_arrivee__gte=parse_date(date_arrivee_min))
+            form.fields["date_arrivee_min"].initial = date_arrivee_min
+        if date_arrivee_max:
+            animals = animals.filter(date_arrivee__lte=parse_date(date_arrivee_max))
+            form.fields["date_arrivee_max"].initial = date_arrivee_max
+        if date_prochaine_visite_min:
+            animals = animals.filter(date_visite__gte=parse_date(date_prochaine_visite_min))
+            form.fields["date_prochaine_visite_min"].initial = date_prochaine_visite_min
+        if date_prochaine_visite_max:
+            animals = animals.filter(date_visite__lte=parse_date(date_prochaine_visite_max))
+            form.fields["date_prochaine_visite_max"].initial = date_prochaine_visite_max
+        if date_adoption_min:
+            animals = animals.filter(adoption__date__gte=parse_date(date_adoption_min))
+            form.fields["date_adoption_min"].initial = date_adoption_min
+        if date_adoption_max:
+            animals = animals.filter(adoption__date__lte=parse_date(date_adoption_max))
+            form.fields["date_adoption_max"].initial = date_adoption_max
+        if (date_caution_materiel_min):
+            animals = animals.filter(adoption__date_caution_materiel__gte=parse_date(date_caution_materiel_min))
+            form.fields["date_caution_materiel_min"].initial = date_caution_materiel_min
+        if (date_caution_materiel_max):
+            animals = animals.filter(adoption__date_caution_materiel__lte=parse_date(date_caution_materiel_max))
+            form.fields["date_caution_materiel_max"].initial = date_caution_materiel_max
+        if (date_caution_sterilisation_min):
+            animals = animals.filter(adoption__date_caution_sterilisation__gte=parse_date(date_caution_sterilisation_min))
+            form.fields["date_caution_sterilisation_min"].initial = date_caution_sterilisation_min
+        if (date_caution_sterilisation_max):
+            animals = animals.filter(adoption__date_caution_sterilisation__lte=parse_date(date_caution_sterilisation_max))
+            form.fields["date_caution_sterilisation_max"].initial = date_caution_sterilisation_max
+
         # Paramètres de l'url pour filtres par défaut
-        interval_str = request.GET.get("interval", "")
         filter_data = request.GET.get("filter", "")
         if filter_data:
-
-            interval = parse_date(interval_str)
             today = timezone.now().date()
-            today_str = today.strftime("%Y-%m-%d")
 
-            if filter_data == "date_visite":
-                form.fields["date_prochaine_visite_max"].initial = interval_str
-                form.fields["date_prochaine_visite_min"].initial = today_str
-                animals = animals.filter(date_visite__gte=today)
-                animals = animals.filter(date_visite__lte=interval)
-            elif filter_data == "date_arrivee":
-                form.fields["date_arrivee_max"].initial = interval_str
-                form.fields["date_arrivee_min"].initial = today_str
-                animals = animals.filter(date_arrivee__gte=today)
-                animals = animals.filter(date_arrivee__lte=interval)
-            elif filter_data == "date_caution_materiel":
-                form.fields["date_caution_materiel_max"].initial = interval_str
-                form.fields["date_caution_materiel_min"].initial = today_str
-                animals = animals.filter(adoption__date_caution_materiel__gte=today)
-                animals = animals.filter(adoption__date_caution_materiel__lte=interval)
-            elif filter_data == "date_caution_sterilisation":
-                form.fields["date_caution_sterilisation_max"].initial = interval_str
-                form.fields["date_caution_sterilisation_min"].initial = today_str
-                animals = animals.filter(adoption__date_caution_sterilisation__gte=today)
-                animals = animals.filter(adoption__date_caution_sterilisation__lte=interval)
-            elif filter_data == "date_adoption":
-                form.fields["date_adoption_max"].initial = interval_str
-                form.fields["date_adoption_min"].initial = today_str
-                animals = animals.filter(adoption__date__gte=today)
-                animals = animals.filter(adoption__date__lte=interval)
-            elif filter_data == "pension":
-                form.fields["emplacement"].initial = EmplacementChoice.PENSION.name
-                animals = animals.filter(emplacement=EmplacementChoice.PENSION.name)
-            elif filter_data == "refuge":
-                form.fields["emplacement"].initial = EmplacementChoice.REFUGE.name
-                animals = animals.filter(emplacement=EmplacementChoice.REFUGE.name)
-            elif filter_data == "paiements_adoption":
+            if filter_data == "paiements_adoption":
                 animals = animals.filter(adoption__montant_restant__gt=Decimal('0'))
             elif filter_data == "pension_vaccin":
                 animals = animals.filter(
