@@ -17,7 +17,7 @@
           <p><a href= "{% url 'sejours' %}?date_fin_max={{interval_str}}&date_fin_min={{today_str}}"><strong>{{departs_pension}}</strong> départ(s) prévu(s) cette semaine</a></p>
           <hr/>
           <p><a href= "{% url 'sejours' %}?date_debut_max={{day_interval_str}}&date_debut_min={{today_str}}"><strong>{{arrivees_pension_jour}}</strong> arrivée(s) prévue(s) aujourd'hui</a></p>
-          <p><a href= "{% url 'sejours' %}?date_fin_max={{day_interval_str}}}&date_fin_min={{today_str}}"><strong>{{departs_pension_jour}}</strong> départ(s) prévu(s) aujourd'hui</a></p>
+          <p><a href= "{% url 'sejours' %}?date_fin_max={{day_interval_str}}&date_fin_min={{today_str}}"><strong>{{departs_pension_jour}}</strong> départ(s) prévu(s) aujourd'hui</a></p>
           <p><a href= "{% url 'sejours' %}?date_fin_min={{day_interval_str}}&date_debut_max={{day_interval_str}}"><strong>{{presences}}</strong> animaux accueillis en pension aujourd'hui</a></p>
         </div>
         <div class="panel-footer">
