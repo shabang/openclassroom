@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
-from admin_interface.forms.sejours import SejourStatsForm
+from admin_interface.forms.sejours import SejourStatsForm, SejourGainForm
 from admin_interface.models import EmplacementChoice, OuiNonChoice
 from admin_interface.models.adoptions import Adoption
 from admin_interface.models.animaux import Animal
@@ -141,12 +141,25 @@ def stats(request):
 
     date = timezone.now().date()
 
+    total_paiements_sejours = None
+
     if request.method == "POST":
-        form = SejourStatsForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data["date_debut"]
+        planning_form = SejourStatsForm(request.POST)
+        sejour_gain_form = SejourGainForm(request.POST)
+        if planning_form.is_valid():
+            if planning_form.cleaned_data["date_debut"]:
+                date = planning_form.cleaned_data["date_debut"]
+        # Calcul du montant des pensions sur une période
+        if sejour_gain_form.is_valid():
+            date_debut_gain = sejour_gain_form.cleaned_data["date_debut_gain"]
+            date_fin_gain = sejour_gain_form.cleaned_data["date_fin_gain"]
+            # Les champs ne sont pas obligatoires dans la vue mais pour le calcul
+            if date_debut_gain and date_fin_gain:
+                total_paiements_sejours = Sejour.objects.filter(date_arrivee__lte=date_fin_gain).\
+                    filter(date_arrivee__gte=date_debut_gain).aggregate(Sum('montant'))
     else:
-        form = SejourStatsForm()
+        planning_form = SejourStatsForm()
+        sejour_gain_form = SejourGainForm()
 
     #Partie planning
     sejours = Sejour.objects.all()
@@ -233,11 +246,13 @@ def stats(request):
         'current':date.year,
         'urls_string': urls_string,
         'past': date.year-1,
-        'form': form,
+        'planning_form': planning_form,
+        'sejour_gain_form' : sejour_gain_form,
         'palmares':palmares,
         'labels_planning':labels_planning,
         'data_planning':data_planning,
-        'couleurs_planning':couleurs_planning
+        'couleurs_planning':couleurs_planning,
+        'total_paiements_sejours':total_paiements_sejours
 
     })
 

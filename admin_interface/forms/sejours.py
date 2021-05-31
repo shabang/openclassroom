@@ -96,3 +96,10 @@ class SejourStatsForm(Form):
     date_debut = DateField(
         label="Affichage des séjours à partir du", required=False, widget=DateInput()
     )
+
+class SejourGainForm(Form):
+    date_debut_gain = DateField(
+        label="Rechercher le montant des pensions entre le ", required=False, widget=DateInput())
+    date_fin_gain = DateField(
+        label="et le ", required=False, widget=DateInput()
+    )
