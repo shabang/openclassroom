@@ -168,12 +168,12 @@ def stats(request):
     labels_planning = []
     data_planning = []
     couleurs_planning = []
-    urls = []
+    urls_sejours = []
 
     i = 1
     while (i < 40):
         labels_planning.append(date.strftime("%d/%m"))
-        urls.append(reverse('sejours') + "?date_fin_min="+date.strftime("%Y-%m-%d")+"&date_debut_max="+date.strftime("%Y-%m-%d"))
+        urls_sejours.append(reverse('sejours') + "?date_fin_min="+date.strftime("%Y-%m-%d")+"&date_debut_max="+date.strftime("%Y-%m-%d"))
         count = sejours.filter(date_arrivee__lte=date).filter(date_depart__gte=date)\
             .filter(annule=False)\
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
@@ -198,8 +198,14 @@ def stats(request):
     date = datetime.now()
 
     i = 1
+    urls_adoptions_past = []
+    urls_adoptions_current = []
     while (i < 13):
         labels_mois.append("\n Mois " + calendar.month_name[i])
+        urls_adoptions_current.append(
+            reverse('animals') + "?filter=adoption_month&year=" + str(date.year) + "&month=" + str(i))
+        urls_adoptions_past.append(
+            reverse('animals') + "?filter=adoption_month&year=" + str(date.year-1) + "&month=" + str(i))
         data_adoption_current.append(adoptions.filter(date__year=date.year).filter(date__month=i).count())
         data_adoption_past.append(adoptions.filter(date__year=date.year-1).filter(date__month=i).count())
         i += 1
@@ -234,7 +240,9 @@ def stats(request):
         data_pension_past.append(value_past)
         i += 1
 
-    urls_string = ','.join(urls)
+    urls_sejour_string = ','.join(urls_sejours)
+    urls_adoptions_current_str = ','.join(urls_adoptions_current)
+    urls_adoptions_past_str =  ','.join(urls_adoptions_past)
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_mois':labels_mois,
@@ -244,7 +252,9 @@ def stats(request):
         'data_pension_past': data_pension_past,
         'selected':selected,
         'current':date.year,
-        'urls_string': urls_string,
+        'urls_sejour_string': urls_sejour_string,
+        'urls_adoptions_current_str' : urls_adoptions_current_str,
+        'urls_adoptions_past_str' : urls_adoptions_past_str,
         'past': date.year-1,
         'planning_form': planning_form,
         'sejour_gain_form' : sejour_gain_form,

@@ -156,6 +156,11 @@ def search_animal(request):
                     Q(vaccine=OuiNonChoice.NON.name)|
                     Q(sterilise=OuiNonChoice.NON.name)
                 )
+            elif filter_data == "adoption_month":
+                month = int(request.GET.get("month", ""))
+                year = int(request.GET.get("year", ""))
+                animals = animals.filter(adoption__date__year=year).filter(adoption__date__month=month)
+
 
     # Pagination : 20 éléments par page
     paginator = Paginator(animals.order_by('-date_mise_a_jour'), 20)

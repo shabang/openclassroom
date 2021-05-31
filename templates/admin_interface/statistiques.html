@@ -69,7 +69,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-new Chart(document.getElementById("adoption-line-chart"), {
+var adoptionCanvas = document.getElementById('adoption-line-chart')
+var adoptionChart = new Chart(document.getElementById("adoption-line-chart"), {
   type: 'line',
   data: {
     labels: {{ labels_mois|safe }},
@@ -94,6 +95,19 @@ new Chart(document.getElementById("adoption-line-chart"), {
     }
   }
 });
+
+adoptionCanvas.onclick = function(e) {
+    var slice = adoptionChart.getElementAtEvent(e);
+    if (!slice.length) return; // return if not clicked on slice
+    if (slice[0]._datasetIndex==1){
+        urls_adoptions_past = "{{urls_adoptions_past_str}}".split(',');
+        window.open(urls_adoptions_past[slice[0]._index],"_self")
+    }
+    else {
+        urls_adoptions_current = "{{urls_adoptions_current_str}}".split(',');
+        window.open(urls_adoptions_current[slice[0]._index],"_self")
+    }
+}
 
 new Chart(document.getElementById("sejour-line-chart"), {
   type: 'line',
@@ -149,8 +163,8 @@ var myChart = new Chart(ctx, {
 canvasP.onclick = function(e) {
     var slice = myChart.getElementAtEvent(e);
     if (!slice.length) return; // return if not clicked on slice
-    urls = "{{urls_string}}".split(',');
-    window.open(urls[slice[0]._index],"_self")
+    urls_sejour = "{{urls_sejour_string}}".split(',');
+    window.open(urls_sejour[slice[0]._index],"_self")
 }
 </script>
 {% endblock %}
