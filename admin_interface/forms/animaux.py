@@ -86,6 +86,9 @@ class AnimalBaseForm:
 
         return cleaned_data
 
+    def clean_nom(self):
+        return self.cleaned_data['nom'].capitalize()
+
 
 class AnimalCreateForm(AnimalBaseForm, ModelForm):
 

@@ -71,7 +71,9 @@
 	<a href = "{% url 'detail_proprietaire' sejour.proprietaire.id %}">{{sejour.proprietaire}}</a>
 	{% endif %}
 	</td>
-	<td>{% for animal in sejour.animaux.all %}{{animal.nom}}<br>{% endfor %}</td>
+	<td>{% for animal in sejour.animaux.all %}<a href = "{% url 'detail_animal' animal.id %}">
+		{{animal.nom}}<br></a>
+		{% endfor %}</td>
 	<td>{{sejour.nb_cages_a_fournir}}</td>
 	<td>{{sejour.montant_restant|default:" - "}}</td>
   </tr>
