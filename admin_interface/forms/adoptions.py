@@ -22,7 +22,7 @@ class AdoptionValidator:
 class AdoptionUpdateForm(AdoptionValidator, ModelForm):
     class Meta:
         model = Adoption
-        fields = ("montant", "montant_restant",
+        fields = ("date","montant", "montant_restant",
                   "montant_caution_sterilisation", "date_caution_sterilisation",
                   "montant_caution_materiel", "date_caution_materiel","date_rappel_caution")
         date = DateField(
