@@ -16,13 +16,13 @@ class Proprietaire(models.Model):
     code_postal_regex = RegexValidator(
         regex="^[0-9]*$", message="Veuillez entrer un code postal valide."
     )
-    code_postal = models.CharField(validators=[code_postal_regex],max_length=5)
+    code_postal = models.CharField(validators=[code_postal_regex],max_length=7)
     ville = models.CharField(max_length=100)
     telephone_regex = RegexValidator(
         regex="[0-9]{10}", message="Veuillez entrer un numéro de téléphone valide."
     )
-    telephone = models.CharField(validators=[telephone_regex], max_length=14)
-    deuxieme_telephone = models.CharField(validators=[telephone_regex], max_length=14,blank=True)
+    telephone = models.CharField(validators=[telephone_regex], max_length=18)
+    deuxieme_telephone = models.CharField(validators=[telephone_regex], max_length=18,blank=True)
     date_inscription = models.DateField(auto_now_add=True)
     inactif = models.BooleanField(default=False,
                                   verbose_name="Desactivé (Ne cocher que si vous ne souhaitez\
