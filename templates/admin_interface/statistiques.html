@@ -150,13 +150,16 @@ var myChart = new Chart(ctx, {
         }]
     },
     options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
+        tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+                label: function(tooltipItems, data) {
+                    data_income_outcome = "{{data_income_outcome_str}}".split(',');
+                    return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel + data_income_outcome[tooltipItems.index];
                 }
-            }]
-        }
+            }
+        },
     }
 });
 

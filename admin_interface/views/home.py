@@ -140,6 +140,7 @@ def stats(request):
     selected = "statistiques"
 
     date = timezone.now().date()
+    day_interval = timezone.now().date() + timedelta(days=1)
 
     total_paiements_sejours = None
 
@@ -169,6 +170,7 @@ def stats(request):
     data_planning = []
     couleurs_planning = []
     urls_sejours = []
+    data_income_outcome = []
 
     i = 1
     while (i < 40):
@@ -179,9 +181,15 @@ def stats(request):
             .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
+        count_income = sejours.filter(date_arrivee__gte=date).filter(date_arrivee__lte=day_interval).filter(annule=False).count()
+        count_income = count_income if count_income else 0
+        count_outcome = sejours.filter(date_depart__gte=date).filter(date_depart__lte=day_interval).filter(annule=False).count()
+        count_outcome = count_outcome if count_outcome else 0
+        data_income_outcome.append (" ( "+ str(count_income)+ " A et "+ str(count_outcome) + " D)")
         color_count = count if count < 33 else 33
         couleurs_planning.append("hsl(" + str(100-3*color_count) + ",70%,50%)")
         date = date + timedelta(days=1)
+        day_interval = date + timedelta(days=1)
         interval = interval + timedelta(days=1)
         i+=1
 
@@ -243,6 +251,7 @@ def stats(request):
     urls_sejour_string = ','.join(urls_sejours)
     urls_adoptions_current_str = ','.join(urls_adoptions_current)
     urls_adoptions_past_str =  ','.join(urls_adoptions_past)
+    data_income_outcome_str = ','.join(data_income_outcome)
 
     return render(request, "admin_interface/statistiques.html", {
         'labels_mois':labels_mois,
@@ -261,6 +270,7 @@ def stats(request):
         'palmares':palmares,
         'labels_planning':labels_planning,
         'data_planning':data_planning,
+        'data_income_outcome_str':data_income_outcome_str,
         'couleurs_planning':couleurs_planning,
         'total_paiements_sejours':total_paiements_sejours
 
