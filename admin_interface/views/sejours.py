@@ -244,26 +244,26 @@ def calcul_montant_sejour(request):
         )
         if date_arrivee.weekday() == 5:
             montant_sejour = montant_sejour + supplement_samedi.montant
-            calcul += "<br/> Ajout supplément samedi arrivée"
-        elif date_arrivee.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
+            calcul += "<br/> Ajout supplément arrivée dimanche"
+        elif date_arrivee.weekday() in (0, 1, 3, 4) and not is_time_between(
             time(17, 59), time(19, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
             calcul += "<br/> Ajout supplément horaire arrivée"
-        elif date_arrivee.weekday() == 6 and not is_time_between(
+        elif date_arrivee.weekday() in (2, 5) and not is_time_between(
             time(14, 59), time(18, 31), heure_arrivee
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
             calcul += "<br/> Ajout supplément horaire arrivée"
-        if date_depart.weekday() == 5:
+        if date_depart.weekday() == 6:
             montant_sejour = montant_sejour + supplement_samedi.montant
-            calcul += "<br/> Ajout supplément samedi départ"
-        elif date_depart.weekday() in (0, 1, 2, 3, 4) and not is_time_between(
+            calcul += "<br/> Ajout supplément dimanche départ"
+        elif date_depart.weekday() in (0, 1, 3, 4) and not is_time_between(
             time(17, 59), time(19, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
             calcul += "<br/> Ajout supplément horaire départ"
-        elif date_depart.weekday() == 6 and not is_time_between(
+        elif date_depart.weekday() in (2, 5) and not is_time_between(
             time(14, 59), time(18, 31), heure_depart
         ):
             montant_sejour = montant_sejour + supplement_horaire.montant
