@@ -242,7 +242,7 @@ def calcul_montant_sejour(request):
         supplement_horaire = ParametreTarifairePension.objects.get(
             type_supplement=TypeSupplementChoice.HORAIRE.name
         )
-        if date_arrivee.weekday() == 5:
+        if date_arrivee.weekday() == 6:
             montant_sejour = montant_sejour + supplement_samedi.montant
             calcul += "<br/> Ajout supplément arrivée dimanche"
         elif date_arrivee.weekday() in (0, 1, 3, 4) and not is_time_between(
