@@ -33,6 +33,15 @@ class Adoption(models.Model):
                                                   null=True,
                                                   blank=True,
                                                   )
+    montant_caution_vaccination = models.DecimalField(
+        verbose_name="Si caution pour vaccination, montant de cette caution :", max_digits=7, decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    date_caution_vaccination = models.DateField(verbose_name="Date d'encaissement de la caution de vaccination",
+                                                  null=True,
+                                                  blank=True,
+                                                  )
     montant_caution_materiel = models.DecimalField(
         verbose_name="Si caution pour prêt de matériel, montant de cette caution: ", max_digits=7, decimal_places=2,
         null=True,
@@ -56,19 +65,15 @@ class Adoption(models.Model):
         return super().save(*args, **kwargs)
 
     def get_montant_caution(self):
-        if(not self.montant_caution_materiel):
-            return self.montant_caution_sterilisation
-        if (not self.montant_caution_sterilisation):
-            return self.montant_caution_materiel
-        return self.montant_caution_materiel + self.montant_caution_sterilisation
+        montant_total = Decimal(0)
+        if(self.montant_caution_materiel):
+            montant_total += self.montant_caution_materiel
+        if (self.montant_caution_sterilisation):
+            montant_total += self.montant_caution_sterilisation
+        if (self.montant_caution_vaccination):
+            montant_total += self.montant_caution_vaccination
+        return montant_total
 
 
     def get_min_date_caution(self):
-        if (not self.date_caution_sterilisation):
-            return self.date_caution_materiel
-        if ( not self.date_caution_materiel
-                or self.date_caution_materiel>self.date_caution_sterilisation) :
-            return self.date_caution_sterilisation
-        if (not self.date_caution_materiel):
-            return self.date_caution_materiel
-        return ""
+        return min(self.date_caution_materiel, self.date_caution_sterilisation, self.date_caution_sterilisation)

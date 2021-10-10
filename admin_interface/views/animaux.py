@@ -85,6 +85,8 @@ def search_animal(request):
         date_caution_materiel_max = request.GET.get("date_caution_materiel_max", "")
         date_caution_sterilisation_min = request.GET.get("date_caution_sterilisation_min", "")
         date_caution_sterilisation_max = request.GET.get("date_caution_sterilisation_max", "")
+        date_caution_vaccination_min = request.GET.get("date_caution_vaccination_min", "")
+        date_caution_vaccination_max = request.GET.get("date_caution_vaccination_max", "")
 
         if proprietaire_form:
             animals = animals.filter(proprietaire=proprietaire_form)
@@ -137,6 +139,12 @@ def search_animal(request):
         if (date_caution_sterilisation_max):
             animals = animals.filter(adoption__date_caution_sterilisation__lte=parse_date(date_caution_sterilisation_max))
             form.fields["date_caution_sterilisation_max"].initial = date_caution_sterilisation_max
+        if (date_caution_vaccination_min):
+            animals = animals.filter(adoption__date_caution_vaccination__gte=parse_date(date_caution_vaccination_min))
+            form.fields["date_caution_vaccination_min"].initial = date_caution_vaccination_min
+        if (date_caution_vaccination_max):
+            animals = animals.filter(adoption__date_caution_vaccination__lte=parse_date(date_caution_vaccination_max))
+            form.fields["date_caution_vaccination_max"].initial = date_caution_vaccination_max
 
         # Paramètres de l'url pour filtres par défaut
         filter_data = request.GET.get("filter", "")

@@ -99,6 +99,11 @@
 			<strong> {{animal.adoption.montant_caution_sterilisation}} </strong>
 			valable jusqu'au <strong> {{animal.adoption.date_caution_sterilisation}} </strong> <br>
 			{% endif %}
+			{% if animal.adoption.montant_caution_vaccination %}
+			Caution vaccination de
+			<strong> {{animal.adoption.montant_caution_vaccination}} </strong>
+			valable jusqu'au <strong> {{animal.adoption.date_caution_vaccination}} </strong> <br>
+			{% endif %}
 			{% if animal.adoption.montant_caution_materiel %}
 			Caution matériel de
 			<strong> {{animal.adoption.montant_caution_materiel}} </strong>

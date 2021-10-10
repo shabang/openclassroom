@@ -93,6 +93,8 @@ def index(request):
         (date_caution_materiel__lte=interval_month).count()
     cautions_sterilisation = Adoption.objects.filter(date_caution_sterilisation__gte=today).filter \
         (date_caution_sterilisation__lte=interval_month).count()
+    cautions_vaccination = Adoption.objects.filter(date_caution_vaccination__gte=today).filter \
+        (date_caution_vaccination__lte=interval_month).count()
     #Animaux refuge a steriliser ou vacciner
     nb_visites_refuge = Animal.objects.filter(
         Q(emplacement=EmplacementChoice.REFUGE.name),
