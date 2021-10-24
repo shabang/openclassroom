@@ -66,6 +66,38 @@
 <div class="row">
     <canvas id="myChart" width="400" height="150"></canvas>
 </div>
+<div class="row">
+    <div class="panel panel-default text-center">
+            <div class="panel-heading">
+                <h5>Adoptions des 6 derniers mois</h5>
+            </div>
+            <div class="panel-body">
+                <table class="myTable">
+                <tr class="header">
+	                <th>Date d'adoption</th>
+	                <th>Animal adopté</th>
+	                <th>Adoptant</th>
+	                <th>Adresse mail</th>
+                    <th>Téléphone</th>
+                </tr>
+                {% for adoption in adoptions_6_mois %}
+                <tr>
+                    <td>{{adoption.date}}</td>
+	                <td><a href = "{% url 'detail_animal' adoption.animal.id %}">{{adoption.animal.nom}}</a></td>
+	                <td>{{adoption.proprietaire}}</td>
+	                <td>{{adoption.proprietaire.user.email}}</td>
+                    <td>{{adoption.proprietaire.telephone}}</td>
+                </tr>
+                {% endfor %}
+                </table>
+            </div>
+    </div>
+</div>
+<div class="row text-center">
+    <br/>
+    <button id="cp_btn" class="btn-search cyan rounded">Copier dans le presse papier toutes les adreses mail de la base</button>
+    <br/>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
@@ -168,6 +200,17 @@ canvasP.onclick = function(e) {
     if (!slice.length) return; // return if not clicked on slice
     urls_sejour = "{{urls_sejour_string}}".split(',');
     window.open(urls_sejour[slice[0]._index],"_self")
+}
+
+document.getElementById("cp_btn").addEventListener("click", copy_emails);
+
+function copy_emails() {
+    var textArea = document.createElement("textarea");
+    textArea.value = "{{emails_list_str}}";
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("Copy");
+    textArea.remove();
 }
 </script>
 {% endblock %}

@@ -1,9 +1,12 @@
 import sys
 from datetime import timedelta, datetime
+
+from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 
 import calendar
 import locale
+from django.contrib.auth.models import User
 
 from django.db.models import Sum, Q, Count, F
 
@@ -134,6 +137,7 @@ def index(request):
         interval_planning = interval_planning + timedelta(days=1)
         i += 1
     urls_string = ','.join(urls)
+
     return render(request, "admin_interface/tableau_bord.html", locals())
 
 @login_required
@@ -255,7 +259,16 @@ def stats(request):
     urls_adoptions_past_str =  ','.join(urls_adoptions_past)
     data_income_outcome_str = ','.join(data_income_outcome)
 
+    # Adresses mails de tous les utilisateurs
+    emails_list = list(User.objects.values_list('email', flat=True).distinct())
+    emails_list_str = ';'.join(emails_list)
+
+    months_6_interval = timezone.now().date() + relativedelta(months=-6)
+    adoptions_6_mois = Adoption.objects.filter(date__gte=months_6_interval).filter(date__lte=date)
+
     return render(request, "admin_interface/statistiques.html", {
+        'adoptions_6_mois' : adoptions_6_mois,
+        'emails_list_str': emails_list_str,
         'labels_mois':labels_mois,
         'data_adoption_current':data_adoption_current,
         'data_adoption_past': data_adoption_past,
