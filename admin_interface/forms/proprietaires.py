@@ -1,5 +1,6 @@
-from django.forms import ModelForm, CharField, Form
+from django.forms import ModelForm, CharField, Form, DateField
 
+from admin_interface.forms import DateInput
 from admin_interface.models.proprietaires import Proprietaire, Avoir
 
 
@@ -8,6 +9,11 @@ class ProprietaireSearchForm(Form):
     prenom = CharField(max_length=100, required=False)
     ville = CharField(max_length=100, required=False)
     telephone = CharField(max_length=100, required=False)
+
+class ProprietaireDateForm(Form):
+    date_adoption = DateField(
+        label="Affichage des adoptions du mois précédent le", required=False, widget=DateInput()
+    )
 
 
 class ProprietaireForm(ModelForm):

@@ -58,7 +58,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="col-md-6">
-            {{ planning_form.date_debut_tag }} {{ planning_form.date_debut }}
+            {{ planning_form.date_debut.label_tag }} {{ planning_form.date_debut }}
             <button type="submit" class="btn btn-info btn-sm">Afficher</button>
         </div>
     </form>
@@ -66,33 +66,46 @@
 <div class="row">
     <canvas id="myChart" width="400" height="150"></canvas>
 </div>
-<div class="row">
-    <div class="panel panel-default text-center">
-            <div class="panel-heading">
-                <h5>Adoptions des 6 derniers mois</h5>
+<br>
+<div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h5>Adoptions du mois précédent</h5>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        {{ adoptions_form.date_adoption.label_tag }} {{ adoptions_form.date_adoption }}
+                        <button type="submit" class="btn btn-info btn-sm">Afficher</button>
+                    </div>
+                </form>
             </div>
-            <div class="panel-body">
+            <br>
+            <div class="row">
                 <table class="myTable">
                 <tr class="header">
-	                <th>Date d'adoption</th>
-	                <th>Animal adopté</th>
-	                <th>Adoptant</th>
-	                <th>Adresse mail</th>
+                    <th>Date d'adoption</th>
+                    <th>Animal adopté</th>
+                    <th>Adoptant</th>
+                    <th>Adresse mail</th>
                     <th>Téléphone</th>
                 </tr>
-                {% for adoption in adoptions_6_mois %}
+                {% for adoption in adoptions_mois %}
                 <tr>
                     <td>{{adoption.date}}</td>
-	                <td><a href = "{% url 'detail_animal' adoption.animal.id %}">{{adoption.animal.nom}}</a></td>
-	                <td>{{adoption.proprietaire}}</td>
-	                <td>{{adoption.proprietaire.user.email}}</td>
+                    <td><a href = "{% url 'detail_animal' adoption.animal.id %}">{{adoption.animal.nom}}</a></td>
+                    <td>{{adoption.proprietaire}}</td>
+                    <td>{{adoption.proprietaire.user.email}}</td>
                     <td>{{adoption.proprietaire.telephone}}</td>
                 </tr>
                 {% endfor %}
                 </table>
             </div>
-    </div>
+        </div>
 </div>
+
 <div class="row text-center">
     <br/>
     <button id="cp_btn" class="btn-search cyan rounded">Copier dans le presse papier toutes les adreses mail de la base</button>

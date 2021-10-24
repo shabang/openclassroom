@@ -15,6 +15,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 
+from admin_interface.forms.proprietaires import ProprietaireDateForm
 from admin_interface.forms.sejours import SejourStatsForm, SejourGainForm
 from admin_interface.models import EmplacementChoice, OuiNonChoice
 from admin_interface.models.adoptions import Adoption
@@ -147,12 +148,17 @@ def stats(request):
 
     date = timezone.now().date()
     day_interval = timezone.now().date() + timedelta(days=1)
+    date_adoptions = date
 
     total_paiements_sejours = None
 
     if request.method == "POST":
         planning_form = SejourStatsForm(request.POST)
         sejour_gain_form = SejourGainForm(request.POST)
+        adoptions_form = ProprietaireDateForm(request.POST)
+        if adoptions_form.is_valid():
+            if adoptions_form.cleaned_data["date_adoption"]:
+                date_adoptions = adoptions_form.cleaned_data["date_adoption"]
         if planning_form.is_valid():
             if planning_form.cleaned_data["date_debut"]:
                 date = planning_form.cleaned_data["date_debut"]
@@ -165,6 +171,7 @@ def stats(request):
                 total_paiements_sejours = Sejour.objects.filter(date_arrivee__lte=date_fin_gain).\
                     filter(date_arrivee__gte=date_debut_gain).aggregate(Sum('montant'))
     else:
+        adoptions_form = ProprietaireDateForm()
         planning_form = SejourStatsForm()
         sejour_gain_form = SejourGainForm()
 
@@ -263,11 +270,12 @@ def stats(request):
     emails_list = list(User.objects.values_list('email', flat=True).distinct())
     emails_list_str = ';'.join(emails_list)
 
-    months_6_interval = timezone.now().date() + relativedelta(months=-6)
-    adoptions_6_mois = Adoption.objects.filter(date__gte=months_6_interval).filter(date__lte=date)
+    month_interval = date_adoptions + relativedelta(months=-1)
+    adoptions_mois = Adoption.objects.filter(date__gte=month_interval).order_by('date').filter(date__lte=date_adoptions)
 
     return render(request, "admin_interface/statistiques.html", {
-        'adoptions_6_mois' : adoptions_6_mois,
+        'adoptions_mois' : adoptions_mois,
+        'adoptions_form':adoptions_form,
         'emails_list_str': emails_list_str,
         'labels_mois':labels_mois,
         'data_adoption_current':data_adoption_current,
