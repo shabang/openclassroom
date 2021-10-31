@@ -81,7 +81,7 @@ class Sejour(models.Model):
         return ""
 
     def save(self, *args, **kwargs):
-        self.nb_jours = abs((self.date_depart - self.date_arrivee).days)
+        self.nb_jours = abs((self.date_depart - self.date_arrivee).days) + 1
         return super().save(*args, **kwargs)
 
     def annulation(self):
