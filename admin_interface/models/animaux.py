@@ -1,5 +1,4 @@
-import sys
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.db import models
 from django.utils import timezone
@@ -102,6 +101,12 @@ class Animal(models.Model):
 
     def is_from_refuge(self):
         return self.emplacement == EmplacementChoice.REFUGE.name
+
+    def current_year_sejours(self):
+        return self.sejour_set.filter(date_arrivee__year=datetime.now().year)
+
+    def numbers_sejour(self):
+        return self.sejour_set.count()
 
     def is_adopted_refuge(self):
         result = False

@@ -75,6 +75,9 @@ class Sejour(models.Model):
     annule = models.BooleanField(default=False,
                                   verbose_name="Séjour annulé")
 
+    class Meta:
+        ordering = ['-date_arrivee']
+
     def __str__(self):
         if self.date_arrivee and self.date_depart:
             return f"Séjour du {self.date_arrivee:%d/%m/%Y %H:%M} au {self.date_depart:%d/%m/%Y %H:%M}"

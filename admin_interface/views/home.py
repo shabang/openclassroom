@@ -149,6 +149,7 @@ def stats(request):
     date = timezone.now().date()
     day_interval = timezone.now().date() + timedelta(days=1)
     date_adoptions = date
+    custom_date = False
 
     total_paiements_sejours = None
 
@@ -159,6 +160,7 @@ def stats(request):
         if adoptions_form.is_valid():
             if adoptions_form.cleaned_data["date_adoption"]:
                 date_adoptions = adoptions_form.cleaned_data["date_adoption"]
+                custom_date = True
         if planning_form.is_valid():
             if planning_form.cleaned_data["date_debut"]:
                 date = planning_form.cleaned_data["date_debut"]
@@ -270,8 +272,15 @@ def stats(request):
     emails_list = list(User.objects.values_list('email', flat=True).distinct())
     emails_list_str = ';'.join(emails_list)
 
-    month_interval = date_adoptions + relativedelta(months=-1)
-    adoptions_mois = Adoption.objects.filter(date__gte=month_interval).order_by('date').filter(date__lte=date_adoptions)
+    if custom_date:
+        month_interval = date_adoptions + relativedelta(months=-1)
+        adoptions_mois = Adoption.objects.filter(date__gte=month_interval).order_by('date').filter(
+            date__lte=date_adoptions)
+    else :
+        current_month = date.month
+        current_year = date.year
+        adoptions_mois = Adoption.objects.filter(date__month=current_month).\
+            filter(date__year=current_year).order_by('date')
 
     return render(request, "admin_interface/statistiques.html", {
         'adoptions_mois' : adoptions_mois,

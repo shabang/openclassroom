@@ -81,7 +81,11 @@ def search_sejour(request):
         date_fin_max_form = request.GET.get("date_fin_max", "")
         proprietaire_form = request.GET.get("proprietaire", "")
         cohabitation_form = request.GET.get("cohabitation", "")
+        animal_form = request.GET.get("animal","")
 
+        if animal_form:
+            sejours = sejours.filter(animaux__id=animal_form)
+            form.fields["animal"].initial = animal_form
         if date_debut_min_form:
             sejours = sejours.filter(date_arrivee__gte=parse_date(date_debut_min_form))
             form.fields["date_debut_min"].initial = date_debut_min_form

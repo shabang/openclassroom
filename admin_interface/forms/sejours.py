@@ -27,6 +27,9 @@ class SejourSearchForm(Form):
     proprietaire = ModelChoiceField(
         queryset=Proprietaire.objects.all().filter(inactif=False), required=False
     )
+    animal = ModelChoiceField(
+        queryset=Animal.objects.all().filter(inactif=False), required=False
+    )
     cohabitation = ChoiceField(
         choices=BLANK_CHOICE_DASH + [(tag.name, tag.value) for tag in OuiNonChoice],
         widget=Select(),

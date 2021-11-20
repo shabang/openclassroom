@@ -141,7 +141,13 @@
 {% endif %}
 
 {% if animal.is_from_pension %}
-    <h4> Liste des séjours à la pension</h4>
+    <h4> Liste des séjours à la pension cette année</h4>
+	<h5>
+		<a href = "{% url 'sejours' %}?animal={{animal.id}}">
+			{{animal.numbers_sejour}}
+		</a>
+		séjours au total toute années confondues
+	</h5>
 	<table class="myTable">
         <tr class="header">
             <th style="width:40%;">Dates</th>
@@ -149,7 +155,7 @@
 	        <th style="width:20%;">Montant total</th>
     		<th style="width:20%;">Montant restant à payer</th>
        </tr>
-       {% for sejour in animal.sejour_set.all %}
+       {% for sejour in animal.current_year_sejours %}
        <tr>
 		   {% if sejour.annule %}
             <td><del><a href = "{% url 'detail_sejour' sejour.id %}">{{sejour}}</a></del></td>
