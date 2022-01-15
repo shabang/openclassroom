@@ -105,6 +105,12 @@ def search_sejour(request):
             sejours = sejours.filter(cohabitation=cohabitation_form)
             form.fields["cohabitation"].initial = cohabitation_form
 
+        # Paramètres de l'url pour filtres par défaut
+        filter_data = request.GET.get("filter", "")
+        if filter_data:
+            if filter_data == "paiements_sejour":
+                sejours = sejours.filter(montant_restant__gt=Decimal('0'))
+
     #loading des objets liés pour améliorer la perf
     sejours = sejours.select_related('proprietaire').prefetch_related('animaux')
     # Pagination : 10 éléments par page

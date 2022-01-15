@@ -111,10 +111,9 @@ def index(request):
         Q(date_visite__lte=today)
     ).count()
 
-    #Données du planning de la semaine
+    # Données du planning de la semaine
     sejours = Sejour.objects.all()
     date_planning = timezone.now().date()
-    interval_planning = timezone.now().date() + timedelta(days=1)
 
     labels_planning = []
     data_planning = []
@@ -124,20 +123,20 @@ def index(request):
     i = 1
     while (i < 20):
         urls.append(
-            reverse('sejours') + "?date_fin_min=" + date_planning.strftime("%Y-%m-%d") + "&date_debut_max=" + date_planning.strftime(
+            reverse('sejours') + "?date_fin_min=" + date_planning.strftime(
+                "%Y-%m-%d") + "&date_debut_max=" + date_planning.strftime(
                 "%Y-%m-%d"))
         labels_planning.append(date_planning.strftime("%d/%m"))
         count = sejours.filter(date_arrivee__lte=date_planning).filter(date_depart__gte=date_planning) \
             .filter(annule=False) \
-            .aggregate(total = Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
+            .aggregate(total=Sum(F('nb_cages_fournies') + F('nb_cages_a_fournir'))).get("total")
         count = count if count else 0
         data_planning.append(count)
         color_count = count if count < 33 else 33
         couleurs_planning.append("hsl(" + str(100 - 3 * color_count) + ",70%,50%)")
         date_planning = date_planning + timedelta(days=1)
-        interval_planning = interval_planning + timedelta(days=1)
         i += 1
-    urls_string = ','.join(urls)
+
 
     return render(request, "admin_interface/tableau_bord.html", locals())
 
@@ -208,12 +207,15 @@ def stats(request):
         interval = interval + timedelta(days=1)
         i+=1
 
+    # Partie adoptions
     labels_mois = []
     # Adoptions pour l'année en cours
     data_adoption_current = []
     # Adoptions pour l'année précédente
     data_adoption_past = []
-    
+
+    urls_adoptions_past = []
+    urls_adoptions_current = []
 
     adoptions = Adoption.objects.all()
     # Pour que les mois soient en français
@@ -221,17 +223,18 @@ def stats(request):
     date = datetime.now()
 
     i = 1
-    urls_adoptions_past = []
-    urls_adoptions_current = []
+
     while (i < 13):
         labels_mois.append("\n Mois " + calendar.month_name[i])
         urls_adoptions_current.append(
             reverse('animals') + "?filter=adoption_month&year=" + str(date.year) + "&month=" + str(i))
         urls_adoptions_past.append(
-            reverse('animals') + "?filter=adoption_month&year=" + str(date.year-1) + "&month=" + str(i))
+            reverse('animals') + "?filter=adoption_month&year=" + str(date.year - 1) + "&month=" + str(i))
         data_adoption_current.append(adoptions.filter(date__year=date.year).filter(date__month=i).count())
-        data_adoption_past.append(adoptions.filter(date__year=date.year-1).filter(date__month=i).count())
+        data_adoption_past.append(adoptions.filter(date__year=date.year - 1).filter(date__month=i).count())
         i += 1
+
+    # Partie pension
 
     pensions_calculees = Sejour.objects.filter(date_arrivee__year=date.year).filter(annule=False).\
                              values('proprietaire__user__last_name','proprietaire__user__first_name'). \
