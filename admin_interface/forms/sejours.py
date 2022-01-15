@@ -79,6 +79,8 @@ class SejourForm(SejourFormBase, ModelForm):
             "cohabitation",
             "date_arrivee",
             "date_depart",
+            "longue_duree",
+            "montant_jour_longue_duree",
             "proprietaire",
             "animaux",
             "nb_cages_fournies",

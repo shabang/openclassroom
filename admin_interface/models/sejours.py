@@ -74,6 +74,19 @@ class Sejour(models.Model):
     )
     annule = models.BooleanField(default=False,
                                   verbose_name="Séjour annulé")
+    longue_duree = models.CharField(
+        max_length=3,
+        verbose_name="Séjour longue durée",
+        choices=[(tag.name, tag.value) for tag in OuiNonChoice],
+        default=OuiNonChoice.NON.name,
+    )
+    montant_jour_longue_duree = models.DecimalField(
+        verbose_name="Montant quotidien pour pension longue durée",
+        max_digits=7,
+        decimal_places=2,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ['-date_arrivee']

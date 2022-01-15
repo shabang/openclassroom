@@ -23,3 +23,34 @@ $('#sejourForm').on('change', '*', function(event) {
         });
     }
  });
+
+ $("select#id_longue_duree").change(function () {
+  var value = $(this).val();
+  var fields = $(
+    'input[name="montant_jour_longue_duree"],label[for="id_montant_jour_longue_duree"]'
+  );
+  switch (value) {
+    case "OUI":
+      fields.show();
+      break;
+    case "NON":
+      fields.hide();
+      break;
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  var value = $("select#id_longue_duree").val();
+
+  var fields = $(
+    'input[name="montant_jour_longue_duree"],label[for="id_montant_jour_longue_duree"]'
+  );
+  switch (value) {
+    case "OUI":
+      fields.show();
+      break;
+    case "NON":
+      fields.hide();
+      break;
+  }
+});

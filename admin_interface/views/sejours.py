@@ -140,7 +140,12 @@ def calcul_montant_sejour(request):
     except ValueError:
         # Si les champs sont mal remplis, on arrete le calcul
         return JsonResponse({"montant": montant_sejour})
-
+    longue_duree = request.POST["longue_duree"]
+    montant_jour_longue_duree = request.POST["montant_jour_longue_duree"]
+    if (longue_duree and longue_duree=="OUI" and montant_jour_longue_duree):
+        nb_jours = Decimal(abs((date_depart - date_arrivee).days)) + 1
+        return JsonResponse({"montant": Decimal(montant_jour_longue_duree) * Decimal(nb_jours)
+                                , "calcul": "Calcul longue durée"})
     nb_cages_a_fournir = request.POST["nb_cages_a_fournir"]
     nb_cages_fournies = request.POST["nb_cages_fournies"]
     proprietaire_input = request.POST["proprietaire"]
@@ -158,7 +163,7 @@ def calcul_montant_sejour(request):
         # Si on a pas les données pour faire le calcul le montant reste à 0
         return JsonResponse({"montant": montant_sejour})
     else:
-        nb_jours = Decimal(abs((date_depart - date_arrivee).days)) +1
+        nb_jours = Decimal(abs((date_depart - date_arrivee).days)) + 1
         nb_cages = int(nb_cages_fournies) + int(nb_cages_a_fournir)
         animaux = Animal.objects.filter(id__in=request.POST.getlist("animaux")).order_by('-adoption')
         proprietaire = Proprietaire.objects.get(id=proprietaire_input)
